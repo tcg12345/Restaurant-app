@@ -1,0 +1,362 @@
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Star, MapPin, TrendingUp, Plus } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
+import { MichelinStars } from '@/components/MichelinStars';
+import { useAuth } from '@/contexts/AuthContext';
+import { RatingBottomSheet } from '@/components/RatingBottomSheet';
+import { useRestaurants } from '@/contexts/RestaurantContext';
+import { useToast } from '@/hooks/use-toast';
+import type { Restaurant } from '@/types/restaurant';
+
+interface PopularRestaurant {
+  place_id: string;
+  name: string;
+  cuisine?: string;
+  city?: string;
+  country?: string;
+  avg_rating: number;
+  review_count: number;
+  price_range?: number;
+  michelin_stars?: number;
+  photo_url?: string;
+  has_expert_reviews: boolean;
+}
+
+interface PopularRestaurantsCarouselProps {
+  title?: string;
+  userLocation?: { latitude: number; longitude: number; city?: string; country?: string };
+}
+
+export function PopularRestaurantsCarousel({ 
+  title = "Trending Near You",
+  userLocation
+}: PopularRestaurantsCarouselProps) {
+  const [restaurants, setRestaurants] = useState<PopularRestaurant[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [isRatingBottomSheetOpen, setIsRatingBottomSheetOpen] = useState(false);
+  const [selectedRestaurantForRating, setSelectedRestaurantForRating] = useState<PopularRestaurant | null>(null);
+  const navigate = useNavigate();
+  const { user } = useAuth();
+  const { addRestaurant } = useRestaurants();
+  const { toast } = useToast();
+
+  useEffect(() => {
+    loadPopularRestaurants();
+  }, [userLocation]);
+
+  const loadPopularRestaurants = async () => {
+    try {
+      let popularList: PopularRestaurant[] = [];
+      if (userLocation && userLocation.latitude && userLocation.longitude) {
+        // Personalized local trending - use the extensive logic from user's code
+        await loadGlobalTrending(popularList);
+      } else {
+        // No user location available – use global trending
+        await loadGlobalTrending(popularList);
+      }
+      setRestaurants(popularList);
+    } catch (error) {
+      console.error('Error loading popular restaurants:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Helper: load global trending as fallback
+  const loadGlobalTrending = async (popularList: PopularRestaurant[]) => {
+    const { data: topRated } = await supabase
+      .from('restaurants')
+      .select(`
+        google_place_id, name, cuisine, city, country, rating, price_range, michelin_stars, photos, user_id
+      `)
+      .not('google_place_id', 'is', null)
+      .not('rating', 'is', null)
+      .gte('rating', 7)
+      .eq('is_wishlist', false)
+      .order('rating', { ascending: false })
+      .limit(20);
+    const { data: expertRoles } = await supabase
+      .from('user_roles')
+      .select('user_id')
+      .eq('role', 'expert');
+    const expertUserIds = expertRoles?.map(e => e.user_id) || [];
+
+    const stats = new Map<string, {
+      place_id: string;
+      name: string;
+      cuisine?: string;
+      city?: string;
+      country?: string;
+      ratings: number[];
+      price_range?: number;
+      michelin_stars?: number;
+      photo_url?: string;
+      expert_reviews: number;
+    }>();
+    topRated?.forEach(r => {
+      if (!r.google_place_id) return;
+      const existing = stats.get(r.google_place_id);
+      if (existing) {
+        existing.ratings.push(r.rating);
+      } else {
+        stats.set(r.google_place_id, {
+          place_id: r.google_place_id,
+          name: r.name,
+          cuisine: r.cuisine,
+          city: r.city,
+          country: r.country,
+          ratings: [r.rating],
+          price_range: r.price_range,
+          michelin_stars: r.michelin_stars,
+          photo_url: r.photos?.[0],
+          expert_reviews: 0
+        });
+      }
+    });
+    if (expertUserIds.length > 0) {
+      const placeIds = Array.from(stats.keys());
+      const { data: expertReviews } = await supabase
+        .from('user_reviews')
+        .select('restaurant_place_id')
+        .in('user_id', expertUserIds)
+        .in('restaurant_place_id', placeIds);
+      const { data: expertRatings } = await supabase
+        .from('restaurants')
+        .select('google_place_id')
+        .in('user_id', expertUserIds)
+        .in('google_place_id', placeIds)
+        .not('rating', 'is', null);
+      [...(expertReviews || []), ...(expertRatings || [])].forEach(evt => {
+        const pid = 'restaurant_place_id' in evt ? evt.restaurant_place_id : evt.google_place_id;
+        const entry = stats.get(pid);
+        if (entry) {
+          entry.expert_reviews++;
+        }
+      });
+    }
+    popularList.splice(0, popularList.length);
+    popularList.push(...Array.from(stats.values())
+      .filter(r => r.ratings.length >= 2)
+      .map(r => ({
+        place_id: r.place_id,
+        name: r.name,
+        cuisine: r.cuisine,
+        city: r.city,
+        country: r.country,
+        avg_rating: r.ratings.reduce((a, b) => a + b, 0) / r.ratings.length,
+        review_count: r.ratings.length,
+        price_range: r.price_range,
+        michelin_stars: r.michelin_stars,
+        photo_url: r.photo_url,
+        has_expert_reviews: r.expert_reviews > 0
+      }))
+      .sort((a, b) => {
+        if (a.has_expert_reviews !== b.has_expert_reviews) {
+          return a.has_expert_reviews ? -1 : 1;
+        }
+        return b.avg_rating - a.avg_rating;
+      })
+      .slice(0, 10));
+  };
+
+  const getPriceDisplay = (priceLevel?: number) => {
+    if (!priceLevel) return null;
+    return '$'.repeat(Math.min(priceLevel, 4));
+  };
+
+  const handleRestaurantClick = (restaurant: PopularRestaurant) => {
+    navigate(`/restaurant/${restaurant.place_id}?name=${encodeURIComponent(restaurant.name)}`);
+  };
+
+  const handleRateRestaurant = (restaurant: PopularRestaurant, e: React.MouseEvent) => {
+    e.stopPropagation();
+    setSelectedRestaurantForRating(restaurant);
+    setIsRatingBottomSheetOpen(true);
+  };
+
+  const handleRatingSubmit = (restaurantId: string, rating: number) => {
+    if (!selectedRestaurantForRating) return;
+
+    // Convert PopularRestaurant to Restaurant format for adding to rated restaurants
+    const ratedRestaurant = {
+      name: selectedRestaurantForRating.name,
+      address: '', // Not available in PopularRestaurant interface
+      city: selectedRestaurantForRating.city || 'Unknown',
+      cuisine: selectedRestaurantForRating.cuisine || 'Unknown',
+      priceRange: selectedRestaurantForRating.price_range || 1,
+      rating: rating,
+      reviewCount: selectedRestaurantForRating.review_count,
+      notes: `Rated ${rating}/10 from trending restaurants`,
+      isWishlist: false,
+      photos: [] as File[],
+      michelinStars: selectedRestaurantForRating.michelin_stars,
+    };
+
+    addRestaurant(ratedRestaurant);
+    
+    toast({
+      title: "Restaurant rated!",
+      description: `${selectedRestaurantForRating.name} has been rated ${rating}/10 and added to your ratings`,
+    });
+
+    setSelectedRestaurantForRating(null);
+    setIsRatingBottomSheetOpen(false);
+  };
+
+  const convertToRestaurant = (restaurant: PopularRestaurant): Restaurant | null => {
+    if (!restaurant) return null;
+
+    return {
+      id: '', // Will be generated when added
+      name: restaurant.name,
+      address: '', // Not available in PopularRestaurant
+      city: restaurant.city || 'Unknown',
+      cuisine: restaurant.cuisine || 'Unknown',
+      priceRange: restaurant.price_range || 1,
+      rating: 0, // Will be set when rated
+      notes: '',
+      photos: [],
+      isWishlist: false,
+      userId: '',
+      michelinStars: restaurant.michelin_stars,
+      country: restaurant.country,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
+  };
+
+  if (loading) {
+    return (
+      <div className="px-4 py-3">
+        <h2 className="text-sm font-semibold text-muted-foreground mb-3 uppercase tracking-wide">
+          {title}
+        </h2>
+        <div className="flex gap-3 overflow-x-auto">
+          {[...Array(3)].map((_, i) => (
+            <div key={i} className="min-w-[240px] h-[200px] bg-muted animate-pulse rounded-lg" />
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  if (restaurants.length === 0) return null;
+
+  return (
+    <div className="px-4 py-3 border-b border-border/50">
+      <div className="flex items-center justify-between mb-3">
+        <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide flex items-center gap-2">
+          <TrendingUp className="h-4 w-4" />
+          {title}
+        </h2>
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => navigate('/search/global')}
+          className="text-xs text-muted-foreground hover:text-foreground"
+        >
+          View All
+        </Button>
+      </div>
+      
+      <div className="flex gap-4 overflow-x-auto pb-2">
+        {restaurants.map((restaurant) => (
+          <Card 
+            key={restaurant.place_id}
+            className="min-w-[240px] cursor-pointer hover:shadow-lg transition-all duration-200 hover:scale-[1.02]"
+            onClick={() => handleRestaurantClick(restaurant)}
+          >
+            {restaurant.photo_url && (
+              <div className="relative h-24 overflow-hidden rounded-t-lg">
+                <img 
+                  src={restaurant.photo_url} 
+                  alt={restaurant.name}
+                  className="w-full h-full object-cover"
+                />
+                {restaurant.has_expert_reviews && (
+                  <div className="absolute top-2 right-2">
+                    <Badge variant="secondary" className="text-xs px-2 py-1 bg-primary/90 text-primary-foreground">
+                      Expert Reviewed
+                    </Badge>
+                  </div>
+                )}
+              </div>
+            )}
+            
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm font-semibold line-clamp-1">
+                {restaurant.name}
+              </CardTitle>
+              
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-1">
+                  <Star className="h-3 w-3 text-primary fill-primary" />
+                  <span className="text-sm font-medium">
+                    {restaurant.avg_rating.toFixed(1)}
+                  </span>
+                  <span className="text-xs text-muted-foreground">
+                    ({restaurant.review_count})
+                  </span>
+                </div>
+                
+                {restaurant.price_range && (
+                  <Badge variant="outline" className="text-xs px-1.5 py-0.5">
+                    {getPriceDisplay(restaurant.price_range)}
+                  </Badge>
+                )}
+              </div>
+            </CardHeader>
+            
+            <CardContent className="pt-0 pb-3">
+              <div className="flex items-center gap-2 mb-2">
+                {restaurant.cuisine && (
+                  <Badge variant="secondary" className="text-xs px-2 py-0.5">
+                    {restaurant.cuisine}
+                  </Badge>
+                )}
+                {restaurant.michelin_stars && restaurant.michelin_stars > 0 && (
+                  <MichelinStars stars={restaurant.michelin_stars} size="sm" />
+                )}
+              </div>
+              
+              {(restaurant.city || restaurant.country) && (
+                <div className="flex items-center gap-1 text-xs text-muted-foreground mb-3">
+                  <MapPin className="h-3 w-3 flex-shrink-0" />
+                  <span className="truncate">
+                    {restaurant.city && restaurant.country 
+                      ? `${restaurant.city}, ${restaurant.country}` 
+                      : restaurant.city || restaurant.country}
+                  </span>
+                </div>
+              )}
+              
+              {/* Rating Button */}
+              <Button
+                variant="default"
+                size="sm"
+                onClick={(e) => handleRateRestaurant(restaurant, e)}
+                className="w-full h-8 text-xs bg-primary hover:bg-primary/90"
+                data-testid={`button-rate-${restaurant.place_id}`}
+              >
+                <Plus className="h-3 w-3 mr-1" />
+                Rate
+              </Button>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+      
+      {/* Rating Bottom Sheet */}
+      <RatingBottomSheet
+        isOpen={isRatingBottomSheetOpen}
+        onClose={() => setIsRatingBottomSheetOpen(false)}
+        restaurant={convertToRestaurant(selectedRestaurantForRating)}
+        onSubmitRating={handleRatingSubmit}
+      />
+    </div>
+  );
+}

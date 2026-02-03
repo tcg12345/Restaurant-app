@@ -1,0 +1,167 @@
+import React, { useState, useCallback, useEffect, useRef } from 'react';
+import { Skeleton } from '@/components/ui/skeleton';
+
+interface LazyImageProps {
+  src: string;
+  alt: string;
+  className?: string;
+  placeholderSrc?: string;
+  onLoad?: () => void;
+  onError?: () => void;
+  eager?: boolean; // New prop to disable lazy loading
+}
+
+// Global cache to remember loaded images with localStorage persistence
+const CACHE_KEY = 'lazy-image-cache';
+const ERROR_CACHE_KEY = 'lazy-image-error-cache';
+
+// Load cached images from localStorage on startup
+const loadCacheFromStorage = (key: string): Set<string> => {
+  try {
+    const stored = localStorage.getItem(key);
+    return stored ? new Set(JSON.parse(stored)) : new Set();
+  } catch {
+    return new Set();
+  }
+};
+
+// Save cache to localStorage
+const saveCacheToStorage = (key: string, cache: Set<string>) => {
+  try {
+    localStorage.setItem(key, JSON.stringify([...cache]));
+  } catch {
+    // Ignore localStorage errors
+  }
+};
+
+const imageCache = loadCacheFromStorage(CACHE_KEY);
+const errorCache = loadCacheFromStorage(ERROR_CACHE_KEY);
+
+export const LazyImage = React.memo(({ src, alt, className, placeholderSrc, onLoad, onError, eager = false }: LazyImageProps) => {
+  const [isLoaded, setIsLoaded] = useState(() => imageCache.has(src));
+  const [hasError, setHasError] = useState(() => errorCache.has(src));
+  const [isInView, setIsInView] = useState(eager); // Set to true immediately if eager
+
+  // Aggressive preloading for eager images
+  useEffect(() => {
+    if (eager && src && !imageCache.has(src) && !errorCache.has(src)) {
+      const img = new Image();
+      img.onload = () => {
+        imageCache.add(src);
+        saveCacheToStorage(CACHE_KEY, imageCache);
+        setIsLoaded(true);
+      };
+      img.onerror = () => {
+        errorCache.add(src);
+        saveCacheToStorage(ERROR_CACHE_KEY, errorCache);
+        setHasError(true);
+      };
+      img.src = src;
+    }
+    
+    if (imageCache.has(src)) {
+      setIsLoaded(true);
+      setIsInView(true);
+    }
+    if (errorCache.has(src)) {
+      setHasError(true);
+    }
+  }, [src, eager]);
+
+  const handleLoad = useCallback(() => {
+    setIsLoaded(true);
+    imageCache.add(src);
+    // Remove from error cache if it was there
+    errorCache.delete(src);
+    // Persist to localStorage
+    saveCacheToStorage(CACHE_KEY, imageCache);
+    saveCacheToStorage(ERROR_CACHE_KEY, errorCache);
+    onLoad?.();
+  }, [src, onLoad]);
+
+  const handleError = useCallback(() => {
+    setHasError(true);
+    errorCache.add(src);
+    // Remove from success cache if it was there
+    imageCache.delete(src);
+    // Persist to localStorage
+    saveCacheToStorage(CACHE_KEY, imageCache);
+    saveCacheToStorage(ERROR_CACHE_KEY, errorCache);
+    try { console.warn('[LazyImage] error loading image', { src }); } catch {}
+    onError?.();
+  }, [src, onError]);
+
+  const handleIntersection = useCallback((entries: IntersectionObserverEntry[]) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        setIsInView(true);
+      }
+    });
+  }, []);
+
+  const containerRef = useRef<HTMLDivElement | null>(null);
+  const observerRef = useRef<IntersectionObserver | null>(null);
+
+  useEffect(() => {
+    const node = containerRef.current;
+    if (!node || isLoaded || eager) return; // Skip observer if eager loading
+    observerRef.current = new IntersectionObserver(handleIntersection, {
+      threshold: 0.1,
+      rootMargin: '50px'
+    });
+    observerRef.current.observe(node);
+    return () => {
+      observerRef.current?.disconnect();
+      observerRef.current = null;
+    };
+  }, [handleIntersection, isLoaded, src, eager]);
+
+  // Fallback: if IntersectionObserver doesn't fire, force-load after 1.2s (skip if eager)
+  useEffect(() => {
+    if (isLoaded || eager) return;
+    const t = setTimeout(() => setIsInView(true), 1200);
+    return () => clearTimeout(t);
+  }, [isLoaded, src, eager]);
+
+  if (hasError) {
+    return (
+      <div className={`flex items-center justify-center bg-muted text-muted-foreground ${className}`}>
+        <span className="text-xs">Failed to load</span>
+      </div>
+    );
+  }
+
+return (
+  <div ref={containerRef} className={`relative ${className || ''}`}>
+    {!isLoaded && (
+      <>
+        {placeholderSrc ? (
+          <img
+            src={placeholderSrc}
+            alt=""
+            aria-hidden
+            className="absolute inset-0 w-full h-full object-cover blur-md scale-105 opacity-70"
+            loading="eager"
+          />
+        ) : (
+          <Skeleton className="absolute inset-0 w-full h-full" />
+        )}
+      </>
+    )}
+    {(isInView || isLoaded) && (
+      <img
+        src={src}
+        alt={alt}
+        className={`w-full h-full object-cover transition-opacity duration-300 ${
+          isLoaded ? 'opacity-100' : 'opacity-0'
+        }`}
+        onLoad={handleLoad}
+        onError={handleError}
+        loading={eager ? "eager" : "lazy"}
+      />
+    )}
+  </div>
+);
+});
+
+LazyImage.displayName = 'LazyImage';
