@@ -8,13 +8,15 @@ import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Separator } from '@/components/ui/separator';
 import { toast } from 'sonner';
-import { Eye, EyeOff, Mail, Lock, User, Shield } from 'lucide-react';
+import { Eye, EyeOff, Mail, Lock, User, Shield, Play } from 'lucide-react';
 import { Checkbox } from '@/components/ui/checkbox';
 import { GrubbyLogo } from '@/components/GrubbyLogo';
+import { useAuth, DEMO_MODE_ENABLED } from '@/contexts/AuthContext';
 
 export default function AuthPage() {
   const navigate = useNavigate();
   const location = useLocation();
+  const { signInAsDemo, user } = useAuth();
   const [activeTab, setActiveTab] = useState('signin');
   
   // Simplified form state
@@ -26,9 +28,17 @@ export default function AuthPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [useEmail, setUseEmail] = useState(true); // Toggle between email/username signup
 
-  // If already logged in, redirect to intended page (if any)
+  // If already logged in (including demo mode), redirect to intended page
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session} }) => {
+    if (user) {
+      const state = (location.state as any) || {};
+      const params = new URLSearchParams(location.search);
+      const redirectTo = state.from || params.get('redirectTo') || '/';
+      navigate(redirectTo, { replace: true });
+      return;
+    }
+
+    supabase.auth.getSession().then(({ data: { session } }) => {
       if (session) {
         const state = (location.state as any) || {};
         const params = new URLSearchParams(location.search);
@@ -36,7 +46,16 @@ export default function AuthPage() {
         navigate(redirectTo, { replace: true });
       }
     });
-  }, [navigate, location]);
+  }, [navigate, location, user]);
+
+  const handleDemoSignIn = () => {
+    signInAsDemo();
+    toast.success('Welcome to Grubby Demo!');
+    const state = (location.state as any) || {};
+    const params = new URLSearchParams(location.search);
+    const redirectTo = state.from || params.get('redirectTo') || '/';
+    navigate(redirectTo, { replace: true });
+  };
 
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -278,6 +297,30 @@ export default function AuthPage() {
         </div>
 
         <Card className="shadow-xl border-0 bg-card/80 backdrop-blur-sm">
+          {/* Demo Mode Sign In Button */}
+          {DEMO_MODE_ENABLED && (
+            <div className="p-6 pb-0">
+              <Button
+                onClick={handleDemoSignIn}
+                className="w-full h-14 text-lg font-semibold bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white shadow-lg"
+              >
+                <Play className="h-5 w-5 mr-2" />
+                Enter Demo Mode
+              </Button>
+              <p className="text-center text-sm text-muted-foreground mt-2">
+                No account needed - explore the app instantly
+              </p>
+              <div className="relative my-6">
+                <div className="absolute inset-0 flex items-center">
+                  <span className="w-full border-t" />
+                </div>
+                <div className="relative flex justify-center text-xs uppercase">
+                  <span className="bg-card px-2 text-muted-foreground">Or sign in with credentials</span>
+                </div>
+              </div>
+            </div>
+          )}
+
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
             <TabsList className="grid w-full grid-cols-2">
               <TabsTrigger value="signin">Sign In</TabsTrigger>
