@@ -1,6 +1,7 @@
 -- =============================================================================
 -- GRUBBY DATABASE SCHEMA
 -- Run this in your Supabase SQL Editor (https://supabase.com/dashboard)
+-- Safe to re-run - handles existing objects gracefully
 -- =============================================================================
 
 -- Enable UUID extension
@@ -28,6 +29,12 @@ CREATE TABLE IF NOT EXISTS public.profiles (
 
 -- Enable Row Level Security
 ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
+
+-- Drop existing policies first to allow re-running
+DROP POLICY IF EXISTS "Users can view their own profile" ON public.profiles;
+DROP POLICY IF EXISTS "Users can update their own profile" ON public.profiles;
+DROP POLICY IF EXISTS "Public profiles are viewable by everyone" ON public.profiles;
+DROP POLICY IF EXISTS "Users can insert their own profile" ON public.profiles;
 
 -- Policies for profiles
 CREATE POLICY "Users can view their own profile" ON public.profiles
@@ -81,6 +88,12 @@ CREATE TABLE IF NOT EXISTS public.restaurants (
 -- Enable Row Level Security
 ALTER TABLE public.restaurants ENABLE ROW LEVEL SECURITY;
 
+-- Drop existing policies first
+DROP POLICY IF EXISTS "Users can view their own restaurants" ON public.restaurants;
+DROP POLICY IF EXISTS "Users can insert their own restaurants" ON public.restaurants;
+DROP POLICY IF EXISTS "Users can update their own restaurants" ON public.restaurants;
+DROP POLICY IF EXISTS "Users can delete their own restaurants" ON public.restaurants;
+
 -- Policies for restaurants
 CREATE POLICY "Users can view their own restaurants" ON public.restaurants
   FOR SELECT USING (auth.uid() = user_id);
@@ -113,6 +126,10 @@ CREATE TABLE IF NOT EXISTS public.friends (
 -- Enable Row Level Security
 ALTER TABLE public.friends ENABLE ROW LEVEL SECURITY;
 
+-- Drop existing policies first
+DROP POLICY IF EXISTS "Users can view their friendships" ON public.friends;
+DROP POLICY IF EXISTS "Users can delete their friendships" ON public.friends;
+
 -- Policies for friends
 CREATE POLICY "Users can view their friendships" ON public.friends
   FOR SELECT USING (auth.uid() = user1_id OR auth.uid() = user2_id);
@@ -135,6 +152,11 @@ CREATE TABLE IF NOT EXISTS public.friend_requests (
 
 -- Enable Row Level Security
 ALTER TABLE public.friend_requests ENABLE ROW LEVEL SECURITY;
+
+-- Drop existing policies first
+DROP POLICY IF EXISTS "Users can view their friend requests" ON public.friend_requests;
+DROP POLICY IF EXISTS "Users can send friend requests" ON public.friend_requests;
+DROP POLICY IF EXISTS "Users can update friend requests they received" ON public.friend_requests;
 
 -- Policies for friend_requests
 CREATE POLICY "Users can view their friend requests" ON public.friend_requests
@@ -160,6 +182,10 @@ CREATE TABLE IF NOT EXISTS public.user_roles (
 
 -- Enable Row Level Security
 ALTER TABLE public.user_roles ENABLE ROW LEVEL SECURITY;
+
+-- Drop existing policies first
+DROP POLICY IF EXISTS "Users can view their own roles" ON public.user_roles;
+DROP POLICY IF EXISTS "Users can insert their own roles" ON public.user_roles;
 
 -- Policies for user_roles
 CREATE POLICY "Users can view their own roles" ON public.user_roles
@@ -202,7 +228,10 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
--- Triggers for updated_at
+-- Triggers for updated_at (drop first to allow re-run)
+DROP TRIGGER IF EXISTS update_profiles_updated_at ON public.profiles;
+DROP TRIGGER IF EXISTS update_restaurants_updated_at ON public.restaurants;
+
 CREATE TRIGGER update_profiles_updated_at
   BEFORE UPDATE ON public.profiles
   FOR EACH ROW EXECUTE FUNCTION public.update_updated_at_column();
@@ -218,6 +247,12 @@ INSERT INTO storage.buckets (id, name, public)
 VALUES ('avatars', 'avatars', true)
 ON CONFLICT (id) DO NOTHING;
 
+-- Drop existing storage policies first
+DROP POLICY IF EXISTS "Anyone can view avatars" ON storage.objects;
+DROP POLICY IF EXISTS "Authenticated users can upload avatars" ON storage.objects;
+DROP POLICY IF EXISTS "Users can update their own avatars" ON storage.objects;
+DROP POLICY IF EXISTS "Users can delete their own avatars" ON storage.objects;
+
 -- Storage policies
 CREATE POLICY "Anyone can view avatars" ON storage.objects
   FOR SELECT USING (bucket_id = 'avatars');
@@ -232,11 +267,28 @@ CREATE POLICY "Users can delete their own avatars" ON storage.objects
   FOR DELETE USING (bucket_id = 'avatars' AND auth.uid()::text = (storage.foldername(name))[1]);
 
 -- =============================================================================
--- Enable Realtime for tables
+-- Enable Realtime for tables (ignore errors if already added)
 -- =============================================================================
-ALTER PUBLICATION supabase_realtime ADD TABLE public.restaurants;
-ALTER PUBLICATION supabase_realtime ADD TABLE public.friends;
-ALTER PUBLICATION supabase_realtime ADD TABLE public.friend_requests;
+DO $$
+BEGIN
+  ALTER PUBLICATION supabase_realtime ADD TABLE public.restaurants;
+EXCEPTION WHEN duplicate_object THEN
+  NULL;
+END $$;
+
+DO $$
+BEGIN
+  ALTER PUBLICATION supabase_realtime ADD TABLE public.friends;
+EXCEPTION WHEN duplicate_object THEN
+  NULL;
+END $$;
+
+DO $$
+BEGIN
+  ALTER PUBLICATION supabase_realtime ADD TABLE public.friend_requests;
+EXCEPTION WHEN duplicate_object THEN
+  NULL;
+END $$;
 
 -- =============================================================================
 -- DONE! Your database is ready.
