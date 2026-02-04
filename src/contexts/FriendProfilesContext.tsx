@@ -1,7 +1,5 @@
-import React, { createContext, useContext, useEffect, useState, useCallback } from 'react';
+import React, { createContext, useContext, useState, useCallback } from 'react';
 import { useAuth } from './AuthContext';
-import { useFriends } from '@/hooks/useFriends';
-import { supabase } from '@/integrations/supabase/client';
 
 interface FriendProfile {
   id: string;
@@ -39,114 +37,31 @@ interface Props {
 }
 
 export const FriendProfilesProvider: React.FC<Props> = ({ children }) => {
-  const { user, isLoading: authLoading } = useAuth();
-  const { friends, isLoading: friendsLoading } = useFriends();
-  const [profilesCache, setProfilesCache] = useState<Map<string, FriendProfile>>(() => new Map());
-  const [isPreloading, setIsPreloading] = useState(false);
+  const { isDemo } = useAuth();
+  const [profilesCache] = useState<Map<string, FriendProfile>>(() => new Map());
+  const [isPreloading] = useState(false);
 
-  // Load a single friend profile using the lightning-fast function
-  const loadFriendProfile = useCallback(async (friendId: string): Promise<FriendProfile | null> => {
-    try {
-      const { data, error } = await supabase.rpc('get_lightning_fast_friend_profile', {
-        target_user_id: friendId,
-        requesting_user_id: user?.id
-      });
+  // In demo mode, friend features are not available
+  // Return empty/stub implementations
 
-      if (error) {
-        console.error('Error loading friend profile:', error);
-        return null;
-      }
-
-      // The RPC returns an array, get the first item
-      const result = Array.isArray(data) ? data[0] : data;
-      
-      if (!result?.can_view) {
-        return null;
-      }
-
-      return {
-        id: friendId,
-        username: result.username || '',
-        name: result.name || '',
-        avatar_url: result.avatar_url,
-        is_public: result.is_public,
-        rated_count: Number(result.rated_count) || 0,
-        wishlist_count: Number(result.wishlist_count) || 0,
-        avg_rating: Number(result.avg_rating) || 0,
-        recent_restaurants: Array.isArray(result.recent_restaurants) ? result.recent_restaurants : [],
-        last_updated: new Date()
-      };
-    } catch (error) {
-      console.error('Error in loadFriendProfile:', error);
-      return null;
+  const refreshProfile = useCallback(async (_friendId: string) => {
+    if (isDemo) {
+      console.log('Friend profiles not available in demo mode');
+      return;
     }
-  }, [user?.id]);
+  }, [isDemo]);
 
-  // Preload all friend profiles
-  const preloadAllProfiles = useCallback(async () => {
-    if (!user || !friends.length || friendsLoading) return;
-
-    console.log('🚀 Preloading friend profiles for instant access...');
-    setIsPreloading(true);
-
-    const newCache = new Map<string, FriendProfile>();
-    
-    // Load profiles in parallel for maximum speed
-    const promises = friends.map(async (friend) => {
-      const profile = await loadFriendProfile(friend.id);
-      if (profile) {
-        newCache.set(friend.id, profile);
-      }
-    });
-
-    await Promise.all(promises);
-    
-    setProfilesCache(newCache);
-    setIsPreloading(false);
-    
-    console.log(`✅ Preloaded ${newCache.size} friend profiles`);
-
-    // Removed heavy global cache warmer to keep app responsive
-  }, [user, friends, friendsLoading, loadFriendProfile]);
-
-  // Refresh a single profile
-  const refreshProfile = useCallback(async (friendId: string) => {
-    if (!user) return;
-
-    const profile = await loadFriendProfile(friendId);
-    if (profile) {
-      setProfilesCache(prev => new Map(prev.set(friendId, profile)));
-    }
-  }, [user, loadFriendProfile]);
-
-  // Refresh all profiles
   const refreshAllProfiles = useCallback(async () => {
-    await preloadAllProfiles();
-  }, [preloadAllProfiles]);
-
-  // Get profile from cache
-  const getFriendProfile = useCallback((friendId: string): FriendProfile | null => {
-    return profilesCache.get(friendId) || null;
-  }, [profilesCache]);
-
-  // Initial preload when user and friends are ready
-  useEffect(() => {
-    if (!authLoading && !friendsLoading && user && friends.length > 0) {
-      preloadAllProfiles();
+    if (isDemo) {
+      console.log('Friend profiles not available in demo mode');
+      return;
     }
-  }, [authLoading, friendsLoading, user, friends.length, preloadAllProfiles]);
+  }, [isDemo]);
 
-  // Periodic refresh every 5 minutes
-  useEffect(() => {
-    if (!user || !friends.length) return;
-
-    const interval = setInterval(() => {
-      console.log('🔄 Refreshing friend profiles cache...');
-      preloadAllProfiles();
-    }, 5 * 60 * 1000); // 5 minutes
-
-    return () => clearInterval(interval);
-  }, [user, friends.length, preloadAllProfiles]);
+  const getFriendProfile = useCallback((_friendId: string): FriendProfile | null => {
+    // In demo mode, no friend profiles available
+    return null;
+  }, []);
 
   const value: FriendProfilesContextType = {
     profilesCache,

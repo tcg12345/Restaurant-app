@@ -1,48 +1,30 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { Session, User } from '@supabase/supabase-js';
-import { supabase } from '@/integrations/supabase/client';
 
 // =============================================================================
 // DEMO MODE CONFIGURATION
 // Set to false to require real authentication credentials
+// When true, the app works entirely with localStorage (no backend required)
 // =============================================================================
 export const DEMO_MODE_ENABLED = true;
 
-// Demo user data - all users share this account in demo mode
-const DEMO_USER_ID = 'demo-user-00000000-0000-0000-0000-000000000000';
-const DEMO_USER: User = {
-  id: DEMO_USER_ID,
-  email: 'demo@grubbyapp.com',
-  app_metadata: {},
-  user_metadata: { name: 'Demo User', username: 'demo_user' },
-  aud: 'authenticated',
-  created_at: new Date().toISOString(),
-} as User;
+// Define types locally to avoid Supabase dependency
+interface User {
+  id: string;
+  email?: string;
+  app_metadata: Record<string, any>;
+  user_metadata: Record<string, any>;
+  aud: string;
+  created_at: string;
+}
 
-const DEMO_SESSION: Session = {
-  access_token: 'demo-access-token',
-  refresh_token: 'demo-refresh-token',
-  expires_in: 3600,
-  expires_at: Math.floor(Date.now() / 1000) + 3600,
-  token_type: 'bearer',
-  user: DEMO_USER,
-} as Session;
-
-const DEMO_PROFILE: Profile = {
-  id: DEMO_USER_ID,
-  email: 'demo@grubbyapp.com',
-  name: 'Demo User',
-  username: 'demo_user',
-  phone_number: null,
-  address: null,
-  avatar_url: null,
-  is_public: true,
-  allow_friend_requests: true,
-  bio: 'Welcome to Grubby! This is a demo account.',
-  home_city: 'San Francisco',
-  created_at: new Date().toISOString(),
-  updated_at: new Date().toISOString(),
-};
+interface Session {
+  access_token: string;
+  refresh_token: string;
+  expires_in: number;
+  expires_at?: number;
+  token_type: string;
+  user: User;
+}
 
 interface Profile {
   id: string;
@@ -59,6 +41,42 @@ interface Profile {
   created_at: string;
   updated_at: string;
 }
+
+// Demo user data - all users share this account in demo mode
+const DEMO_USER_ID = 'demo-user-00000000-0000-0000-0000-000000000000';
+const DEMO_USER: User = {
+  id: DEMO_USER_ID,
+  email: 'demo@grubbyapp.com',
+  app_metadata: {},
+  user_metadata: { name: 'Demo User', username: 'demo_user' },
+  aud: 'authenticated',
+  created_at: new Date().toISOString(),
+};
+
+const DEMO_SESSION: Session = {
+  access_token: 'demo-access-token',
+  refresh_token: 'demo-refresh-token',
+  expires_in: 3600,
+  expires_at: Math.floor(Date.now() / 1000) + 3600,
+  token_type: 'bearer',
+  user: DEMO_USER,
+};
+
+const DEMO_PROFILE: Profile = {
+  id: DEMO_USER_ID,
+  email: 'demo@grubbyapp.com',
+  name: 'Demo User',
+  username: 'demo_user',
+  phone_number: null,
+  address: null,
+  avatar_url: null,
+  is_public: true,
+  allow_friend_requests: true,
+  bio: 'Welcome to Grubby! This is a demo account.',
+  home_city: 'San Francisco',
+  created_at: new Date().toISOString(),
+  updated_at: new Date().toISOString(),
+};
 
 interface AuthContextType {
   session: Session | null;
@@ -94,67 +112,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     localStorage.setItem('grubby-demo-mode', 'true');
   };
 
-  const fetchProfile = async (userId: string) => {
-    try {
-      const { data, error } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('id', userId)
-        .single();
-      
-      if (error) throw error;
-      setProfile(data as Profile);
-    } catch (error) {
-      console.error('Error fetching profile:', error);
-      setProfile(null);
-    }
-  };
-
   useEffect(() => {
-    // Check if demo mode was previously active
+    // In demo mode, check if user was previously signed in
     const wasDemoMode = localStorage.getItem('grubby-demo-mode') === 'true';
+
     if (DEMO_MODE_ENABLED && wasDemoMode) {
+      // Restore demo session
       signInAsDemo();
       return;
     }
 
-    // Set up auth state listener FIRST
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (event, newSession) => {
-        setSession(newSession);
-        setUser(newSession?.user ?? null);
-
-        // Fetch profile when user is available
-        if (newSession?.user) {
-          setTimeout(() => {
-            fetchProfile(newSession.user.id);
-          }, 0);
-        } else {
-          setProfile(null);
-        }
-
-        setIsLoading(false);
-      }
-    );
-
-    // THEN check for existing session
-    supabase.auth.getSession().then(({ data: { session: currentSession } }) => {
-      setSession(currentSession);
-      setUser(currentSession?.user ?? null);
-
-      // Fetch profile when user is available
-      if (currentSession?.user) {
-        setTimeout(() => {
-          fetchProfile(currentSession.user.id);
-        }, 0);
-      } else {
-        setProfile(null);
-      }
-
-      setIsLoading(false);
-    });
-
-    return () => subscription.unsubscribe();
+    // If demo mode is enabled but user hasn't signed in yet, just set loading to false
+    // They'll need to click the demo sign in button
+    setIsLoading(false);
   }, []);
 
   const signOut = async () => {
@@ -163,19 +133,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setIsDemo(false);
       localStorage.removeItem('grubby-demo-mode');
 
-      // Clear local state first
+      // Clear local state
       setSession(null);
       setUser(null);
       setProfile(null);
-
-      // Clear localStorage to prevent accumulation
-      const storageKey = `sb-ocpmhsquwsdaauflbygf-auth-token`;
-      localStorage.removeItem(storageKey);
-
-      // Then sign out from Supabase (only if not in demo mode)
-      if (!isDemo) {
-        await supabase.auth.signOut();
-      }
     } catch (error) {
       console.error('Error signing out:', error);
       // Even if signOut fails, ensure local state is cleared
@@ -184,13 +145,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setProfile(null);
       setIsDemo(false);
       localStorage.removeItem('grubby-demo-mode');
-
-      // Force clear localStorage if regular signOut fails
-      try {
-        localStorage.clear();
-      } catch (storageError) {
-        console.error('Error clearing localStorage:', storageError);
-      }
     }
   };
 
@@ -209,10 +163,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
 export function useAuth() {
   const context = useContext(AuthContext);
-  
+
   if (context === undefined) {
     throw new Error('useAuth must be used within an AuthProvider');
   }
-  
+
   return context;
 }
