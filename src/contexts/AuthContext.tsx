@@ -1,46 +1,12 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { Session, User } from '@supabase/supabase-js';
+import { supabase } from '@/integrations/supabase/client';
 
 // =============================================================================
 // DEMO MODE CONFIGURATION
 // Set to false to require real authentication credentials
-// When true, the app works entirely with localStorage (no backend required)
 // =============================================================================
-export const DEMO_MODE_ENABLED = true;
-
-// Define types locally to avoid Supabase dependency
-interface User {
-  id: string;
-  email?: string;
-  app_metadata: Record<string, any>;
-  user_metadata: Record<string, any>;
-  aud: string;
-  created_at: string;
-}
-
-interface Session {
-  access_token: string;
-  refresh_token: string;
-  expires_in: number;
-  expires_at?: number;
-  token_type: string;
-  user: User;
-}
-
-interface Profile {
-  id: string;
-  email: string;
-  name: string | null;
-  username: string | null;
-  phone_number: string | null;
-  address: string | null;
-  avatar_url: string | null;
-  is_public: boolean | null;
-  allow_friend_requests: boolean | null;
-  bio: string | null;
-  home_city: string | null;
-  created_at: string;
-  updated_at: string;
-}
+export const DEMO_MODE_ENABLED = false;
 
 // Demo user data - all users share this account in demo mode
 const DEMO_USER_ID = 'demo-user-00000000-0000-0000-0000-000000000000';
@@ -51,7 +17,7 @@ const DEMO_USER: User = {
   user_metadata: { name: 'Demo User', username: 'demo_user' },
   aud: 'authenticated',
   created_at: new Date().toISOString(),
-};
+} as User;
 
 const DEMO_SESSION: Session = {
   access_token: 'demo-access-token',
@@ -60,7 +26,7 @@ const DEMO_SESSION: Session = {
   expires_at: Math.floor(Date.now() / 1000) + 3600,
   token_type: 'bearer',
   user: DEMO_USER,
-};
+} as Session;
 
 const DEMO_PROFILE: Profile = {
   id: DEMO_USER_ID,
@@ -77,6 +43,22 @@ const DEMO_PROFILE: Profile = {
   created_at: new Date().toISOString(),
   updated_at: new Date().toISOString(),
 };
+
+interface Profile {
+  id: string;
+  email: string;
+  name: string | null;
+  username: string | null;
+  phone_number: string | null;
+  address: string | null;
+  avatar_url: string | null;
+  is_public: boolean | null;
+  allow_friend_requests: boolean | null;
+  bio: string | null;
+  home_city: string | null;
+  created_at: string;
+  updated_at: string;
+}
 
 interface AuthContextType {
   session: Session | null;
@@ -112,19 +94,67 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     localStorage.setItem('grubby-demo-mode', 'true');
   };
 
-  useEffect(() => {
-    // In demo mode, check if user was previously signed in
-    const wasDemoMode = localStorage.getItem('grubby-demo-mode') === 'true';
+  const fetchProfile = async (userId: string) => {
+    try {
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', userId)
+        .single();
+      
+      if (error) throw error;
+      setProfile(data as Profile);
+    } catch (error) {
+      console.error('Error fetching profile:', error);
+      setProfile(null);
+    }
+  };
 
+  useEffect(() => {
+    // Check if demo mode was previously active
+    const wasDemoMode = localStorage.getItem('grubby-demo-mode') === 'true';
     if (DEMO_MODE_ENABLED && wasDemoMode) {
-      // Restore demo session
       signInAsDemo();
       return;
     }
 
-    // If demo mode is enabled but user hasn't signed in yet, just set loading to false
-    // They'll need to click the demo sign in button
-    setIsLoading(false);
+    // Set up auth state listener FIRST
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      (event, newSession) => {
+        setSession(newSession);
+        setUser(newSession?.user ?? null);
+
+        // Fetch profile when user is available
+        if (newSession?.user) {
+          setTimeout(() => {
+            fetchProfile(newSession.user.id);
+          }, 0);
+        } else {
+          setProfile(null);
+        }
+
+        setIsLoading(false);
+      }
+    );
+
+    // THEN check for existing session
+    supabase.auth.getSession().then(({ data: { session: currentSession } }) => {
+      setSession(currentSession);
+      setUser(currentSession?.user ?? null);
+
+      // Fetch profile when user is available
+      if (currentSession?.user) {
+        setTimeout(() => {
+          fetchProfile(currentSession.user.id);
+        }, 0);
+      } else {
+        setProfile(null);
+      }
+
+      setIsLoading(false);
+    });
+
+    return () => subscription.unsubscribe();
   }, []);
 
   const signOut = async () => {
@@ -133,10 +163,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setIsDemo(false);
       localStorage.removeItem('grubby-demo-mode');
 
-      // Clear local state
+      // Clear local state first
       setSession(null);
       setUser(null);
       setProfile(null);
+
+      // Clear localStorage to prevent accumulation
+      const storageKey = `sb-lboqkakzknmpzkejtefx-auth-token`;
+      localStorage.removeItem(storageKey);
+
+      // Then sign out from Supabase (only if not in demo mode)
+      if (!isDemo) {
+        await supabase.auth.signOut();
+      }
     } catch (error) {
       console.error('Error signing out:', error);
       // Even if signOut fails, ensure local state is cleared
@@ -145,6 +184,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setProfile(null);
       setIsDemo(false);
       localStorage.removeItem('grubby-demo-mode');
+
+      // Force clear localStorage if regular signOut fails
+      try {
+        localStorage.clear();
+      } catch (storageError) {
+        console.error('Error clearing localStorage:', storageError);
+      }
     }
   };
 
@@ -163,10 +209,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
 export function useAuth() {
   const context = useContext(AuthContext);
-
+  
   if (context === undefined) {
     throw new Error('useAuth must be used within an AuthProvider');
   }
-
+  
   return context;
 }
