@@ -6,7 +6,7 @@ import { supabase } from '@/integrations/supabase/client';
 // DEMO MODE CONFIGURATION
 // Set to false to require real authentication credentials
 // =============================================================================
-export const DEMO_MODE_ENABLED = true;
+export const DEMO_MODE_ENABLED = false;
 
 // Demo user data - all users share this account in demo mode
 const DEMO_USER_ID = 'demo-user-00000000-0000-0000-0000-000000000000';
@@ -169,7 +169,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setProfile(null);
 
       // Clear localStorage to prevent accumulation
-      const storageKey = `sb-ocpmhsquwsdaauflbygf-auth-token`;
+      const storageKey = `sb-lboqkakzknmpzkejtefx-auth-token`;
       localStorage.removeItem(storageKey);
 
       // Then sign out from Supabase (only if not in demo mode)
