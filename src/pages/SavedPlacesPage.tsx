@@ -38,7 +38,6 @@ export function SavedPlacesPage({
   const [isCreateListDialogOpen, setIsCreateListDialogOpen] = useState(false);
   const { createList } = useRestaurantLists();
 
-  // Sync currentTab with activeSubTab when it changes
   useEffect(() => {
     setCurrentTab(activeSubTab);
   }, [activeSubTab]);
@@ -47,47 +46,36 @@ export function SavedPlacesPage({
     return await createList(name, description);
   };
 
+  const tabs = [
+    { id: 'rated' as const, label: 'My Ratings' },
+    { id: 'wishlist' as const, label: 'Wishlist' },
+    { id: 'recommendations' as const, label: 'Recs' },
+  ];
+
   return (
     <div className="w-full min-h-screen bg-background">
       <Tabs value={currentTab} onValueChange={(value) => setCurrentTab(value as 'rated' | 'wishlist' | 'recommendations')} className="w-full">
-        <div className="sticky top-0 z-10 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b border-border/50 px-4 py-3">
+        {/* Premium tab switcher */}
+        <div className="sticky top-0 z-10 bg-background/95 backdrop-blur-xl border-b border-border/20 px-5 py-3">
           <div className="flex justify-center">
-            <div className="flex bg-muted/50 rounded-xl p-1">
-              <button
-                onClick={() => setCurrentTab('rated')}
-                className={`flex-1 py-2 px-2 rounded-lg text-sm font-medium transition-all ${
-                  currentTab === 'rated'
-                    ? 'bg-background text-primary shadow-sm border'
-                    : 'text-muted-foreground hover:text-foreground'
-                }`}
-              >
-                My Ratings
-              </button>
-              <button
-                onClick={() => setCurrentTab('wishlist')}
-                className={`flex-1 py-2 px-2 rounded-lg text-sm font-medium transition-all ${
-                  currentTab === 'wishlist'
-                    ? 'bg-background text-primary shadow-sm border'
-                    : 'text-muted-foreground hover:text-foreground'
-                }`}
-              >
-                Wishlist
-              </button>
-              <button
-                onClick={() => setCurrentTab('recommendations')}
-                className={`flex-1 py-2 px-2 rounded-lg text-sm font-medium transition-all ${
-                  currentTab === 'recommendations'
-                    ? 'bg-background text-primary shadow-sm border'
-                    : 'text-muted-foreground hover:text-foreground'
-                }`}
-              >
-                Recs
-              </button>
+            <div className="inline-flex bg-muted/50 rounded-full p-1 gap-0.5">
+              {tabs.map((tab) => (
+                <button
+                  key={tab.id}
+                  onClick={() => setCurrentTab(tab.id)}
+                  className={`px-5 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
+                    currentTab === tab.id
+                      ? 'bg-primary text-primary-foreground shadow-sm'
+                      : 'text-muted-foreground hover:text-foreground'
+                  }`}
+                >
+                  {tab.label}
+                </button>
+              ))}
             </div>
           </div>
         </div>
-        
-        
+
         <TabsContent value="rated" className="mt-0">
           <RatedRestaurantsPage
             restaurants={restaurants}
@@ -100,7 +88,7 @@ export function SavedPlacesPage({
             onOpenSettings={onOpenSettings}
           />
         </TabsContent>
-        
+
         <TabsContent value="wishlist" className="mt-0">
           <WishlistPage
             restaurants={restaurants}
@@ -110,7 +98,7 @@ export function SavedPlacesPage({
             onNavigateToMap={onNavigateToMap}
           />
         </TabsContent>
-        
+
         <TabsContent value="recommendations" className="mt-0">
           <RecommendationsPage
             restaurants={restaurants}

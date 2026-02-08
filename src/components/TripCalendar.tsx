@@ -210,7 +210,7 @@ export function TripCalendar({
       case 'attraction':
         return 'bg-green-100 border-green-200 text-green-800 dark:bg-green-900/20 dark:border-green-800 dark:text-green-300';
       default:
-        return 'bg-gray-100 border-gray-200 text-gray-800 dark:bg-gray-900/20 border-gray-800 dark:text-gray-300';
+        return 'bg-muted border-border text-foreground';
     }
   };
   return <div className="w-full space-y-4 flex flex-col items-center lg:items-stretch lg:px-8 xl:px-16">

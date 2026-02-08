@@ -253,12 +253,12 @@ export function MobileRecommendationsMap({
       </div>
 
       {/* Mobile Bottom Sheet */}
-      {showBottomSheet && <div className="fixed bottom-0 left-0 right-0 bg-white rounded-t-3xl shadow-2xl z-30 transition-all duration-300 ease-out" style={{
+      {showBottomSheet && <div className="fixed bottom-0 left-0 right-0 bg-background rounded-t-3xl shadow-2xl z-30 transition-all duration-300 ease-out" style={{
       height: bottomSheetHeight
     }}>
           {/* Bottom Sheet Handle */}
           <div className="flex justify-center py-3 cursor-pointer bg-gradient-to-b from-background/95 to-background/90 backdrop-blur-sm" onClick={toggleBottomSheetHeight}>
-            <div className="w-10 h-1 bg-gray-300 rounded-full"></div>
+            <div className="w-10 h-1 bg-muted-foreground/30 rounded-full"></div>
           </div>
 
           {/* Bottom Sheet Content */}

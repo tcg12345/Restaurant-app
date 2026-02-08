@@ -532,7 +532,7 @@ export function HotelDetailsPage() {
                 <Button 
                   variant="ghost" 
                   size="sm"
-                  className="h-9 px-4 rounded-full bg-white/90 backdrop-blur-sm text-gray-900 hover:bg-white border border-white/20 text-sm font-medium shadow-lg"
+                  className="h-9 px-4 rounded-full bg-background/90 backdrop-blur-sm text-foreground hover:bg-background border border-border/20 text-sm font-medium shadow-lg"
                   onClick={() => {
                     setShowPhotoGallery(true);
                     setGalleryPhotoIndex(0);
@@ -840,7 +840,7 @@ export function HotelDetailsPage() {
                   {hotel.stayDetails?.notes && (
                     <div>
                       <div className="flex items-center gap-2 mb-3">
-                        <FileText className="w-4 h-4 text-slate-600 dark:text-slate-400" />
+                        <FileText className="w-4 h-4 text-muted-foreground" />
                         <h5 className="font-semibold text-sm text-foreground">Additional Notes</h5>
                       </div>
                       <div className="bg-muted/30 rounded-lg p-4 border border-border/20">

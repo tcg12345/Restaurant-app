@@ -164,7 +164,7 @@ export function HotelSearchDialog({ isOpen, onClose, onSelect, locations, isMult
     if (rating >= 4.5) return 'bg-emerald-100 text-emerald-800 border-emerald-300';
     if (rating >= 4.0) return 'bg-blue-100 text-blue-800 border-blue-300';
     if (rating >= 3.5) return 'bg-yellow-100 text-yellow-800 border-yellow-300';
-    return 'bg-gray-100 text-gray-800 border-gray-300';
+    return 'bg-muted text-foreground border-border';
   };
   const handleCheckInSelect = (date: Date | undefined) => {
     console.log('handleCheckInSelect called with:', date);

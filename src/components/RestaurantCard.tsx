@@ -256,7 +256,7 @@ export function RestaurantCard({
   }
   return <>
       <PhotoGallery photos={photos} photoCaptions={restaurant.photoDishNames || []} initialIndex={currentPhotoIndex} isOpen={isGalleryOpen} onClose={() => setIsGalleryOpen(false)} restaurantName={restaurant.name} isMobile={isMobile} />
-      <Card className="overflow-hidden bg-card border-0 shadow-[0_6px_25px_rgba(0,0,0,0.08)] hover:shadow-[0_12px_40px_rgba(0,0,0,0.15)] transition-all duration-300 rounded-3xl flex flex-col h-full group cursor-pointer" onClick={handleCardClick}>
+      <Card className="overflow-hidden bg-card border border-border/30 hover:border-border/60 transition-all duration-300 rounded-2xl flex flex-col h-full group cursor-pointer" onClick={handleCardClick}>
         {/* Hero Restaurant Image */}
         {photos.length > 0 && !restaurant.isWishlist && <div className="relative w-full h-52 overflow-hidden bg-gradient-to-br from-muted/30 to-muted/60">
             <img src={resolveImageUrl(photos[currentPhotoIndex], {
@@ -311,9 +311,7 @@ export function RestaurantCard({
           </div>}
         
         {/* Premium Content Layout */}
-        <div className="relative flex flex-col flex-1 p-3 sm:p-4 space-y-3" style={{
-        backgroundColor: 'rgb(10,23,43)'
-      }}>
+        <div className="relative flex flex-col flex-1 p-3 sm:p-4 space-y-3 bg-card">
 
           {/* Close button for no-photos layout */}
           {onClose && <Button size="icon" variant="ghost" className="absolute top-3 right-3 h-7 w-7 rounded-full bg-white/10 backdrop-blur-md hover:bg-white/20 border-0 transition-all duration-200 hover:scale-105 z-10" onClick={e => handleButtonClick(e, () => onClose())}>
@@ -375,7 +373,7 @@ export function RestaurantCard({
 
           {/* Compact Status Tags */}
           {(restaurant.dateVisited || restaurant.isWishlist) && <div className="flex items-center gap-2 flex-wrap">
-              {restaurant.dateVisited && <div className="inline-flex items-center gap-1.5 rounded-full bg-blue-50 dark:bg-blue-950/30 px-2.5 py-1 text-xs font-medium text-blue-700 dark:text-blue-300">
+              {restaurant.dateVisited && <div className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-2.5 py-1 text-xs font-medium text-primary">
                   <Clock className="h-2.5 w-2.5" />
                   <span>{format(new Date(restaurant.dateVisited), 'MMM d')}</span>
                 </div>}
