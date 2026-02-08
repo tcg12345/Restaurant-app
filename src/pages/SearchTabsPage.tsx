@@ -27,25 +27,25 @@ export default function SearchTabsPage() {
   };
 
   const LoadingFallback = () => (
-    <div className="p-4 space-y-4">
+    <div className="p-5 space-y-4">
       {Array.from({ length: 3 }).map((_, i) => (
-        <div key={i} className="animate-pulse bg-muted h-20 rounded-xl" />
+        <div key={i} className="animate-pulse bg-muted h-20 rounded-2xl" />
       ))}
     </div>
   );
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Tab Switcher */}
-      <div className="sticky top-0 z-10 bg-background/95 backdrop-blur border-b border-border/50 px-4 py-3">
+      {/* Premium Tab Switcher */}
+      <div className="sticky top-0 z-10 bg-background/95 backdrop-blur-xl border-b border-border/20 px-5 py-3">
         <div className="flex justify-center">
-          <div className="flex bg-muted/50 rounded-xl p-1">
+          <div className="inline-flex bg-muted/50 rounded-full p-1 gap-0.5">
             <button
               onClick={() => handleTabChange('global')}
               className={cn(
-                'px-6 py-2 rounded-lg text-sm font-medium transition-all duration-200',
+                'px-5 py-2 rounded-full text-sm font-medium transition-all duration-200',
                 activeTab === 'global'
-                  ? 'bg-background text-primary shadow-sm border border-border/50'
+                  ? 'bg-primary text-primary-foreground shadow-sm'
                   : 'text-muted-foreground hover:text-foreground'
               )}
             >
@@ -54,9 +54,9 @@ export default function SearchTabsPage() {
             <button
               onClick={() => handleTabChange('friends')}
               className={cn(
-                'px-6 py-2 rounded-lg text-sm font-medium transition-all duration-200',
+                'px-5 py-2 rounded-full text-sm font-medium transition-all duration-200',
                 activeTab === 'friends'
-                  ? 'bg-background text-primary shadow-sm border border-border/50'
+                  ? 'bg-primary text-primary-foreground shadow-sm'
                   : 'text-muted-foreground hover:text-foreground'
               )}
             >

@@ -282,7 +282,7 @@ export function DiscoverResultCard({ restaurant, onToggleWishlist, isInWishlist,
             className={`h-10 w-10 shadow-lg transition-all duration-200 ${
               isInWishlist 
                 ? 'bg-red-500 hover:bg-red-600 text-white scale-110' 
-                : 'bg-white/90 hover:bg-white text-gray-700 hover:scale-110'
+                : 'bg-background/90 hover:bg-background text-muted-foreground hover:scale-110'
             }`}
             onClick={handleAddToWishlist}
             disabled={isAddingToWishlist}

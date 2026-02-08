@@ -264,7 +264,7 @@ export default function AuthPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100 dark:from-slate-950 dark:via-slate-900 dark:to-slate-800 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-background flex items-center justify-center p-4">
       <div className="w-full max-w-md">
         {/* Logo */}
         <div className="text-center mb-8">
@@ -273,13 +273,13 @@ export default function AuthPage() {
           <p className="text-muted-foreground">Sign in to your account or create a new one</p>
         </div>
 
-        <Card className="shadow-xl border-0 bg-card/80 backdrop-blur-sm">
+        <Card className="bg-card border border-border/30 rounded-2xl shadow-none">
           {/* Demo Mode Sign In Button */}
           {DEMO_MODE_ENABLED && (
             <div className="p-6 pb-0">
               <Button
                 onClick={handleDemoSignIn}
-                className="w-full h-14 text-lg font-semibold bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white shadow-lg"
+                className="w-full h-14 text-lg font-semibold bg-primary hover:bg-primary/90 rounded-xl text-white"
               >
                 <Play className="h-5 w-5 mr-2" />
                 Enter Demo Mode
@@ -327,7 +327,7 @@ export default function AuthPage() {
                               setEmail('');
                             }
                           }}
-                          className="pl-10 h-12"
+                          className="pl-10 h-12 rounded-xl"
                           required
                         />
                       </div>
@@ -343,7 +343,7 @@ export default function AuthPage() {
                           placeholder="Enter your password"
                           value={password}
                           onChange={(e) => setPassword(e.target.value)}
-                          className="pl-10 pr-12 h-12"
+                          className="pl-10 pr-12 h-12 rounded-xl"
                           required
                         />
                         <Button
@@ -363,7 +363,7 @@ export default function AuthPage() {
                 <CardFooter className="flex flex-col space-y-4 pt-6 px-6">
                   <Button 
                     type="submit" 
-                    className="w-full h-12 font-medium bg-gradient-to-r from-primary to-primary-glow hover:opacity-90 transition-opacity" 
+                    className="w-full h-12 font-medium bg-primary hover:bg-primary/90 rounded-xl" 
                     disabled={isLoading}
                   >
                     {isLoading ? 'Signing in...' : 'Sign In'}
@@ -409,7 +409,7 @@ export default function AuthPage() {
                             placeholder="Enter your email"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
-                            className="pl-10 h-12"
+                            className="pl-10 h-12 rounded-xl"
                             required
                           />
                         </div>
@@ -425,7 +425,7 @@ export default function AuthPage() {
                             placeholder="Choose a username"
                             value={username}
                             onChange={(e) => setUsername(e.target.value)}
-                            className="pl-10 h-12"
+                            className="pl-10 h-12 rounded-xl"
                             required
                           />
                         </div>
@@ -442,7 +442,7 @@ export default function AuthPage() {
                           placeholder="Create a password"
                           value={password}
                           onChange={(e) => setPassword(e.target.value)}
-                          className="pl-10 pr-12 h-12"
+                          className="pl-10 pr-12 h-12 rounded-xl"
                           required
                         />
                         <Button
@@ -465,7 +465,7 @@ export default function AuthPage() {
                   
                   {/* Expert Account Option */}
                   <div className="space-y-4">
-                    <div className="flex items-center space-x-2 p-4 bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-950/20 dark:to-orange-950/20 rounded-lg border border-amber-200 dark:border-amber-800">
+                    <div className="flex items-center space-x-2 p-4 bg-muted/50 border-border/50 rounded-xl border">
                       <Checkbox
                         id="signup-expert"
                         checked={isExpert}
@@ -487,7 +487,7 @@ export default function AuthPage() {
                 <CardFooter className="flex flex-col space-y-4 pt-6 px-6">
                   <Button 
                     type="submit" 
-                    className="w-full h-12 font-medium bg-gradient-to-r from-primary to-primary-glow hover:opacity-90 transition-opacity" 
+                    className="w-full h-12 font-medium bg-primary hover:bg-primary/90 rounded-xl" 
                     disabled={isLoading}
                   >
                     {isLoading ? 'Creating Account...' : 'Create Account'}

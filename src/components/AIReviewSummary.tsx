@@ -74,7 +74,7 @@ export function AIReviewSummary({ restaurantName, placeId, className }: AIReview
       case 'positive': return 'text-green-600 bg-green-50';
       case 'negative': return 'text-red-600 bg-red-50';
       case 'mixed': return 'text-yellow-600 bg-yellow-50';
-      default: return 'text-gray-600 bg-gray-50';
+      default: return 'text-muted-foreground bg-muted/50';
     }
   };
 

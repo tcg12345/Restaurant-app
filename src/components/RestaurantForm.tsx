@@ -1389,7 +1389,7 @@ export function RestaurantForm({ initialData, onSubmit, onCancel, defaultWishlis
                   <div className="absolute bottom-2 left-2 bg-black/60 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
                     {index + 1}
                     {!allowPhotoReordering && (
-                      <span className="ml-1 text-gray-300">•</span>
+                      <span className="ml-1 text-muted-foreground">•</span>
                     )}
                   </div>
                 </div>

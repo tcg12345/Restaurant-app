@@ -561,15 +561,15 @@ export function RestaurantProfileModal({
                               </div>
 
                               {/* Features Section */}
-                              <div className="relative overflow-hidden rounded-xl bg-gradient-to-br from-slate-300 via-slate-200 to-slate-400 p-3 shadow-md border border-slate-300/60">
-                                <div className="absolute top-0 right-0 w-16 h-16 bg-slate-200/30 rounded-full -mr-8 -mt-8"></div>
+                              <div className="relative overflow-hidden rounded-xl bg-gradient-to-br from-muted via-muted/80 to-muted p-3 shadow-md border border-border">
+                                <div className="absolute top-0 right-0 w-16 h-16 bg-muted/30 rounded-full -mr-8 -mt-8"></div>
                                 <div className="relative">
                                   <div className="flex items-center justify-between">
                                     <div className="flex items-center gap-2">
-                                      <div className="p-1.5 rounded-md bg-slate-200/80">
-                                        <Clock className="h-3.5 w-3.5 text-slate-700" />
+                                      <div className="p-1.5 rounded-md bg-muted">
+                                        <Clock className="h-3.5 w-3.5 text-muted-foreground" />
                                       </div>
-                                      <span className="text-xs font-bold text-slate-800 uppercase tracking-wider">STATUS</span>
+                                      <span className="text-xs font-bold text-foreground uppercase tracking-wider">STATUS</span>
                                     </div>
                                     {place.opening_hours?.open_now !== undefined && <Badge variant={place.opening_hours.open_now ? "default" : "destructive"} className="text-xs font-medium px-3 py-1 rounded-full">
                                         {place.opening_hours.open_now ? "Open" : "Closed"}
@@ -604,7 +604,7 @@ export function RestaurantProfileModal({
                                         🌤️ Outdoor Seating
                                       </Badge>}
 
-                                    {place.types.includes('parking') && <Badge variant="outline" className="text-xs font-medium px-2 py-0.5 rounded-full bg-slate-50 text-slate-700 border-slate-200">
+                                    {place.types.includes('parking') && <Badge variant="outline" className="text-xs font-medium px-2 py-0.5 rounded-full bg-muted/50 text-muted-foreground border-border">
                                         🅿️ Parking
                                       </Badge>}
                                   </div>

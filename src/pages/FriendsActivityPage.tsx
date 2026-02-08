@@ -721,8 +721,8 @@ export function FriendsActivityPage() {
         
         <div className="bg-card rounded-xl p-4 border shadow-sm">
           <div className="flex items-center gap-3">
-            <div className="p-2 bg-blue-500/10 rounded-lg">
-              <MapPin className="h-4 w-4 text-blue-500" />
+            <div className="p-2 bg-primary/10 rounded-lg">
+              <MapPin className="h-4 w-4 text-primary" />
             </div>
             <div>
               <div className="text-xs text-muted-foreground font-medium">Cities</div>
@@ -771,8 +771,8 @@ export function FriendsActivityPage() {
 
         <div className="bg-card rounded-xl p-5 border shadow-sm">
           <div className="flex items-center gap-3">
-            <div className="p-3 bg-blue-500/10 rounded-lg">
-              <MapPin className="h-5 w-5 text-blue-500" />
+            <div className="p-3 bg-primary/10 rounded-lg">
+              <MapPin className="h-5 w-5 text-primary" />
             </div>
             <div>
               <div className="text-sm text-muted-foreground font-medium">Cities</div>
@@ -1179,17 +1179,17 @@ export function FriendsActivityPage() {
                   {/* Mobile Layout */}
                   <div className="md:hidden">
                     {/* Content Block */}
-                    <div className="p-4 space-y-3" style={{ backgroundColor: 'rgb(10,23,43)' }}>
+                    <div className="p-4 space-y-3 bg-card">
                       {/* Header - Friend Info + Status Badge */}
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2.5">
-                          <Avatar className="h-7 w-7 ring-1 ring-white/10">
+                          <Avatar className="h-7 w-7 ring-1 ring-border">
                             <AvatarImage src={restaurant.friend.avatar_url} />
-                            <AvatarFallback className="text-xs bg-slate-700 text-slate-200 font-medium">
+                            <AvatarFallback className="text-xs bg-muted text-muted-foreground font-medium">
                               {restaurant.friend.name.charAt(0).toUpperCase()}
                             </AvatarFallback>
                           </Avatar>
-                          <span className="text-sm text-slate-400 font-medium">{restaurant.friend.name}</span>
+                          <span className="text-sm text-muted-foreground font-medium">{restaurant.friend.name}</span>
                         </div>
                         <div className={`px-2.5 py-1 rounded-full text-xs font-semibold ${
                           restaurant.is_wishlist 
@@ -1203,15 +1203,15 @@ export function FriendsActivityPage() {
                       {/* Restaurant Name + Rating Row */}
                       <div className="flex items-start justify-between gap-3">
                         <div className="flex-1 min-w-0">
-                          <h3 className="text-lg font-bold text-white leading-tight mb-1 truncate">{restaurant.name}</h3>
+                          <h3 className="text-lg font-bold text-foreground leading-tight mb-1 truncate">{restaurant.name}</h3>
                           
                           {/* Cuisine + Price Row */}
-                          <div className="flex items-center gap-2 text-sm text-slate-300">
+                          <div className="flex items-center gap-2 text-sm text-muted-foreground">
                             <span>{restaurant.cuisine}</span>
                             {restaurant.price_range && (
                               <>
-                                <span className="text-slate-500">•</span>
-                                <span className="text-emerald-400 font-semibold">{'$'.repeat(restaurant.price_range)}</span>
+                                <span className="text-muted-foreground/50">•</span>
+                                <span className="text-primary font-semibold">{'$'.repeat(restaurant.price_range)}</span>
                               </>
                             )}
                           </div>
@@ -1225,9 +1225,9 @@ export function FriendsActivityPage() {
                             </div>
                           )}
                           {restaurant.rating && (
-                            <div className="inline-flex items-center gap-1 bg-slate-800/80 backdrop-blur-sm border border-slate-700/50 px-2.5 py-1 rounded-full">
+                            <div className="inline-flex items-center gap-1 bg-muted/80 backdrop-blur-sm border border-border/50 px-2.5 py-1 rounded-full">
                               <Star className="h-3.5 w-3.5 fill-current text-amber-400" />
-                              <span className="text-xs font-semibold text-white">{restaurant.rating}</span>
+                              <span className="text-xs font-semibold text-foreground">{restaurant.rating}</span>
                             </div>
                           )}
                         </div>
@@ -1235,11 +1235,11 @@ export function FriendsActivityPage() {
 
                       {/* Location + Date Row */}
                       <div className="flex items-center justify-between text-xs">
-                        <div className="flex items-center gap-1.5 text-slate-400">
+                        <div className="flex items-center gap-1.5 text-muted-foreground">
                           <MapPin className="h-3.5 w-3.5" />
                           <span>{restaurant.city}</span>
                         </div>
-                        <div className="bg-slate-800/60 border border-slate-700/40 px-2 py-1 rounded-full text-slate-300 font-medium">
+                        <div className="bg-muted/60 border border-border/40 px-2 py-1 rounded-full text-muted-foreground font-medium">
                           {restaurant.is_wishlist 
                             ? formatDate(restaurant.created_at).replace(/,.*/, '') // Remove year for compactness
                             : restaurant.date_visited 
@@ -1252,23 +1252,23 @@ export function FriendsActivityPage() {
                       {/* Notes Preview */}
                       {restaurant.notes && (
                         <div className="pt-1">
-                          <p className="text-xs text-slate-400 line-clamp-2 italic leading-relaxed">
+                          <p className="text-xs text-muted-foreground line-clamp-2 italic leading-relaxed">
                             "{restaurant.notes}"
                           </p>
                         </div>
                       )}
 
                       {/* Actions Row */}
-                      <div className="flex items-center justify-between pt-2 border-t border-white/5">
-                        <button 
-                          className="text-sm font-medium text-blue-400 hover:text-blue-300 transition-colors duration-150"
+                      <div className="flex items-center justify-between pt-2 border-t border-border/30">
+                        <button
+                          className="text-sm font-medium text-primary hover:text-primary/80 transition-colors duration-150"
                           onClick={(e) => e.stopPropagation()}
                         >
                           View Details
                         </button>
                         <div className="flex items-center gap-2">
                           <button 
-                            className="inline-flex items-center justify-center h-8 w-8 rounded-lg border border-white/10 text-slate-400 hover:bg-white/5 hover:border-white/20 transition-all duration-150"
+                            className="inline-flex items-center justify-center h-8 w-8 rounded-lg border border-border text-muted-foreground hover:bg-muted/50 hover:border-border transition-all duration-150"
                             onClick={(e) => e.stopPropagation()}
                           >
                             <Heart className="h-3.5 w-3.5" />

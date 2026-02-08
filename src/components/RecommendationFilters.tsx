@@ -108,7 +108,7 @@ export function RecommendationFilters({
                             onCityChange(selectedCities.filter(c => c !== city));
                           }
                         }}
-                        className="rounded border-gray-300"
+                        className="rounded border-border"
                       />
                       <span className="text-sm">{city}</span>
                     </label>
@@ -160,7 +160,7 @@ export function RecommendationFilters({
                     type="checkbox"
                     checked={selectedPriceRanges.includes(Number(value))}
                     onChange={() => handlePriceRangeToggle(Number(value))}
-                    className="rounded border-gray-300"
+                    className="rounded border-border"
                   />
                   <span className="text-sm">{label}</span>
                 </label>

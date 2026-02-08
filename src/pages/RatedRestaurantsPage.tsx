@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { Plus, Check, ChevronDown, X, Sliders, MapPin, Filter, Trash2, ArrowUpDown, ListPlus } from 'lucide-react';
+import { Plus, Check, ChevronDown, X, Sliders, MapPin, Filter, Trash2, ArrowUpDown, ListPlus, Search } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { RestaurantCard } from '@/components/RestaurantCard';
@@ -585,33 +585,106 @@ const preloadImages = async () => {
         {/* Desktop Header */}
         <div className="hidden lg:block">
           <div className="space-y-4">
+            {/* Title Row */}
+            <div className="flex items-center justify-between">
+              <h1 className="text-2xl font-bold tracking-tight text-foreground">My Ratings</h1>
+              <div className="flex items-center gap-3">
+                <div className="h-9 w-9 rounded-full bg-primary/20 border border-primary/30 flex items-center justify-center">
+                  <span className="text-sm font-semibold text-primary">U</span>
+                </div>
+              </div>
+            </div>
+
             {/* Search Bar */}
             <div className="relative">
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
                 placeholder="Search restaurants, cuisines, locations..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full h-10 pl-4 pr-12 rounded-full border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 focus:border-blue-500 dark:focus:border-blue-400 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-800/30 text-sm placeholder:text-slate-500 dark:placeholder:text-slate-400"
+                className="modern-input rounded-full pl-10 pr-12 glass-effect"
               />
               <Button
                 variant="ghost"
                 size="sm"
                 onClick={() => setShowMobileFilters(true)}
-                className="absolute right-2 top-1 h-8 w-8 p-0 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-full"
+                className="absolute right-2 top-1/2 -translate-y-1/2 h-8 w-8 p-0 hover:bg-muted/50 rounded-full"
               >
-                <Filter className="h-4 w-4 text-slate-500 dark:text-slate-400" />
+                <Filter className="h-4 w-4 text-muted-foreground" />
               </Button>
             </div>
 
-            {/* Actions and Lists Row */}
+            {/* Actions Row with List Tabs */}
             <div className="flex items-center justify-between">
-              {/* Secondary Actions - Left Side */}
-              <div className="flex items-center gap-2">
+              {/* Left: List Tabs as pills */}
+              <div className="flex gap-2 overflow-x-auto scrollbar-hide flex-1 items-center">
+                <button
+                  onClick={() => setSelectedListId(null)}
+                  className={`flex-shrink-0 ${
+                    selectedListId === null
+                      ? 'modern-pill-active'
+                      : 'modern-pill'
+                  }`}
+                >
+                  All Restaurants
+                  <span className="ml-1.5 text-xs opacity-80">
+                    {ratedRestaurants.length}
+                  </span>
+                </button>
+
+                {displayLists.map((list) => (
+                  <button
+                    key={list.id}
+                    onClick={() => {
+                      if (isDeleteMode && !list.is_default) {
+                        setListToDelete(list);
+                        setShowDeleteDialog(true);
+                      } else if (!isDeleteMode) {
+                        setSelectedListId(list.id);
+                      }
+                    }}
+                    className={`flex-shrink-0 ${
+                      selectedListId === list.id
+                        ? 'modern-pill-active'
+                        : 'modern-pill'
+                    } ${
+                      isDeleteMode && !list.is_default ? 'animate-jiggle border-destructive/50 bg-destructive/10' : ''
+                    }`}
+                  >
+                    {list.name}
+                    {isDeleteMode && !list.is_default && (
+                      <X className="h-3 w-3 ml-1 text-destructive inline" />
+                    )}
+                  </button>
+                ))}
+
+                {/* Edit Lists Button */}
+                <button
+                  onClick={() => {
+                    setIsDeleteMode(!isDeleteMode);
+                    if (isDeleteMode) {
+                      setSelectedListId(null);
+                    }
+                  }}
+                  className={`flex-shrink-0 ml-1 h-8 px-3 rounded-full text-xs font-medium transition-all duration-200 ${
+                    isDeleteMode
+                      ? 'bg-muted text-muted-foreground'
+                      : 'text-muted-foreground hover:text-destructive hover:bg-destructive/10'
+                  }`}
+                  data-testid="delete-mode-toggle"
+                >
+                  <Trash2 className="h-3 w-3 mr-1 inline" />
+                  {isDeleteMode ? 'Done' : 'Edit'}
+                </button>
+              </div>
+
+              {/* Right: Action Buttons */}
+              <div className="flex items-center gap-2 ml-4">
                 <Button
                   onClick={handleReorderClick}
                   variant="ghost"
                   size="sm"
-                  className="h-10 px-3 text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg text-sm font-medium border border-transparent hover:border-slate-200 dark:hover:border-slate-700 transition-all duration-200"
+                  className="h-9 px-3 text-muted-foreground hover:text-foreground hover:bg-muted/50 rounded-full text-sm font-medium transition-all duration-200"
                 >
                   <ArrowUpDown className="h-4 w-4 mr-2" />
                   Reorder
@@ -620,7 +693,7 @@ const preloadImages = async () => {
                   onClick={() => setIsCreateListDialogOpen(true)}
                   variant="ghost"
                   size="sm"
-                  className="h-10 px-3 text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg text-sm font-medium border border-transparent hover:border-slate-200 dark:hover:border-slate-700 transition-all duration-200"
+                  className="h-9 px-3 text-muted-foreground hover:text-foreground hover:bg-muted/50 rounded-full text-sm font-medium transition-all duration-200"
                 >
                   <Plus className="h-4 w-4 mr-2" />
                   List
@@ -630,23 +703,23 @@ const preloadImages = async () => {
                     variant="ghost"
                     size="sm"
                     onClick={onNavigateToMap}
-                    className="h-10 w-10 p-0 text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg border border-transparent hover:border-slate-200 dark:hover:border-slate-700 transition-all duration-200"
+                    className="h-9 w-9 p-0 text-muted-foreground hover:text-foreground hover:bg-muted/50 rounded-full transition-all duration-200"
                     title="Map View"
                   >
                     <MapPin className="h-4 w-4" />
                   </Button>
                 )}
-                
+
                 {/* View Toggle */}
-                <div className="flex items-center bg-slate-50 dark:bg-slate-800/50 rounded-lg p-1 ml-1">
+                <div className="flex items-center bg-muted/50 rounded-full p-1 ml-1">
                   <Button
                     onClick={() => setView('grid')}
                     variant="ghost"
                     size="sm"
-                    className={`h-8 w-9 p-0 rounded-md transition-all duration-200 ${
-                      view === 'grid' 
-                        ? 'bg-white dark:bg-slate-700 shadow-sm text-slate-900 dark:text-slate-100 border border-slate-200 dark:border-slate-600' 
-                        : 'text-slate-600 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700/50'
+                    className={`h-8 w-9 p-0 rounded-full transition-all duration-200 ${
+                      view === 'grid'
+                        ? 'bg-background shadow-sm text-foreground'
+                        : 'text-muted-foreground hover:text-foreground'
                     }`}
                     title="Grid View"
                   >
@@ -661,10 +734,10 @@ const preloadImages = async () => {
                     onClick={() => setView('list')}
                     variant="ghost"
                     size="sm"
-                    className={`h-8 w-9 p-0 rounded-md transition-all duration-200 ${
-                      view === 'list' 
-                        ? 'bg-white dark:bg-slate-700 shadow-sm text-slate-900 dark:text-slate-100 border border-slate-200 dark:border-slate-600' 
-                        : 'text-slate-600 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700/50'
+                    className={`h-8 w-9 p-0 rounded-full transition-all duration-200 ${
+                      view === 'list'
+                        ? 'bg-background shadow-sm text-foreground'
+                        : 'text-muted-foreground hover:text-foreground'
                     }`}
                     title="List View"
                   >
@@ -675,121 +748,58 @@ const preloadImages = async () => {
                     </div>
                   </Button>
                 </div>
-              </div>
 
-              {/* Primary Action - Right Side */}
-              <Button 
-                onClick={() => setIsAddDialogOpen(true)}
-                className="h-9 px-5 rounded-full bg-blue-600 hover:bg-blue-700 text-white font-semibold shadow-md hover:shadow-lg transition-all duration-200"
-              >
-                <Plus className="mr-2 h-4 w-4" />
-                Add Restaurant
-              </Button>
-            </div>
-
-            {/* Lists Tabs - Integrated */}
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2 flex-1 overflow-x-auto">
+                {/* Add Restaurant CTA */}
                 <Button
-                  variant={selectedListId === null ? "default" : "outline"}
-                  size="sm"
-                  onClick={() => setSelectedListId(null)}
-                  className={`rounded-full px-4 py-1.5 font-medium transition-all duration-200 text-sm flex-shrink-0 ${
-                    selectedListId === null 
-                      ? 'bg-blue-600 hover:bg-blue-700 text-white shadow-sm' 
-                      : 'border-slate-300 dark:border-slate-600 hover:border-blue-400 dark:hover:border-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20'
-                  }`}
+                  onClick={() => setIsAddDialogOpen(true)}
+                  className="h-9 px-5 rounded-full bg-primary hover:bg-primary/90 text-white font-semibold shadow-md hover:shadow-lg transition-all duration-200"
                 >
-                  All Restaurants
-                  <Badge variant="secondary" className="ml-2 bg-white/20 text-white text-xs px-1.5 py-0.5">
-                    {ratedRestaurants.length}
-                  </Badge>
+                  <Plus className="mr-2 h-4 w-4" />
+                  Add Restaurant
                 </Button>
-                
-                {displayLists.map((list) => (
-                  <Button
-                    key={list.id}
-                    variant={selectedListId === list.id ? "default" : "outline"}
-                    size="sm"
-                    onClick={() => {
-                      if (isDeleteMode && !list.is_default) {
-                        setListToDelete(list);
-                        setShowDeleteDialog(true);
-                      } else if (!isDeleteMode) {
-                        setSelectedListId(list.id);
-                      }
-                    }}
-                    className={`rounded-full px-4 py-1.5 font-medium transition-all duration-200 text-sm flex-shrink-0 ${
-                      selectedListId === list.id 
-                        ? 'bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm' 
-                        : 'border-slate-300 dark:border-slate-600 hover:border-emerald-400 dark:hover:border-emerald-500 hover:bg-emerald-50 dark:hover:bg-emerald-900/20'
-                    } ${
-                      isDeleteMode && !list.is_default ? 'animate-jiggle border-red-300 dark:border-red-600 bg-red-50 dark:bg-red-900/20' : ''
-                    }`}
-                  >
-                    {list.name}
-                    {isDeleteMode && !list.is_default && (
-                      <X className="h-3 w-3 ml-1 text-red-500" />
-                    )}
-                  </Button>
-                ))}
               </div>
-              
-              {/* Edit Lists Button - Small and Subtle */}
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => {
-                  setIsDeleteMode(!isDeleteMode);
-                  if (isDeleteMode) {
-                    setSelectedListId(null);
-                  }
-                }}
-                className={`ml-3 h-8 px-3 rounded-lg text-xs font-medium transition-all duration-200 flex-shrink-0 ${
-                  isDeleteMode 
-                    ? 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300' 
-                    : 'text-slate-500 dark:text-slate-400 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20'
-                }`}
-                data-testid="delete-mode-toggle"
-              >
-                <Trash2 className="h-3 w-3 mr-1" />
-                {isDeleteMode ? 'Done' : 'Edit'}
-              </Button>
             </div>
           </div>
         </div>
 
         {/* Mobile & Tablet Header */}
         <div className="lg:hidden">
-          <div className="space-y-3">
+          <div className="glass-effect rounded-2xl px-4 pt-4 pb-3 space-y-3">
+            {/* Title Row with Avatar */}
+            <div className="flex items-center justify-between">
+              <h1 className="text-2xl font-bold tracking-tight text-foreground">My Ratings</h1>
+              <div className="h-9 w-9 rounded-full bg-primary/20 border border-primary/30 flex items-center justify-center">
+                <span className="text-sm font-semibold text-primary">U</span>
+              </div>
+            </div>
+
             {/* Search Bar */}
             <div className="relative">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
                 placeholder="Search restaurants, cuisines..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full h-10 pl-4 pr-12 rounded-full border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 focus:border-blue-500 dark:focus:border-blue-400 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-800/30 text-sm placeholder:text-slate-500 dark:placeholder:text-slate-400"
+                className="modern-input rounded-full pl-9 pr-12 glass-effect"
               />
               <Button
                 variant="ghost"
                 size="sm"
                 onClick={() => setShowMobileFilters(true)}
-                className="absolute right-2 top-1 h-8 w-8 p-0 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-full"
+                className="absolute right-2 top-1/2 -translate-y-1/2 h-8 w-8 p-0 hover:bg-muted/50 rounded-full"
               >
-                <Filter className="h-4 w-4 text-slate-500 dark:text-slate-400" />
+                <Filter className="h-4 w-4 text-muted-foreground" />
               </Button>
             </div>
 
             {/* Primary Action */}
-            <div className="">
-              <Button
-                onClick={() => setIsAddDialogOpen(true)}
-                className="w-full h-10 rounded-full bg-blue-600 hover:bg-blue-700 text-white font-semibold shadow-md hover:shadow-lg transition-all duration-200"
-              >
-                <Plus className="mr-2 h-4 w-4" />
-                Add Restaurant
-              </Button>
-            </div>
+            <Button
+              onClick={() => setIsAddDialogOpen(true)}
+              className="w-full h-10 rounded-full bg-primary hover:bg-primary/90 text-white font-semibold shadow-md hover:shadow-lg transition-all duration-200"
+            >
+              <Plus className="mr-2 h-4 w-4" />
+              Add Restaurant
+            </Button>
 
             {/* Secondary Actions Row */}
             <div className="flex items-center justify-center gap-2 flex-wrap">
@@ -797,7 +807,7 @@ const preloadImages = async () => {
                 onClick={handleReorderClick}
                 variant="ghost"
                 size="sm"
-                className="h-9 px-3 text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg text-sm font-medium border border-transparent hover:border-slate-200 dark:hover:border-slate-700 transition-all duration-200"
+                className="h-9 px-3 text-muted-foreground hover:text-foreground hover:bg-muted/50 rounded-full text-sm font-medium transition-all duration-200"
               >
                 <ArrowUpDown className="h-4 w-4 mr-2" />
                 Reorder
@@ -806,7 +816,7 @@ const preloadImages = async () => {
                 onClick={() => setIsCreateListDialogOpen(true)}
                 variant="ghost"
                 size="sm"
-                className="h-9 px-3 text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg text-sm font-medium border border-transparent hover:border-slate-200 dark:hover:border-slate-700 transition-all duration-200"
+                className="h-9 px-3 text-muted-foreground hover:text-foreground hover:bg-muted/50 rounded-full text-sm font-medium transition-all duration-200"
               >
                 <Plus className="h-4 w-4 mr-2" />
                 List
@@ -816,23 +826,23 @@ const preloadImages = async () => {
                   onClick={onNavigateToMap}
                   variant="ghost"
                   size="sm"
-                  className="h-9 w-9 p-0 text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg border border-transparent hover:border-slate-200 dark:hover:border-slate-700 transition-all duration-200"
+                  className="h-9 w-9 p-0 text-muted-foreground hover:text-foreground hover:bg-muted/50 rounded-full transition-all duration-200"
                   title="Map View"
                 >
                   <MapPin className="h-4 w-4" />
                 </Button>
               )}
-              
+
               {/* View Toggle */}
-              <div className="flex items-center bg-slate-50 dark:bg-slate-800/50 rounded-lg p-1 ml-1">
+              <div className="flex items-center bg-muted/50 rounded-full p-1 ml-1">
                 <Button
                   onClick={() => setView('grid')}
                   variant="ghost"
                   size="sm"
-                  className={`h-7 w-8 p-0 rounded-md transition-all duration-200 ${
-                    view === 'grid' 
-                      ? 'bg-white dark:bg-slate-700 shadow-sm text-slate-900 dark:text-slate-100 border border-slate-200 dark:border-slate-600' 
-                      : 'text-slate-600 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700/50'
+                  className={`h-7 w-8 p-0 rounded-full transition-all duration-200 ${
+                    view === 'grid'
+                      ? 'bg-background shadow-sm text-foreground'
+                      : 'text-muted-foreground hover:text-foreground'
                   }`}
                   title="Grid View"
                 >
@@ -847,10 +857,10 @@ const preloadImages = async () => {
                   onClick={() => setView('list')}
                   variant="ghost"
                   size="sm"
-                  className={`h-7 w-8 p-0 rounded-md transition-all duration-200 ${
-                    view === 'list' 
-                      ? 'bg-white dark:bg-slate-700 shadow-sm text-slate-900 dark:text-slate-100 border border-slate-200 dark:border-slate-600' 
-                      : 'text-slate-600 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700/50'
+                  className={`h-7 w-8 p-0 rounded-full transition-all duration-200 ${
+                    view === 'list'
+                      ? 'bg-background shadow-sm text-foreground'
+                      : 'text-muted-foreground hover:text-foreground'
                   }`}
                   title="List View"
                 >
@@ -862,74 +872,68 @@ const preloadImages = async () => {
                 </Button>
               </div>
             </div>
+          </div>
 
-            {/* Lists Tabs - Mobile */}
-            <div className="space-y-2">
-              <div className="flex gap-2 overflow-x-auto pb-2 items-center scrollbar-hide">
-                <Button
-                  variant={selectedListId === null ? "default" : "outline"}
-                  size="sm"
-                  onClick={() => setSelectedListId(null)}
-                  className={`rounded-full px-3 py-1.5 font-medium transition-all duration-200 text-xs flex-shrink-0 ${
-                    selectedListId === null 
-                      ? 'bg-blue-600 hover:bg-blue-700 text-white shadow-sm' 
-                      : 'border-slate-300 dark:border-slate-600 hover:border-blue-400 dark:hover:border-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20'
-                  }`}
-                >
-                  All Restaurants
-                  <Badge variant="secondary" className="ml-1.5 bg-white/20 text-white text-xs px-1 py-0.5">
-                    {ratedRestaurants.length}
-                  </Badge>
-                </Button>
-                
-                {displayLists.map((list) => (
-                  <Button
-                    key={list.id}
-                    variant={selectedListId === list.id ? "default" : "outline"}
-                    size="sm"
-                    onClick={() => {
-                      if (isDeleteMode && !list.is_default) {
-                        setListToDelete(list);
-                        setShowDeleteDialog(true);
-                      } else if (!isDeleteMode) {
-                        setSelectedListId(list.id);
-                      }
-                    }}
-                    className={`rounded-full px-3 py-1.5 font-medium transition-all duration-200 text-xs flex-shrink-0 ${
-                      selectedListId === list.id 
-                        ? 'bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm' 
-                        : 'border-slate-300 dark:border-slate-600 hover:border-emerald-400 dark:hover:border-emerald-500 hover:bg-emerald-50 dark:hover:bg-emerald-900/20'
-                    } ${
-                      isDeleteMode && !list.is_default ? 'animate-jiggle border-red-300 dark:border-red-600 bg-red-50 dark:bg-red-900/20' : ''
-                    }`}
-                  >
-                    {list.name}
-                    {isDeleteMode && !list.is_default && (
-                      <X className="h-3 w-3 ml-1 text-red-500" />
-                    )}
-                  </Button>
-                ))}
-                
-                {/* Edit Lists Button - Red Trash Icon */}
-                <Button
-                  variant="ghost"
-                  size="sm"
+          {/* Lists Tabs - Mobile */}
+          <div className="mt-3">
+            <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-2 px-4">
+              <button
+                onClick={() => setSelectedListId(null)}
+                className={`flex-shrink-0 ${
+                  selectedListId === null
+                    ? 'modern-pill-active'
+                    : 'modern-pill'
+                }`}
+              >
+                All Restaurants
+                <span className="ml-1.5 text-xs opacity-80">
+                  {ratedRestaurants.length}
+                </span>
+              </button>
+
+              {displayLists.map((list) => (
+                <button
+                  key={list.id}
                   onClick={() => {
-                    setIsDeleteMode(!isDeleteMode);
-                    if (isDeleteMode) {
-                      setSelectedListId(null);
+                    if (isDeleteMode && !list.is_default) {
+                      setListToDelete(list);
+                      setShowDeleteDialog(true);
+                    } else if (!isDeleteMode) {
+                      setSelectedListId(list.id);
                     }
                   }}
-                  className={`h-8 w-8 p-0 rounded-full transition-all duration-200 flex-shrink-0 ${
-                    isDeleteMode 
-                      ? 'bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400' 
-                      : 'text-red-500 hover:text-red-600 dark:text-red-400 dark:hover:text-red-300 hover:bg-red-50 dark:hover:bg-red-900/20'
+                  className={`flex-shrink-0 ${
+                    selectedListId === list.id
+                      ? 'modern-pill-active'
+                      : 'modern-pill'
+                  } ${
+                    isDeleteMode && !list.is_default ? 'animate-jiggle border-destructive/50 bg-destructive/10' : ''
                   }`}
-                  data-testid="delete-mode-toggle"
                 >
-                  <Trash2 className="h-4 w-4" />
-                </Button>
-              </div>
+                  {list.name}
+                  {isDeleteMode && !list.is_default && (
+                    <X className="h-3 w-3 ml-1 text-destructive inline" />
+                  )}
+                </button>
+              ))}
+
+              {/* Edit Lists Button */}
+              <button
+                onClick={() => {
+                  setIsDeleteMode(!isDeleteMode);
+                  if (isDeleteMode) {
+                    setSelectedListId(null);
+                  }
+                }}
+                className={`flex-shrink-0 h-8 w-8 rounded-full flex items-center justify-center transition-all duration-200 ${
+                  isDeleteMode
+                    ? 'bg-destructive/20 text-destructive'
+                    : 'text-destructive hover:text-destructive hover:bg-destructive/10'
+                }`}
+                data-testid="delete-mode-toggle"
+              >
+                <Trash2 className="h-4 w-4" />
+              </button>
             </div>
           </div>
         </div>
@@ -938,9 +942,9 @@ const preloadImages = async () => {
 
       {/* Enhanced Desktop Filters */}
       <div className="mb-8 hidden lg:block">
-        <div className="bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm rounded-2xl border border-slate-200/60 dark:border-slate-700/60 p-6 shadow-lg">
+        <div className="bg-card/60 backdrop-blur-sm rounded-2xl border border-border/60 p-6 shadow-lg">
           <div className="flex items-center justify-between mb-6">
-            <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100">
+            <h3 className="text-xl font-bold text-foreground">
               Filters & Sorting
             </h3>
             {(filterCuisines.length > 0 || filterPrices.length > 0 || filterMichelins.length > 0 || ratingRange[0] > 0 || ratingRange[1] < 10) && (
@@ -948,7 +952,7 @@ const preloadImages = async () => {
                 variant="outline" 
                 size="sm" 
                 onClick={clearFilters} 
-                className="rounded-xl bg-red-50 dark:bg-red-900/20 border-red-300 dark:border-red-600 text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900/30"
+                className="rounded-xl bg-destructive/10 border-destructive/50 text-destructive hover:bg-destructive/20"
               >
                 <X className="mr-2 h-4 w-4" />
                 Clear All Filters
@@ -959,10 +963,10 @@ const preloadImages = async () => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             {/* Cuisine Filter */}
             <div className="space-y-2">
-              <Label className="text-sm font-semibold text-slate-700 dark:text-slate-300">Cuisine Type</Label>
+              <Label className="text-sm font-semibold text-muted-foreground">Cuisine Type</Label>
               <Popover>
                 <PopoverTrigger asChild>
-                  <Button variant="outline" className="w-full justify-between h-12 rounded-xl border-slate-300 dark:border-slate-600 hover:border-slate-400 dark:hover:border-slate-500 font-medium">
+                  <Button variant="outline" className="w-full justify-between h-12 rounded-xl border-border hover:border-border font-medium">
                     <span className="text-left truncate">
                       {filterCuisines.length === 0
                         ? 'Any Cuisine'
@@ -978,7 +982,7 @@ const preloadImages = async () => {
                   <div className="p-4">
                     <div className="space-y-3">
                       {cuisineCounts.map(({ cuisine, count }) => (
-                        <div key={cuisine} className="flex items-center space-x-3 p-2 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700/50">
+                        <div key={cuisine} className="flex items-center space-x-3 p-2 rounded-lg hover:bg-muted/50">
                           <Checkbox
                             id={`cuisine-${cuisine}`}
                             checked={filterCuisines.includes(cuisine)}
@@ -1000,10 +1004,10 @@ const preloadImages = async () => {
 
             {/* Price Filter */}
             <div className="space-y-2">
-              <Label className="text-sm font-semibold text-slate-700 dark:text-slate-300">Price Range</Label>
+              <Label className="text-sm font-semibold text-muted-foreground">Price Range</Label>
               <Popover>
                 <PopoverTrigger asChild>
-                  <Button variant="outline" className="w-full justify-between h-12 rounded-xl border-slate-300 dark:border-slate-600 hover:border-slate-400 dark:hover:border-slate-500 font-medium">
+                  <Button variant="outline" className="w-full justify-between h-12 rounded-xl border-border hover:border-border font-medium">
                     <span className="text-left truncate">
                       {filterPrices.length === 0
                         ? 'Any Price'
@@ -1019,7 +1023,7 @@ const preloadImages = async () => {
                   <div className="p-4">
                     <div className="space-y-3">
                       {priceCounts.map(({ price, count }) => (
-                        <div key={price} className="flex items-center space-x-3 p-2 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700/50">
+                        <div key={price} className="flex items-center space-x-3 p-2 rounded-lg hover:bg-muted/50">
                           <Checkbox
                             id={`price-${price}`}
                             checked={filterPrices.includes(price)}
@@ -1041,10 +1045,10 @@ const preloadImages = async () => {
 
             {/* Michelin Filter */}
             <div className="space-y-2">
-              <Label className="text-sm font-semibold text-slate-700 dark:text-slate-300">Michelin Stars</Label>
+              <Label className="text-sm font-semibold text-muted-foreground">Michelin Stars</Label>
               <Popover>
                 <PopoverTrigger asChild>
-                  <Button variant="outline" className="w-full justify-between h-12 rounded-xl border-slate-300 dark:border-slate-600 hover:border-slate-400 dark:hover:border-slate-500 font-medium">
+                  <Button variant="outline" className="w-full justify-between h-12 rounded-xl border-border hover:border-border font-medium">
                     <span className="text-left truncate">
                       {filterMichelins.length === 0
                         ? 'Any Rating'
@@ -1060,7 +1064,7 @@ const preloadImages = async () => {
                   <div className="p-4">
                     <div className="space-y-3">
                       {michelinCounts.map(({ michelin, count }) => (
-                        <div key={michelin} className="flex items-center space-x-3 p-2 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700/50">
+                        <div key={michelin} className="flex items-center space-x-3 p-2 rounded-lg hover:bg-muted/50">
                           <Checkbox
                             id={`michelin-${michelin}`}
                             checked={filterMichelins.includes(michelin)}
@@ -1082,10 +1086,10 @@ const preloadImages = async () => {
 
             {/* Sort & Advanced Options */}
             <div className="space-y-2">
-              <Label className="text-sm font-semibold text-slate-700 dark:text-slate-300">Sort & More</Label>
+              <Label className="text-sm font-semibold text-muted-foreground">Sort & More</Label>
               <Popover>
                 <PopoverTrigger asChild>
-                  <Button variant="outline" className="w-full justify-between h-12 rounded-xl border-slate-300 dark:border-slate-600 hover:border-slate-400 dark:hover:border-slate-500 font-medium">
+                  <Button variant="outline" className="w-full justify-between h-12 rounded-xl border-border hover:border-border font-medium">
                     <span className="text-left truncate">
                       {sortBy === 'latest' ? 'Latest First' :
                        sortBy === 'oldest' ? 'Oldest First' :
@@ -1137,7 +1141,7 @@ const preloadImages = async () => {
                       <div>
                         <Label className="text-base font-semibold mb-3 block">Rating Range</Label>
                         <div className="space-y-3">
-                          <div className="flex items-center justify-between text-sm text-slate-600 dark:text-slate-400">
+                          <div className="flex items-center justify-between text-sm text-muted-foreground">
                             <span>{tempRatingRange[0]}</span>
                             <span>{tempRatingRange[1]}</span>
                           </div>
@@ -1152,7 +1156,7 @@ const preloadImages = async () => {
                           <Button 
                             onClick={applyRatingFilter} 
                             size="sm" 
-                            className="w-full rounded-lg bg-blue-600 hover:bg-blue-700"
+                            className="w-full rounded-lg bg-primary hover:bg-primary/90"
                           >
                             Apply Rating Filter
                           </Button>
@@ -1168,39 +1172,53 @@ const preloadImages = async () => {
       </div>
 
       {selectedListId && isListLoading ? (
-        <div className="py-8 text-center text-muted-foreground">Loading list...</div>
+        <div className="py-16 text-center text-muted-foreground">Loading list...</div>
       ) : selectedListId && displayRestaurants.length === 0 ? (
-        <div className="rounded-lg border border-dashed bg-muted/50 p-8 text-center">
-          <h3 className="mb-2 text-lg font-medium">No restaurants in this list</h3>
-          <p className="mb-4 text-muted-foreground">This list is empty. Add some restaurants to get started!</p>
-          <div className="flex gap-2">
-            <Button onClick={() => setIsAddDialogOpen(true)}>
+        <div className="flex flex-col items-center justify-center py-20 px-6 text-center">
+          <h3 className="mb-2 text-xl font-bold text-foreground">No Restaurants in This List</h3>
+          <p className="mb-6 text-muted-foreground">This list is empty. Add some restaurants to get started!</p>
+          <div className="flex gap-3">
+            <Button
+              onClick={() => setIsAddDialogOpen(true)}
+              className="rounded-full px-6 py-2 bg-primary hover:bg-primary/90 text-white font-semibold shadow-md hover:shadow-lg transition-all duration-200"
+            >
               <Plus className="mr-2 h-4 w-4" />
               Add Restaurant
             </Button>
-            <Button variant="outline" onClick={handleReorderClick}>
+            <Button
+              variant="outline"
+              onClick={handleReorderClick}
+              className="rounded-full px-6 py-2 border-border/50 hover:border-border transition-all duration-200"
+            >
               <ArrowUpDown className="mr-2 h-4 w-4" />
               Reorder
             </Button>
           </div>
         </div>
       ) : filteredRestaurants.length === 0 ? (
-        <div className="rounded-lg border border-dashed bg-muted/50 p-8 text-center">
-          <h3 className="mb-2 text-lg font-medium">
-            {displayRestaurants.length === 0 ? 'No rated restaurants yet' : 'No restaurants found'}
+        <div className="flex flex-col items-center justify-center py-20 px-6 text-center">
+          <h3 className="mb-2 text-xl font-bold text-foreground">
+            {displayRestaurants.length === 0 ? 'No Rated Restaurants Yet' : 'No Restaurants Found'}
           </h3>
-          <p className="mb-4 text-muted-foreground">
+          <p className="mb-6 text-muted-foreground">
             {displayRestaurants.length === 0
-              ? "Start adding restaurants you've visited!"
+              ? 'Start your collection!'
               : 'No restaurants match your search criteria.'}
           </p>
-          <div className="flex gap-2 justify-center">
-            <Button onClick={() => setIsAddDialogOpen(true)}>
+          <div className="flex gap-3 justify-center">
+            <Button
+              onClick={() => setIsAddDialogOpen(true)}
+              className="rounded-full px-6 py-2 bg-primary hover:bg-primary/90 text-white font-semibold shadow-md hover:shadow-lg transition-all duration-200"
+            >
               <Plus className="mr-2 h-4 w-4" />
-              {displayRestaurants.length === 0 ? 'Add Your First Restaurant' : 'Add Restaurant'}
+              {displayRestaurants.length === 0 ? 'Add First Restaurant' : 'Add Restaurant'}
             </Button>
             {displayRestaurants.length > 0 && (
-              <Button variant="outline" onClick={handleReorderClick}>
+              <Button
+                variant="outline"
+                onClick={handleReorderClick}
+                className="rounded-full px-6 py-2 border-border/50 hover:border-border transition-all duration-200"
+              >
                 <ArrowUpDown className="mr-2 h-4 w-4" />
                 Reorder
               </Button>
@@ -1210,7 +1228,7 @@ const preloadImages = async () => {
       ) : (
         <div className={view === 'grid' ? 'grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 w-full' : 'space-y-4 w-full'}>
           {filteredRestaurants.map((restaurant) => (
-            <div key={restaurant.id} className="relative w-full">
+            <div key={restaurant.id} className="relative w-full bg-card rounded-2xl border border-border/30 overflow-hidden hover:border-border/60 transition-all duration-200">
               {view === 'grid' ? (
                 <RestaurantCard
                   restaurant={restaurant}

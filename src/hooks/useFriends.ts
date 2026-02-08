@@ -99,34 +99,53 @@ export function useFriends() {
       try { localStorage.setItem(cacheKey, JSON.stringify(mappedFriends)); } catch {}
 
       // Fetch friend requests with graceful error handling
+      // Avoid foreign key joins (they may not exist) — query requests then profiles separately
       let receivedData: FriendRequest[] = [];
       let sentData: FriendRequest[] = [];
 
       try {
         const receivedResult = await supabase
           .from('friend_requests')
-          .select(`
-            *,
-            sender:profiles!friend_requests_sender_id_fkey(username, name, avatar_url)
-          `)
+          .select('*')
           .eq('receiver_id', user.id)
           .eq('status', 'pending');
-        if (!receivedResult.error) {
-          receivedData = (receivedResult.data || []) as FriendRequest[];
+        if (!receivedResult.error && receivedResult.data) {
+          const senderIds = receivedResult.data.map((r: any) => r.sender_id).filter(Boolean);
+          let senderProfiles: Record<string, any> = {};
+          if (senderIds.length > 0) {
+            const { data: profiles } = await supabase
+              .from('profiles')
+              .select('id, username, name, avatar_url')
+              .in('id', senderIds);
+            (profiles || []).forEach((p: any) => { senderProfiles[p.id] = p; });
+          }
+          receivedData = receivedResult.data.map((r: any) => ({
+            ...r,
+            sender: senderProfiles[r.sender_id] || undefined,
+          })) as FriendRequest[];
         }
       } catch {}
 
       try {
         const sentResult = await supabase
           .from('friend_requests')
-          .select(`
-            *,
-            receiver:profiles!friend_requests_receiver_id_fkey(username, name, avatar_url)
-          `)
+          .select('*')
           .eq('sender_id', user.id)
           .eq('status', 'pending');
-        if (!sentResult.error) {
-          sentData = (sentResult.data || []) as FriendRequest[];
+        if (!sentResult.error && sentResult.data) {
+          const receiverIds = sentResult.data.map((r: any) => r.receiver_id).filter(Boolean);
+          let receiverProfiles: Record<string, any> = {};
+          if (receiverIds.length > 0) {
+            const { data: profiles } = await supabase
+              .from('profiles')
+              .select('id, username, name, avatar_url')
+              .in('id', receiverIds);
+            (profiles || []).forEach((p: any) => { receiverProfiles[p.id] = p; });
+          }
+          sentData = sentResult.data.map((r: any) => ({
+            ...r,
+            receiver: receiverProfiles[r.receiver_id] || undefined,
+          })) as FriendRequest[];
         }
       } catch {}
 

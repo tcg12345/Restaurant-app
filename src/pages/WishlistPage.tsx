@@ -105,14 +105,14 @@ export function WishlistPage({
                 placeholder="Search wishlist..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full h-10 pl-4 pr-12 rounded-full border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 focus:border-blue-500 dark:focus:border-blue-400 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-800/30 text-sm placeholder:text-slate-500 dark:placeholder:text-slate-400"
+                className="w-full h-10 pl-4 pr-12 rounded-full border border-border bg-background focus:border-primary focus:ring-2 focus:ring-primary/20 text-sm placeholder:text-muted-foreground"
               />
               <Button
                 variant="ghost"
                 size="sm"
-                className="absolute right-2 top-1 h-8 w-8 p-0 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-full"
+                className="absolute right-2 top-1 h-8 w-8 p-0 hover:bg-muted rounded-full"
               >
-                <Filter className="h-4 w-4 text-slate-500 dark:text-slate-400" />
+                <Filter className="h-4 w-4 text-muted-foreground" />
               </Button>
             </div>
 
@@ -125,7 +125,7 @@ export function WishlistPage({
                     onClick={onRefresh}
                     variant="ghost"
                     size="sm"
-                    className="h-10 px-3 text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg text-sm font-medium border border-transparent hover:border-slate-200 dark:hover:border-slate-700 transition-all duration-200"
+                    className="h-10 px-3 text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg text-sm font-medium border border-transparent hover:border-border transition-all duration-200"
                   >
                     <RotateCcw className="h-4 w-4 mr-2" />
                     Refresh
@@ -136,7 +136,7 @@ export function WishlistPage({
                     variant="ghost"
                     size="sm"
                     onClick={onNavigateToMap}
-                    className="h-10 w-10 p-0 text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg border border-transparent hover:border-slate-200 dark:hover:border-slate-700 transition-all duration-200"
+                    className="h-10 w-10 p-0 text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg border border-transparent hover:border-border transition-all duration-200"
                     title="Map View"
                   >
                     <MapPin className="h-4 w-4" />
@@ -144,15 +144,15 @@ export function WishlistPage({
                 )}
                 
                 {/* View Toggle */}
-                <div className="flex items-center bg-slate-50 dark:bg-slate-800/50 rounded-lg p-1 ml-1">
+                <div className="flex items-center bg-muted/50 rounded-lg p-1 ml-1">
                   <Button
                     onClick={() => setView('grid')}
                     variant="ghost"
                     size="sm"
                     className={`h-8 w-9 p-0 rounded-md transition-all duration-200 ${
                       view === 'grid' 
-                        ? 'bg-white dark:bg-slate-700 shadow-sm text-slate-900 dark:text-slate-100 border border-slate-200 dark:border-slate-600' 
-                        : 'text-slate-600 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700/50'
+                        ? 'bg-background shadow-sm text-foreground border border-border' 
+                        : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
                     }`}
                     title="Grid View"
                   >
@@ -169,8 +169,8 @@ export function WishlistPage({
                     size="sm"
                     className={`h-8 w-9 p-0 rounded-md transition-all duration-200 ${
                       view === 'list' 
-                        ? 'bg-white dark:bg-slate-700 shadow-sm text-slate-900 dark:text-slate-100 border border-slate-200 dark:border-slate-600' 
-                        : 'text-slate-600 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700/50'
+                        ? 'bg-background shadow-sm text-foreground border border-border' 
+                        : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
                     }`}
                     title="List View"
                   >
@@ -203,7 +203,7 @@ export function WishlistPage({
                   className={`rounded-full px-4 py-1.5 font-medium transition-all duration-200 text-sm flex-shrink-0 ${
                     activeCity === 'all' 
                       ? 'bg-blue-600 hover:bg-blue-700 text-white shadow-sm' 
-                      : 'border-slate-300 dark:border-slate-600 hover:border-blue-400 dark:hover:border-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20'
+                      : 'border-border hover:border-primary hover:bg-primary/10'
                   }`}
                 >
                   All Cities
@@ -218,7 +218,7 @@ export function WishlistPage({
                     className={`rounded-full px-4 py-1.5 font-medium transition-all duration-200 text-sm flex-shrink-0 ${
                       activeCity === city 
                         ? 'bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm' 
-                        : 'border-slate-300 dark:border-slate-600 hover:border-emerald-400 dark:hover:border-emerald-500 hover:bg-emerald-50 dark:hover:bg-emerald-900/20'
+                        : 'border-border hover:border-primary hover:bg-primary/10'
                     }`}
                   >
                     {city}
@@ -238,14 +238,14 @@ export function WishlistPage({
                 placeholder="Search wishlist..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full h-10 pl-4 pr-12 rounded-full border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 focus:border-blue-500 dark:focus:border-blue-400 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-800/30 text-sm placeholder:text-slate-500 dark:placeholder:text-slate-400"
+                className="w-full h-10 pl-4 pr-12 rounded-full border border-border bg-background focus:border-primary focus:ring-2 focus:ring-primary/20 text-sm placeholder:text-muted-foreground"
               />
               <Button
                 variant="ghost"
                 size="sm"
-                className="absolute right-2 top-1 h-8 w-8 p-0 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-full"
+                className="absolute right-2 top-1 h-8 w-8 p-0 hover:bg-muted rounded-full"
               >
-                <Filter className="h-4 w-4 text-slate-500 dark:text-slate-400" />
+                <Filter className="h-4 w-4 text-muted-foreground" />
               </Button>
             </div>
 
@@ -267,7 +267,7 @@ export function WishlistPage({
                   onClick={onRefresh}
                   variant="ghost"
                   size="sm"
-                  className="h-9 px-3 text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg text-sm font-medium border border-transparent hover:border-slate-200 dark:hover:border-slate-700 transition-all duration-200"
+                  className="h-9 px-3 text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg text-sm font-medium border border-transparent hover:border-border transition-all duration-200"
                 >
                   <RotateCcw className="h-4 w-4 mr-2" />
                   Refresh
@@ -278,7 +278,7 @@ export function WishlistPage({
                   onClick={onNavigateToMap}
                   variant="ghost"
                   size="sm"
-                  className="h-9 w-9 p-0 text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg border border-transparent hover:border-slate-200 dark:hover:border-slate-700 transition-all duration-200"
+                  className="h-9 w-9 p-0 text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg border border-transparent hover:border-border transition-all duration-200"
                   title="Map View"
                 >
                   <MapPin className="h-4 w-4" />
@@ -286,15 +286,15 @@ export function WishlistPage({
               )}
               
               {/* View Toggle */}
-              <div className="flex items-center bg-slate-50 dark:bg-slate-800/50 rounded-lg p-1 ml-1">
+              <div className="flex items-center bg-muted/50 rounded-lg p-1 ml-1">
                 <Button
                   onClick={() => setView('grid')}
                   variant="ghost"
                   size="sm"
                   className={`h-7 w-8 p-0 rounded-md transition-all duration-200 ${
                     view === 'grid' 
-                      ? 'bg-white dark:bg-slate-700 shadow-sm text-slate-900 dark:text-slate-100 border border-slate-200 dark:border-slate-600' 
-                      : 'text-slate-600 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700/50'
+                      ? 'bg-background shadow-sm text-foreground border border-border' 
+                      : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
                   }`}
                   title="Grid View"
                 >
@@ -311,8 +311,8 @@ export function WishlistPage({
                   size="sm"
                   className={`h-7 w-8 p-0 rounded-md transition-all duration-200 ${
                     view === 'list' 
-                      ? 'bg-white dark:bg-slate-700 shadow-sm text-slate-900 dark:text-slate-100 border border-slate-200 dark:border-slate-600' 
-                      : 'text-slate-600 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700/50'
+                      ? 'bg-background shadow-sm text-foreground border border-border' 
+                      : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
                   }`}
                   title="List View"
                 >
@@ -336,7 +336,7 @@ export function WishlistPage({
                     className={`rounded-full px-3 py-1.5 font-medium transition-all duration-200 text-xs flex-shrink-0 ${
                       activeCity === 'all' 
                         ? 'bg-blue-600 hover:bg-blue-700 text-white shadow-sm' 
-                        : 'border-slate-300 dark:border-slate-600 hover:border-blue-400 dark:hover:border-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20'
+                        : 'border-border hover:border-primary hover:bg-primary/10'
                     }`}
                   >
                     All Cities
@@ -351,7 +351,7 @@ export function WishlistPage({
                       className={`rounded-full px-3 py-1.5 font-medium transition-all duration-200 text-xs flex-shrink-0 ${
                         activeCity === city 
                           ? 'bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm' 
-                          : 'border-slate-300 dark:border-slate-600 hover:border-emerald-400 dark:hover:border-emerald-500 hover:bg-emerald-50 dark:hover:bg-emerald-900/20'
+                          : 'border-border hover:border-primary hover:bg-primary/10'
                       }`}
                     >
                       {city}

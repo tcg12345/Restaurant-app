@@ -692,7 +692,7 @@ export function HotelFlightSection({
           setIsHotelDetailsOpen(open);
         }}
       >
-        <DialogContent overlayClassName="bg-transparent" className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto fixed z-[100] bg-white dark:bg-gray-900 border shadow-lg">
+        <DialogContent overlayClassName="bg-transparent" className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto fixed z-[100] bg-background border shadow-lg">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               <Hotel className="w-5 h-5 text-blue-600" />
@@ -894,7 +894,7 @@ export function HotelFlightSection({
                       <h5 className="text-sm font-medium text-green-700 dark:text-green-300">Available Deals</h5>
                       <div className="space-y-2 max-h-48 overflow-y-auto">
                         {bookingOffers.slice(0, 5).map((offer, index) => (
-                          <div key={index} className="p-3 bg-white dark:bg-green-950/40 rounded-lg border border-green-200 dark:border-green-800/50">
+                          <div key={index} className="p-3 bg-card rounded-lg border border-green-200 dark:border-green-800/50">
                             <div className="flex items-center justify-between">
                               <div>
                                 <div className="text-sm font-medium">{offer.partner_name || 'Booking Partner'}</div>
@@ -1044,26 +1044,26 @@ export function HotelFlightSection({
 
                   {/* Flight Details */}
                   <div className="space-y-4">
-                    <div className="p-4 bg-gray-50 dark:bg-gray-800/50 rounded-lg">
-                      <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-3">Flight Information</h4>
+                    <div className="p-4 bg-muted/50 rounded-lg">
+                      <h4 className="font-semibold text-foreground mb-3">Flight Information</h4>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="space-y-2">
                           <div className="flex justify-between">
-                            <span className="text-sm text-gray-600 dark:text-gray-400">Airline:</span>
+                            <span className="text-sm text-muted-foreground">Airline:</span>
                             <span className="text-sm font-medium">{selectedFlight.airline}</span>
                           </div>
                           <div className="flex justify-between">
-                            <span className="text-sm text-gray-600 dark:text-gray-400">Flight Number:</span>
+                            <span className="text-sm text-muted-foreground">Flight Number:</span>
                             <span className="text-sm font-mono font-medium">{selectedFlight.flightNumber}</span>
                           </div>
                         </div>
                         <div className="space-y-2">
                           <div className="flex justify-between">
-                            <span className="text-sm text-gray-600 dark:text-gray-400">Departure:</span>
+                            <span className="text-sm text-muted-foreground">Departure:</span>
                             <span className="text-sm">{selectedFlight.departure?.time} - {selectedFlight.departure?.airport}</span>
                           </div>
                           <div className="flex justify-between">
-                            <span className="text-sm text-gray-600 dark:text-gray-400">Arrival:</span>
+                            <span className="text-sm text-muted-foreground">Arrival:</span>
                             <span className="text-sm">{selectedFlight.arrival?.time} - {selectedFlight.arrival?.airport}</span>
                           </div>
                         </div>
@@ -1080,7 +1080,7 @@ export function HotelFlightSection({
                        </div>
                        
                        <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-4">
-                         <div className="text-center p-3 bg-white/50 dark:bg-gray-800/50 rounded-lg">
+                         <div className="text-center p-3 bg-card/50 rounded-lg">
                            <div className="flex items-center justify-center gap-1 mb-1">
                              {flightStats.onTimePerformance.onTimePercentage >= 80 ? (
                                <CheckCircle className="w-4 h-4 text-green-600" />
@@ -1089,7 +1089,7 @@ export function HotelFlightSection({
                              ) : (
                                <AlertCircle className="w-4 h-4 text-red-600" />
                              )}
-                             <span className="text-xs text-gray-600 dark:text-gray-400">On Time</span>
+                             <span className="text-xs text-muted-foreground">On Time</span>
                            </div>
                            <div className={`text-lg font-bold ${
                              flightStats.onTimePerformance.onTimePercentage >= 80 
@@ -1102,20 +1102,20 @@ export function HotelFlightSection({
                            </div>
                          </div>
                          
-                         <div className="text-center p-3 bg-white/50 dark:bg-gray-800/50 rounded-lg">
+                         <div className="text-center p-3 bg-card/50 rounded-lg">
                            <div className="flex items-center justify-center gap-1 mb-1">
                              <Info className="w-4 h-4 text-blue-600" />
-                             <span className="text-xs text-gray-600 dark:text-gray-400">Avg Delay</span>
+                             <span className="text-xs text-muted-foreground">Avg Delay</span>
                            </div>
                            <div className="text-lg font-bold text-blue-700 dark:text-blue-300">
                              {flightStats.onTimePerformance.averageDelayMinutes}m
                            </div>
                          </div>
                          
-                         <div className="text-center p-3 bg-white/50 dark:bg-gray-800/50 rounded-lg">
+                         <div className="text-center p-3 bg-card/50 rounded-lg">
                            <div className="flex items-center justify-center gap-1 mb-1">
                              <Star className="w-4 h-4 text-purple-600" />
-                             <span className="text-xs text-gray-600 dark:text-gray-400">Rating</span>
+                             <span className="text-xs text-muted-foreground">Rating</span>
                            </div>
                            <div className="text-sm font-bold text-purple-700 dark:text-purple-300">
                              {flightStats.onTimePerformance.reliability}
@@ -1123,7 +1123,7 @@ export function HotelFlightSection({
                          </div>
                        </div>
                        
-                       <div className="text-xs text-gray-500 dark:text-gray-400 border-t border-gray-200 dark:border-gray-600 pt-2">
+                       <div className="text-xs text-muted-foreground border-t border-border pt-2">
                          <div className="flex justify-between items-center">
                            <span>Cancellation Rate: {flightStats.onTimePerformance.cancellationRate}%</span>
                            <span>Data: Last 12 months</span>
@@ -1140,7 +1140,7 @@ export function HotelFlightSection({
                           <h4 className="font-semibold text-blue-900 dark:text-blue-100">Delay Prediction</h4>
                         </div>
                         
-                        <div className="bg-white/50 dark:bg-gray-800/50 rounded-lg p-4">
+                        <div className="bg-card/50 rounded-lg p-4">
                           <div className="flex items-start gap-3">
                             {flightStats.delayPrediction.result?.prediction === 'LESS_THAN_30_MINUTES' && (
                               <CheckCircle className="w-6 h-6 text-green-500 mt-0.5 flex-shrink-0" />
@@ -1182,10 +1182,10 @@ export function HotelFlightSection({
                     )}
                     
                     {isStatsLoading && (
-                      <div className="p-4 bg-gray-50 dark:bg-gray-800/50 rounded-lg">
+                      <div className="p-4 bg-muted/50 rounded-lg">
                         <div className="flex items-center gap-2">
                           <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-purple-600"></div>
-                          <span className="text-sm text-gray-600 dark:text-gray-400">Loading flight performance data...</span>
+                          <span className="text-sm text-muted-foreground">Loading flight performance data...</span>
                         </div>
                       </div>
                     )}
@@ -1517,7 +1517,7 @@ export function HotelFlightSection({
           setIsHotelDetailsOpen(open);
         }}
       >
-        <DialogContent overlayClassName="bg-transparent" className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto fixed z-[100] bg-white dark:bg-gray-900 border shadow-lg">
+        <DialogContent overlayClassName="bg-transparent" className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto fixed z-[100] bg-background border shadow-lg">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               <Hotel className="w-5 h-5 text-blue-600" />
@@ -1685,7 +1685,7 @@ export function HotelFlightSection({
                   {bookingOffers.length > 0 && <div className="space-y-2">
                       <h5 className="text-sm font-medium text-green-700 dark:text-green-300">Available Deals</h5>
                       <div className="space-y-2 max-h-48 overflow-y-auto">
-                        {bookingOffers.slice(0, 5).map((offer, index) => <div key={index} className="p-3 bg-white dark:bg-green-950/40 rounded-lg border border-green-200 dark:border-green-800/50">
+                        {bookingOffers.slice(0, 5).map((offer, index) => <div key={index} className="p-3 bg-card rounded-lg border border-green-200 dark:border-green-800/50">
                             <div className="flex items-center justify-between">
                               <div>
                                 <div className="text-sm font-medium">{offer.partner_name || 'Booking Partner'}</div>
@@ -1823,7 +1823,7 @@ export function HotelFlightSection({
                       </div>
                       
                       <div className="grid grid-cols-3 gap-4 mb-4">
-                        <div className="text-center p-3 bg-white/50 dark:bg-gray-800/50 rounded-lg">
+                        <div className="text-center p-3 bg-card/50 rounded-lg">
                           <div className="flex items-center justify-center gap-1 mb-1">
                             {flightStats.onTimePerformance.onTimePercentage >= 80 ? (
                               <CheckCircle className="w-4 h-4 text-green-600" />
@@ -1832,7 +1832,7 @@ export function HotelFlightSection({
                             ) : (
                               <AlertCircle className="w-4 h-4 text-red-600" />
                             )}
-                            <span className="text-xs text-gray-600 dark:text-gray-400">On Time</span>
+                            <span className="text-xs text-muted-foreground">On Time</span>
                           </div>
                           <div className={`text-lg font-bold ${
                             flightStats.onTimePerformance.onTimePercentage >= 80 
@@ -1845,20 +1845,20 @@ export function HotelFlightSection({
                           </div>
                         </div>
                         
-                        <div className="text-center p-3 bg-white/50 dark:bg-gray-800/50 rounded-lg">
+                        <div className="text-center p-3 bg-card/50 rounded-lg">
                           <div className="flex items-center justify-center gap-1 mb-1">
                             <Info className="w-4 h-4 text-blue-600" />
-                            <span className="text-xs text-gray-600 dark:text-gray-400">Avg Delay</span>
+                            <span className="text-xs text-muted-foreground">Avg Delay</span>
                           </div>
                           <div className="text-lg font-bold text-blue-700 dark:text-blue-300">
                             {flightStats.onTimePerformance.averageDelayMinutes}m
                           </div>
                         </div>
                         
-                        <div className="text-center p-3 bg-white/50 dark:bg-gray-800/50 rounded-lg">
+                        <div className="text-center p-3 bg-card/50 rounded-lg">
                           <div className="flex items-center justify-center gap-1 mb-1">
                             <Star className="w-4 h-4 text-purple-600" />
-                            <span className="text-xs text-gray-600 dark:text-gray-400">Rating</span>
+                            <span className="text-xs text-muted-foreground">Rating</span>
                           </div>
                           <div className="text-sm font-bold text-purple-700 dark:text-purple-300">
                             {flightStats.onTimePerformance.reliability}
@@ -1866,7 +1866,7 @@ export function HotelFlightSection({
                         </div>
                       </div>
                       
-                      <div className="text-xs text-gray-500 dark:text-gray-400 border-t border-gray-200 dark:border-gray-600 pt-2">
+                      <div className="text-xs text-muted-foreground border-t border-border pt-2">
                         <div className="flex justify-between items-center">
                           <span>Cancellation Rate: {flightStats.onTimePerformance.cancellationRate}%</span>
                           <span>Data: Last 12 months</span>
@@ -1882,7 +1882,7 @@ export function HotelFlightSection({
                           <h4 className="font-semibold text-blue-900 dark:text-blue-100">Delay Prediction</h4>
                         </div>
                         
-                        <div className="bg-white/50 dark:bg-gray-800/50 rounded-lg p-4">
+                        <div className="bg-card/50 rounded-lg p-4">
                           <div className="flex items-start gap-3">
                             {flightStats.delayPrediction.result?.prediction === 'LESS_THAN_30_MINUTES' && (
                               <CheckCircle className="w-6 h-6 text-green-500 mt-0.5 flex-shrink-0" />
@@ -1926,10 +1926,10 @@ export function HotelFlightSection({
                 )}
 
                 {isStatsLoading && (
-                  <div className="p-4 bg-gray-50 dark:bg-gray-800/50 rounded-lg">
+                  <div className="p-4 bg-muted/50 rounded-lg">
                     <div className="flex items-center gap-2">
                       <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-purple-600"></div>
-                      <span className="text-sm text-gray-600 dark:text-gray-400">Loading flight performance data...</span>
+                      <span className="text-sm text-muted-foreground">Loading flight performance data...</span>
                     </div>
                   </div>
                 )}
@@ -1992,7 +1992,7 @@ export function HotelFlightSection({
           style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, zIndex: 9999 }}
         >
           <div 
-            className="bg-white rounded-lg p-6 w-full max-w-md mx-4 max-h-[90vh] overflow-y-auto"
+            className="bg-background rounded-lg p-6 w-full max-w-md mx-4 max-h-[90vh] overflow-y-auto"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex justify-between items-center mb-4">
@@ -2002,7 +2002,7 @@ export function HotelFlightSection({
                   setShowEditModal(false);
                   setEditingHotel(null);
                 }}
-                className="text-gray-500 hover:text-gray-700 text-2xl"
+                className="text-muted-foreground hover:text-foreground text-2xl"
               >
                 ×
               </button>
@@ -2011,7 +2011,7 @@ export function HotelFlightSection({
             <div className="space-y-4">
               <div>
                 <label className="block text-sm font-medium mb-1">Hotel</label>
-                <p className="text-sm text-gray-600">{editingHotel.hotel.name}</p>
+                <p className="text-sm text-muted-foreground">{editingHotel.hotel.name}</p>
               </div>
               
               <div>
@@ -2020,7 +2020,7 @@ export function HotelFlightSection({
                   type="text"
                   defaultValue={editingHotel.totalCost || ''}
                   placeholder="e.g., $500/night"
-                  className="w-full p-2 border border-gray-300 rounded-md"
+                  className="w-full p-2 border border-border rounded-md"
                   id="totalCost"
                 />
               </div>
@@ -2031,7 +2031,7 @@ export function HotelFlightSection({
                   type="text"
                   defaultValue={editingHotel.confirmationNumber || ''}
                   placeholder="Booking confirmation"
-                  className="w-full p-2 border border-gray-300 rounded-md"
+                  className="w-full p-2 border border-border rounded-md"
                   id="confirmationNumber"
                 />
               </div>
@@ -2042,7 +2042,7 @@ export function HotelFlightSection({
                   type="text"
                   defaultValue={editingHotel.roomType || ''}
                   placeholder="e.g., Deluxe King"
-                  className="w-full p-2 border border-gray-300 rounded-md"
+                  className="w-full p-2 border border-border rounded-md"
                   id="roomType"
                 />
               </div>
@@ -2052,7 +2052,7 @@ export function HotelFlightSection({
                 <textarea 
                   defaultValue={editingHotel.specialRequests || ''}
                   placeholder="Any special requests..."
-                  className="w-full p-2 border border-gray-300 rounded-md"
+                  className="w-full p-2 border border-border rounded-md"
                   rows={2}
                   id="specialRequests"
                 />
@@ -2063,7 +2063,7 @@ export function HotelFlightSection({
                 <textarea 
                   defaultValue={editingHotel.notes || ''}
                   placeholder="Personal notes..."
-                  className="w-full p-2 border border-gray-300 rounded-md"
+                  className="w-full p-2 border border-border rounded-md"
                   rows={2}
                   id="notes"
                 />
@@ -2104,7 +2104,7 @@ export function HotelFlightSection({
                   setShowEditModal(false);
                   setEditingHotel(null);
                 }}
-                className="flex-1 bg-gray-300 text-gray-700 py-2 px-4 rounded-md hover:bg-gray-400"
+                className="flex-1 bg-muted text-muted-foreground py-2 px-4 rounded-md hover:bg-muted/80"
               >
                 Cancel
               </button>

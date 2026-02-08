@@ -13,8 +13,8 @@ export function OpeningHoursDisplay({ hours, className = "" }: OpeningHoursDispl
     return (
       <div className={`${className}`}>
         <div className="flex items-center gap-3">
-          <Clock className="h-5 w-5 text-gray-400" />
-          <span className="text-gray-400">Hours not available</span>
+          <Clock className="h-5 w-5 text-muted-foreground" />
+          <span className="text-muted-foreground">Hours not available</span>
         </div>
       </div>
     );
@@ -60,10 +60,10 @@ export function OpeningHoursDisplay({ hours, className = "" }: OpeningHoursDispl
       {/* Header - Current Status */}
       <button
         onClick={() => setIsExpanded(!isExpanded)}
-        className="w-full flex items-center justify-between hover:bg-gray-800/30 transition-all duration-200 rounded-lg group"
+        className="w-full flex items-center justify-between hover:bg-muted/30 transition-all duration-200 rounded-lg group"
       >
         <div className="flex items-center gap-3">
-          <Clock className="h-5 w-5 text-gray-400 group-hover:text-white transition-colors" />
+          <Clock className="h-5 w-5 text-muted-foreground group-hover:text-foreground transition-colors" />
           <div className="flex items-center gap-3">
             <span className={`text-sm font-semibold px-2 py-1 rounded-full ${
               isOpen 
@@ -72,16 +72,16 @@ export function OpeningHoursDisplay({ hours, className = "" }: OpeningHoursDispl
             }`}>
               {isOpen ? 'Open' : 'Closed'}
             </span>
-            <span className="text-gray-400">•</span>
-            <span className="text-sm text-gray-300 font-medium">{todayTime}</span>
+            <span className="text-muted-foreground">•</span>
+            <span className="text-sm text-muted-foreground font-medium">{todayTime}</span>
           </div>
         </div>
-        <ChevronDown className={`h-4 w-4 text-gray-400 group-hover:text-white transition-all duration-200 ${isExpanded ? 'rotate-180' : ''}`} />
+        <ChevronDown className={`h-4 w-4 text-muted-foreground group-hover:text-foreground transition-all duration-200 ${isExpanded ? 'rotate-180' : ''}`} />
       </button>
 
       {/* Expanded Hours List */}
       {isExpanded && (
-        <div className="border-t border-gray-700/50 pt-3 mt-3">
+        <div className="border-t border-border pt-3 mt-3">
           <div className="space-y-1">
             {hours.map((hour, index) => {
               const day = getDayName(hour);
@@ -94,16 +94,16 @@ export function OpeningHoursDisplay({ hours, className = "" }: OpeningHoursDispl
                   className={`flex justify-between items-center py-2 px-3 rounded-lg transition-colors ${
                     isToday 
                       ? 'bg-blue-500/10 border border-blue-500/20' 
-                      : 'hover:bg-gray-800/20'
+                      : 'hover:bg-muted/20'
                   }`}
                 >
                   <span className={`text-sm font-medium ${
-                    isToday ? 'text-blue-400' : 'text-gray-300'
+                    isToday ? 'text-blue-400' : 'text-muted-foreground'
                   }`}>
                     {day}
                   </span>
                   <span className={`text-sm ${
-                    isToday ? 'text-blue-400 font-medium' : 'text-gray-400'
+                    isToday ? 'text-blue-400 font-medium' : 'text-muted-foreground'
                   }`}>
                     {time}
                   </span>

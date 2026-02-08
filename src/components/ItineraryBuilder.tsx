@@ -1041,22 +1041,22 @@ export function ItineraryBuilder({
     if (isMobile) {
       return <div className="min-h-screen bg-background">
           {/* Premium Header Section */}
-          <div className="bg-slate-900/70 backdrop-blur-xl border-b border-slate-700/30">
+          <div className="bg-card backdrop-blur-xl border-b border-border">
             <div className="px-6 py-6 flex items-start justify-between">
               <div className="flex-1">
                 <h1 className="text-2xl font-semibold text-white mb-2 tracking-tight">
                   Plan Your Trip
                 </h1>
                 <div className="h-px bg-gradient-to-r from-blue-500/60 via-blue-400/40 to-transparent w-32 mb-3"></div>
-                <p className="text-sm text-slate-400 font-normal">
+                <p className="text-sm text-muted-foreground font-normal">
                   Create your perfect itinerary
                 </p>
               </div>
               
               {/* Premium Icon Button */}
-              <Button variant="ghost" size="sm" className="flex items-center gap-2 h-10 px-3 rounded-xl bg-slate-800/50 border border-slate-700/50 hover:bg-slate-700/50 hover:border-blue-500/30 transition-all duration-200 shadow-lg backdrop-blur-sm" onClick={() => navigate('/saved-itineraries')}>
+              <Button variant="ghost" size="sm" className="flex items-center gap-2 h-10 px-3 rounded-xl bg-muted border border-border hover:bg-muted/80 hover:border-blue-500/30 transition-all duration-200 shadow-lg backdrop-blur-sm" onClick={() => navigate('/saved-itineraries')}>
                 <BookOpen className="w-4 h-4 text-blue-400" />
-                <span className="text-sm font-medium text-slate-300">Saved</span>
+                <span className="text-sm font-medium text-muted-foreground">Saved</span>
               </Button>
             </div>
           </div>
@@ -1064,14 +1064,14 @@ export function ItineraryBuilder({
           {/* Premium Content Container */}
           <div className="flex-1 overflow-y-auto px-3 py-8">
             {/* Premium Search Card */}
-            <div className="bg-slate-800/40 backdrop-blur-xl rounded-2xl border border-slate-700/30 shadow-2xl shadow-blue-500/5 p-6 mb-6">
+            <div className="bg-card backdrop-blur-xl rounded-2xl border border-border shadow-2xl shadow-blue-500/5 p-6 mb-6">
               <div className="space-y-4">
                 {/* Premium Search Input - conditionally rendered */}
                 {showSearchBox && <div className="relative">
                     <div className="absolute left-4 top-1/2 transform -translate-y-1/2 z-10">
                       <MapPin className="w-5 h-5 text-blue-400" />
                     </div>
-                    <AmadeusCitySearch value={currentLocationSearch} onChange={setCurrentLocationSearch} onCitySelect={handleLocationSelect} placeholder="Where to?" className="w-full h-14 pl-12 pr-4 text-base rounded-xl border border-slate-600/50 bg-slate-900/50 backdrop-blur-sm shadow-inner text-white placeholder:text-slate-400 focus:bg-slate-900/70 focus:border-blue-500/50 focus:ring-2 focus:ring-blue-500/20 transition-all duration-200 font-medium" />
+                    <AmadeusCitySearch value={currentLocationSearch} onChange={setCurrentLocationSearch} onCitySelect={handleLocationSelect} placeholder="Where to?" className="w-full h-14 pl-12 pr-4 text-base rounded-xl border border-border bg-card backdrop-blur-sm shadow-inner text-foreground placeholder:text-muted-foreground focus:bg-card focus:border-blue-500/50 focus:ring-2 focus:ring-blue-500/20 transition-all duration-200 font-medium" />
                     <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-blue-500/5 to-transparent pointer-events-none"></div>
                   </div>}
                 
@@ -1087,7 +1087,7 @@ export function ItineraryBuilder({
                       searchInput.focus();
                     }
                   }, 100);
-                }} className="inline-flex items-center space-x-2 bg-slate-900/50 backdrop-blur-sm rounded-full px-4 py-2 border border-slate-600/30 hover:bg-slate-800/50 hover:border-blue-500/30 transition-all duration-200">
+                }} className="inline-flex items-center space-x-2 bg-card backdrop-blur-sm rounded-full px-4 py-2 border border-border hover:bg-muted hover:border-blue-500/30 transition-all duration-200">
                       <Plus className="w-4 h-4" />
                       <span className="text-sm font-medium">Add Another City</span>
                     </Button>
@@ -1553,10 +1553,10 @@ export function ItineraryBuilder({
                     <div className="space-y-3">
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
-                          <div className="p-1.5 border border-gray-200 dark:border-slate-600 rounded-lg">
-                            <Calendar className="w-4 h-4 text-gray-600 dark:text-gray-300" />
+                          <div className="p-1.5 border border-border rounded-lg">
+                            <Calendar className="w-4 h-4 text-muted-foreground" />
                           </div>
-                          <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Travel Period</h3>
+                          <h3 className="text-lg font-semibold text-foreground">Travel Period</h3>
                         </div>
                         {!(wasCreatedWithLengthOfStay || useLengthOfStay || Object.keys(locationLengthOfStay).some(id => locationLengthOfStay[id])) && <div className="shrink-0">
                             <DateRangePicker startDate={dateRange.start} endDate={dateRange.end} onDateRangeChange={handleDateRangeChange} />
@@ -1565,39 +1565,39 @@ export function ItineraryBuilder({
                       
                       <div className="space-y-2">
                         {dateRange.start && dateRange.end ? <>
-                            {wasCreatedWithLengthOfStay || useLengthOfStay || Object.keys(locationLengthOfStay).some(id => locationLengthOfStay[id]) ? <div className="text-2xl font-bold text-gray-900 dark:text-white">{tripDays} {tripDays === 1 ? 'Night' : 'Nights'}</div> : <>
-                                <div className="text-xl font-semibold text-gray-900 dark:text-white">
+                            {wasCreatedWithLengthOfStay || useLengthOfStay || Object.keys(locationLengthOfStay).some(id => locationLengthOfStay[id]) ? <div className="text-2xl font-bold text-foreground">{tripDays} {tripDays === 1 ? 'Night' : 'Nights'}</div> : <>
+                                <div className="text-xl font-semibold text-foreground">
                                   {format(dateRange.start, 'MMM do')} – {format(dateRange.end, 'MMM do')}
                                 </div>
                                 <div className="inline-flex items-center px-3 py-1 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-full text-sm font-medium text-blue-700 dark:text-blue-300">
                                   {tripDays} {tripDays === 1 ? 'day' : 'days'} total
                                 </div>
                               </>}
-                          </> : <div className="text-gray-500 dark:text-gray-400">Tap to select your travel dates</div>}
+                          </> : <div className="text-muted-foreground">Tap to select your travel dates</div>}
                       </div>
                     </div>
                     
                     {/* Divider */}
-                    <div className="h-px bg-gray-200 dark:bg-slate-700"></div>
+                    <div className="h-px bg-border"></div>
                     
                     {/* Destinations Section */}
                     {currentItinerary?.locations && currentItinerary.locations.length > 0 && <div className="space-y-3">
-                        <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Destinations</h3>
+                        <h3 className="text-lg font-semibold text-foreground">Destinations</h3>
                         <div className="flex flex-wrap gap-2">
-                          {currentItinerary.locations.map(location => <div key={location.id} className="inline-flex items-center gap-2 px-3 py-1.5 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-600 rounded-full text-sm font-medium text-gray-700 dark:text-gray-300">
+                          {currentItinerary.locations.map(location => <div key={location.id} className="inline-flex items-center gap-2 px-3 py-1.5 bg-muted/50 border border-border rounded-full text-sm font-medium text-muted-foreground">
                               <div className="w-1.5 h-1.5 bg-blue-500 rounded-full"></div>
                               {location.name}
-                              {location.iataCode && <span className="text-gray-500 dark:text-gray-400">({location.iataCode})</span>}
+                              {location.iataCode && <span className="text-muted-foreground">({location.iataCode})</span>}
                             </div>)}
                         </div>
                       </div>}
                     
                     {/* Divider */}
-                    <div className="h-px bg-gray-200 dark:bg-slate-700"></div>
+                    <div className="h-px bg-border"></div>
                     
                     {/* Quick Actions Section */}
                     <div className="space-y-4">
-                      <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Quick Actions</h3>
+                      <h3 className="text-lg font-semibold text-foreground">Quick Actions</h3>
                       
                       <div className="grid grid-cols-2 gap-3">
                         <button onClick={() => setIsSaveDialogOpen(true)} className="flex items-center justify-center gap-2 px-4 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors duration-200">
@@ -1605,12 +1605,12 @@ export function ItineraryBuilder({
                           {currentItinerary?.id ? 'Update' : 'Save'}
                         </button>
                         
-                        <button onClick={() => setIsShareDialogOpen(true)} className="flex items-center justify-center gap-2 px-4 py-3 border border-gray-200 dark:border-slate-600 hover:bg-gray-50 dark:hover:bg-slate-800 text-gray-700 dark:text-gray-300 rounded-lg font-medium transition-colors duration-200">
+                        <button onClick={() => setIsShareDialogOpen(true)} className="flex items-center justify-center gap-2 px-4 py-3 border border-border hover:bg-muted/50 text-muted-foreground rounded-lg font-medium transition-colors duration-200">
                           <Share2 className="w-4 h-4" />
                           Share
                         </button>
                         
-                        <button onClick={() => setIsExportDialogOpen(true)} className="flex items-center justify-center gap-2 px-4 py-3 border border-gray-200 dark:border-slate-600 hover:bg-gray-50 dark:hover:bg-slate-800 text-gray-700 dark:text-gray-300 rounded-lg font-medium transition-colors duration-200">
+                        <button onClick={() => setIsExportDialogOpen(true)} className="flex items-center justify-center gap-2 px-4 py-3 border border-border hover:bg-muted/50 text-muted-foreground rounded-lg font-medium transition-colors duration-200">
                           <Download className="w-4 h-4" />
                           Export
                         </button>
@@ -1632,7 +1632,7 @@ export function ItineraryBuilder({
                         setLocationLengthOfStay({});
                         setLocationNights({});
                         setWasCreatedWithLengthOfStay(false);
-                      }} className="flex items-center justify-center gap-2 px-4 py-3 border border-gray-200 dark:border-slate-600 hover:bg-gray-50 dark:hover:bg-slate-800 text-gray-700 dark:text-gray-300 rounded-lg font-medium transition-colors duration-200">
+                      }} className="flex items-center justify-center gap-2 px-4 py-3 border border-border hover:bg-muted/50 text-muted-foreground rounded-lg font-medium transition-colors duration-200">
                           <Plus className="w-4 h-4" />
                           New
                         </button>

@@ -577,14 +577,14 @@ export function UnifiedRestaurantDetails({
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gray-950 pt-safe-area-top">
-        <div className="h-48 bg-gray-800 animate-pulse"></div>
+      <div className="min-h-screen bg-background pt-safe-area-top">
+        <div className="h-48 bg-muted animate-pulse"></div>
         <div className="p-4 space-y-4">
-          <div className="h-6 bg-gray-800 animate-pulse rounded w-3/4"></div>
-          <div className="h-4 bg-gray-800 animate-pulse rounded w-1/2"></div>
+          <div className="h-6 bg-muted animate-pulse rounded w-3/4"></div>
+          <div className="h-4 bg-muted animate-pulse rounded w-1/2"></div>
           <div className="space-y-2">
-            <div className="h-4 bg-gray-800 animate-pulse rounded"></div>
-            <div className="h-4 bg-gray-800 animate-pulse rounded w-2/3"></div>
+            <div className="h-4 bg-muted animate-pulse rounded"></div>
+            <div className="h-4 bg-muted animate-pulse rounded w-2/3"></div>
           </div>
         </div>
       </div>
@@ -593,7 +593,7 @@ export function UnifiedRestaurantDetails({
 
   return (
     <>
-      <div className="min-h-screen bg-gray-950 pt-safe-area-top">
+      <div className="min-h-screen bg-background pt-safe-area-top">
         {/* Hero Section with Cover Photo */}
         <div className="relative h-[300px] w-full overflow-hidden">
           {hasHeroPhoto && !heroLoadError ? (
@@ -671,11 +671,11 @@ export function UnifiedRestaurantDetails({
         </div>
 
         {/* Content */}
-        <div className="relative bg-gray-950 -mt-4 rounded-t-3xl pt-6">
+        <div className="relative bg-background -mt-4 rounded-t-3xl pt-6">
           {/* Restaurant metadata */}
           <div className="px-4 mb-6">
             <div className="flex items-center gap-3 flex-wrap mb-4">
-              <span className="text-gray-300 text-base">{restaurantData.cuisine}</span>
+              <span className="text-muted-foreground text-base">{restaurantData.cuisine}</span>
               <span className="text-green-400 font-semibold text-base">
                 {getPriceDisplay(restaurantData.priceRange || restaurantData.price_range)}
               </span>
@@ -697,7 +697,7 @@ export function UnifiedRestaurantDetails({
                   className={`flex-1 flex items-center gap-2 ${
                     isOnWishlist 
                       ? 'bg-red-500/20 border-red-500 text-red-400 hover:bg-red-500/30' 
-                      : 'bg-gray-900/50 border-gray-700 text-white hover:bg-gray-800'
+                      : 'bg-card border-border text-foreground hover:bg-muted'
                   }`}
                   disabled={isAdding || isOnWishlist}
                 >
@@ -707,7 +707,7 @@ export function UnifiedRestaurantDetails({
                 <Button
                   onClick={handleAddToRatedList}
                   variant="outline"
-                  className="flex-1 flex items-center gap-2 bg-gray-900/50 border-gray-700 text-white hover:bg-gray-800"
+                  className="flex-1 flex items-center gap-2 bg-card border-border text-foreground hover:bg-muted"
                 >
                   <Plus className="h-4 w-4" />
                   Add to List
@@ -720,23 +720,23 @@ export function UnifiedRestaurantDetails({
           {deferCommunity && restaurantData.place_id && (
             <div className="px-4 mb-6">
               <div className="grid grid-cols-2 gap-3">
-                <Card className="bg-gray-900/50 border-gray-800 cursor-pointer hover:bg-gray-900/70 transition-colors">
+                <Card className="bg-card border-border cursor-pointer hover:bg-muted transition-colors">
                   <CardContent className="p-4 text-center">
                     <div className="flex items-center justify-center gap-2 mb-2">
                       <Users className="h-4 w-4 text-blue-400" />
-                      <span className="text-sm font-medium text-gray-300">Friends</span>
+                      <span className="text-sm font-medium text-muted-foreground">Friends</span>
                     </div>
                     <div className="text-xl font-bold text-white mb-1">
                       {isLoadingStats ? '—' : friendStats.count || 0}
                     </div>
-                    <p className="text-xs text-gray-400">
+                    <p className="text-xs text-muted-foreground">
                       {friendStats.count === 0 ? 'Be the first to review' : 'reviews'}
                     </p>
                   </CardContent>
                 </Card>
 
                 <Card 
-                  className="bg-gray-900/50 border-gray-800 cursor-pointer hover:bg-gray-900/70 transition-colors"
+                  className="bg-card border-border cursor-pointer hover:bg-muted transition-colors"
                   onClick={() => {
                     if (expertStats.count > 0) {
                       navigate(`/restaurant/${restaurantData.place_id || restaurantData.id}/expert-ratings?name=${encodeURIComponent(restaurantData.name)}`);
@@ -746,12 +746,12 @@ export function UnifiedRestaurantDetails({
                   <CardContent className="p-4 text-center">
                     <div className="flex items-center justify-center gap-2 mb-2">
                       <Award className="h-4 w-4 text-amber-400" />
-                      <span className="text-sm font-medium text-gray-300">Experts</span>
+                      <span className="text-sm font-medium text-muted-foreground">Experts</span>
                     </div>
                     <div className="text-xl font-bold text-white mb-1">
                       {isLoadingStats ? '—' : expertStats.count || 0}
                     </div>
-                    <p className="text-xs text-gray-400">
+                    <p className="text-xs text-muted-foreground">
                       {expertStats.count === 0 ? 'Be the first to review' : 'reviews'}
                     </p>
                   </CardContent>
@@ -824,21 +824,21 @@ export function UnifiedRestaurantDetails({
           {/* Address & Hours - Card Layout */}
           <div className="px-4 mb-6 space-y-3">
             {/* Address Card */}
-            <Card className="bg-gray-900/50 border-gray-800">
+            <Card className="bg-card border-border">
               <CardContent className="p-4">
                 <div className="flex items-start gap-3">
-                  <MapPin className="h-5 w-5 text-gray-400 mt-0.5 flex-shrink-0" />
+                  <MapPin className="h-5 w-5 text-muted-foreground mt-0.5 flex-shrink-0" />
                   <div className="flex-1">
                     <p className="text-sm font-medium text-white mb-1">Address</p>
-                    <p className="text-sm text-gray-300">{restaurantData.address}</p>
+                    <p className="text-sm text-muted-foreground">{restaurantData.address}</p>
                     {restaurantData.city && (
-                      <p className="text-sm text-gray-400">{restaurantData.city}</p>
+                      <p className="text-sm text-muted-foreground">{restaurantData.city}</p>
                     )}
                   </div>
                   <Button 
                     variant="ghost" 
                     size="sm" 
-                    className="text-gray-400 hover:text-white"
+                    className="text-muted-foreground hover:text-foreground"
                     onClick={() => {
                       const fullAddress = `${restaurantData.address}${restaurantData.city ? `, ${restaurantData.city}` : ''}`;
                       navigator.clipboard.writeText(fullAddress);
@@ -852,7 +852,7 @@ export function UnifiedRestaurantDetails({
             </Card>
 
             {/* Hours Card */}
-            <Card className="bg-gray-900/50 border-gray-800">
+            <Card className="bg-card border-border">
               <CardContent className="p-4">
                 <OpeningHoursDisplay 
                   hours={getOpeningHours()} 
@@ -866,7 +866,7 @@ export function UnifiedRestaurantDetails({
           {restaurantData.latitude && restaurantData.longitude && (
             <div className="px-4 mb-6">
               <h3 className="text-lg font-semibold text-white mb-3">Location</h3>
-              <Card className="bg-gray-900/50 border-gray-800 overflow-hidden">
+              <Card className="bg-card border-border overflow-hidden">
                 <div ref={mapRef} className="h-60">
                   {showMap && (
                     <RestaurantLocationMap 

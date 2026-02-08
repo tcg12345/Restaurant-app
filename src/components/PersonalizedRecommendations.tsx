@@ -461,7 +461,7 @@ export function PersonalizedRecommendations() {
           {!isLoading && recommendations.length > 0 && (
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
               {recommendations.map((place) => (
-                <Card key={place.place_id} className="bg-gray-900 border-gray-800 text-white hover:shadow-xl transition-shadow cursor-pointer">
+                <Card key={place.place_id} className="bg-card border-border text-foreground hover:shadow-xl transition-shadow cursor-pointer">
                   <CardContent className="p-4">
                     {/* Header with restaurant name and heart icon */}
                     <div className="flex items-start justify-between mb-3">
@@ -471,7 +471,7 @@ export function PersonalizedRecommendations() {
                       <Button
                         size="icon"
                         variant="ghost"
-                        className="h-8 w-8 text-gray-400 hover:text-red-500 transition-colors flex-shrink-0"
+                        className="h-8 w-8 text-muted-foreground hover:text-red-500 transition-colors flex-shrink-0"
                         onClick={() => handleAddToWishlist(place)}
                         disabled={addingToWishlist[place.place_id]}
                       >
@@ -485,7 +485,7 @@ export function PersonalizedRecommendations() {
                         <Star className="h-4 w-4 text-yellow-500 fill-current" />
                         <span className="text-lg font-semibold text-white">{place.rating}</span>
                         {place.user_ratings_total && (
-                          <span className="text-gray-400 text-sm">
+                          <span className="text-muted-foreground text-sm">
                             ({place.user_ratings_total})
                           </span>
                         )}
@@ -502,8 +502,8 @@ export function PersonalizedRecommendations() {
                     {/* Opening Hours */}
                     {(place.opening_hours?.open_now !== undefined || getCurrentDayHours(place)) && (
                       <div className="flex items-center gap-2 mb-3">
-                        <Clock className="h-4 w-4 text-gray-400" />
-                        <span className="text-gray-300 text-sm">
+                        <Clock className="h-4 w-4 text-muted-foreground" />
+                        <span className="text-muted-foreground text-sm">
                           {getCurrentDayHours(place) ? (
                             `Today: ${getCurrentDayHours(place)}`
                           ) : (
@@ -515,8 +515,8 @@ export function PersonalizedRecommendations() {
 
                     {/* Address */}
                     <div className="flex items-center gap-2 mb-4">
-                      <MapPin className="h-4 w-4 text-gray-400 flex-shrink-0" />
-                      <span className="text-gray-300 text-sm line-clamp-1">
+                      <MapPin className="h-4 w-4 text-muted-foreground flex-shrink-0" />
+                      <span className="text-muted-foreground text-sm line-clamp-1">
                         {formatAddress(place.formatted_address)}
                       </span>
                     </div>
@@ -526,7 +526,7 @@ export function PersonalizedRecommendations() {
                       <Button 
                         variant="outline" 
                         size="sm" 
-                        className="flex-1 border-gray-600 text-gray-300 bg-gray-900 hover:bg-gray-800"
+                        className="flex-1 border-border text-muted-foreground bg-card hover:bg-muted"
                         onClick={() => handleShowDetails(place)}
                       >
                         <Eye className="h-4 w-4 mr-1" />
@@ -534,17 +534,17 @@ export function PersonalizedRecommendations() {
                       </Button>
                       <a 
                         href={`tel:${place.formatted_phone_number || ''}`}
-                        className="flex items-center justify-center px-3 py-2 border border-gray-600 rounded-md hover:bg-gray-800 transition-colors"
+                        className="flex items-center justify-center px-3 py-2 border border-border rounded-md hover:bg-muted transition-colors"
                       >
-                        <Phone className="h-4 w-4 text-gray-300" />
+                        <Phone className="h-4 w-4 text-muted-foreground" />
                       </a>
                       <a 
                         href={place.google_maps_url || `https://www.google.com/maps/place/?q=place_id:${place.place_id}`}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="flex items-center justify-center px-3 py-2 border border-gray-600 rounded-md hover:bg-gray-800 transition-colors"
+                        className="flex items-center justify-center px-3 py-2 border border-border rounded-md hover:bg-muted transition-colors"
                       >
-                        <Globe className="h-4 w-4 text-gray-300" />
+                        <Globe className="h-4 w-4 text-muted-foreground" />
                       </a>
                     </div>
                   </CardContent>

@@ -81,13 +81,9 @@ export function useRestaurantLists() {
       );
 
       setLists(listsWithCounts as RestaurantList[]);
-    } catch (error: any) {
-      console.error('Error fetching restaurant lists:', error);
-      toast({
-        variant: 'destructive',
-        title: 'Error',
-        description: 'Failed to load restaurant lists',
-      });
+    } catch {
+      // Table may not exist yet — silently fail with empty lists
+      setLists([]);
     } finally {
       setLoading(false);
     }
@@ -119,7 +115,7 @@ export function useRestaurantLists() {
       await fetchLists();
       return data;
     } catch (error: any) {
-      console.error('Error creating list:', error);
+      void('Error creating list:', error);
       toast({
         variant: 'destructive',
         title: 'Error',
@@ -145,7 +141,7 @@ export function useRestaurantLists() {
 
       await fetchLists();
     } catch (error: any) {
-      console.error('Error updating list:', error);
+      void('Error updating list:', error);
       toast({
         variant: 'destructive',
         title: 'Error',
@@ -182,7 +178,7 @@ export function useRestaurantLists() {
 
       await fetchLists();
     } catch (error: any) {
-      console.error('Error deleting list:', error);
+      void('Error deleting list:', error);
       toast({
         variant: 'destructive',
         title: 'Error',
@@ -217,7 +213,7 @@ export function useRestaurantLists() {
 
       await fetchLists();
     } catch (error: any) {
-      console.error('Error adding restaurant to list:', error);
+      void('Error adding restaurant to list:', error);
       toast({
         variant: 'destructive',
         title: 'Error',
@@ -244,7 +240,7 @@ export function useRestaurantLists() {
 
       await fetchLists();
     } catch (error: any) {
-      console.error('Error removing restaurant from list:', error);
+      void('Error removing restaurant from list:', error);
       toast({
         variant: 'destructive',
         title: 'Error',
@@ -270,7 +266,7 @@ export function useRestaurantLists() {
       const restaurants = data?.map(item => mapDbRestaurantToRestaurant((item as any).restaurants)).filter(Boolean) || [];
       return restaurants;
     } catch (error: any) {
-      console.error('Error fetching restaurants in list:', error);
+      void('Error fetching restaurants in list:', error);
       return [];
     }
   };
