@@ -104,8 +104,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       
       if (error) throw error;
       setProfile(data as Profile);
-    } catch (error) {
-      console.error('Error fetching profile:', error);
+    } catch {
       setProfile(null);
     }
   };
@@ -176,8 +175,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (!isDemo) {
         await supabase.auth.signOut();
       }
-    } catch (error) {
-      console.error('Error signing out:', error);
+    } catch {
       // Even if signOut fails, ensure local state is cleared
       setSession(null);
       setUser(null);
@@ -185,11 +183,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setIsDemo(false);
       localStorage.removeItem('grubby-demo-mode');
 
-      // Force clear localStorage if regular signOut fails
       try {
         localStorage.clear();
-      } catch (storageError) {
-        console.error('Error clearing localStorage:', storageError);
+      } catch {
+        // Storage clear failed
       }
     }
   };

@@ -217,11 +217,6 @@ export default function SettingsPage({ onBack }: SettingsPageProps) {
 
     setIsDeletingAccount(true);
     try {
-      console.log('Starting account deletion process...');
-      
-      // Delete all user data first using regular client (RLS allows users to delete their own data)
-      console.log('Deleting user data...');
-      
       // Delete in sequence to avoid conflicts
       const deletions = [
         { name: 'settings', promise: supabase.from('settings').delete().eq('user_id', user.id) },
@@ -236,17 +231,12 @@ export default function SettingsPage({ onBack }: SettingsPageProps) {
         try {
           const { error } = await deletion.promise;
           if (error) {
-            console.warn(`Error deleting ${deletion.name}:`, error.message);
             // Continue with other deletions even if one fails
-          } else {
-            console.log(`Successfully deleted ${deletion.name}`);
           }
-        } catch (e) {
-          console.warn(`Failed to delete ${deletion.name}:`, e);
+        } catch {
+          // Continue with other deletions
         }
       }
-
-      console.log('Data deletion completed. Now calling delete function...');
 
       // Get the current session to include in the request
       const { data: { session } } = await supabase.auth.getSession();
@@ -262,44 +252,26 @@ export default function SettingsPage({ onBack }: SettingsPageProps) {
         },
       });
 
-      console.log('Function response:', { data, error });
-
       if (error) {
-        console.error('Function error details:', error);
-        // If the function fails, try to sign out the user anyway
-        console.log('Function failed, attempting sign out...');
         await signOut();
         toast.success('Account data deleted and signed out successfully');
         return;
       }
 
       if (data?.error) {
-        console.error('Response error:', data.error);
-        // If there's a response error, try to sign out anyway
-        console.log('Response error, attempting sign out...');
         await signOut();
         toast.success('Account data deleted and signed out successfully');
         return;
       }
 
       toast.success('Account deleted successfully');
-      console.log('Account deletion completed successfully');
-      
+
     } catch (error: any) {
-      console.error('Error deleting account:', error);
-      console.error('Error details:', {
-        message: error.message,
-        stack: error.stack,
-        name: error.name
-      });
-      
       // As a fallback, at least sign out the user
       try {
-        console.log('Attempting fallback sign out...');
         await signOut();
         toast.success('Signed out successfully. Please contact support if you need your account data deleted.');
-      } catch (signOutError) {
-        console.error('Sign out also failed:', signOutError);
+      } catch {
         toast.error('Failed to delete account. Please try again or contact support.');
       }
     } finally {

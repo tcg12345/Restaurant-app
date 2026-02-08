@@ -61,7 +61,6 @@ export default function Dashboard() {
         </div>
         <div className={`${activeTab === 'profile' ? 'block' : 'hidden'}`}>
           {(() => {
-            console.log('Dashboard render - isMobile:', isMobile, 'activeTab:', activeTab);
             return isMobile ? (
               <MobileProfilePage />
             ) : (

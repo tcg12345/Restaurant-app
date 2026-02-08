@@ -11,7 +11,6 @@ export function useIsMobile() {
       const isSmallScreen = window.innerWidth <= 1024; // Changed from 768 to 1024
       
       const mobile = isMobileDevice || isSmallScreen;
-      console.log('Mobile detection:', { isMobileDevice, isSmallScreen, mobile, width: window.innerWidth });
       setIsMobile(mobile);
     };
 

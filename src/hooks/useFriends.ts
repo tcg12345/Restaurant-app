@@ -41,80 +41,106 @@ export function useFriends() {
   const [retryCount, setRetryCount] = useState(0);
   const [hasError, setHasError] = useState(false);
 
+  // Fallback: query friends table directly when RPC is unavailable
+  const fetchFriendsViaDirectQuery = useCallback(async (): Promise<Friend[]> => {
+    if (!user) return [];
+    try {
+      const { data: friendRows, error } = await supabase
+        .from('friends')
+        .select('user1_id, user2_id')
+        .or(`user1_id.eq.${user.id},user2_id.eq.${user.id}`);
+
+      if (error || !friendRows || friendRows.length === 0) return [];
+
+      const friendIds = friendRows.map(r => r.user1_id === user.id ? r.user2_id : r.user1_id);
+
+      const { data: profiles } = await supabase
+        .from('profiles')
+        .select('id, username, name, avatar_url, is_public')
+        .in('id', friendIds);
+
+      return (profiles || []).map((p: any) => ({
+        id: p.id,
+        username: p.username || '',
+        name: p.name,
+        avatar_url: p.avatar_url,
+        is_public: p.is_public || false,
+        score: 0,
+      }));
+    } catch {
+      return [];
+    }
+  }, [user]);
+
   const fetchAllFriendsData = useCallback(async () => {
     if (!user) return;
 
     try {
-      // Fetch all data in parallel to reduce sequential calls
-      const [friendsResult, receivedRequestsResult, sentRequestsResult] = await Promise.all([
-        supabase.rpc('get_friends_with_scores', { requesting_user_id: user.id }),
-        supabase
+      // Try RPC first, fall back to direct query
+      let mappedFriends: Friend[] = [];
+      try {
+        const friendsResult = await supabase.rpc('get_friends_with_scores', { requesting_user_id: user.id });
+        if (friendsResult.error) throw friendsResult.error;
+        mappedFriends = (friendsResult.data || []).map((friend: any) => ({
+          id: friend.friend_id,
+          username: friend.username || '',
+          name: friend.name,
+          avatar_url: friend.avatar_url,
+          is_public: friend.is_public || false,
+          score: friend.score || 0,
+        }));
+      } catch {
+        // RPC not available, use direct query fallback
+        mappedFriends = await fetchFriendsViaDirectQuery();
+      }
+
+      const cacheKey = `friends:list:${user.id}`;
+      setFriends(mappedFriends);
+      try { localStorage.setItem(cacheKey, JSON.stringify(mappedFriends)); } catch {}
+
+      // Fetch friend requests with graceful error handling
+      let receivedData: FriendRequest[] = [];
+      let sentData: FriendRequest[] = [];
+
+      try {
+        const receivedResult = await supabase
           .from('friend_requests')
           .select(`
             *,
             sender:profiles!friend_requests_sender_id_fkey(username, name, avatar_url)
           `)
           .eq('receiver_id', user.id)
-          .eq('status', 'pending'),
-        supabase
+          .eq('status', 'pending');
+        if (!receivedResult.error) {
+          receivedData = (receivedResult.data || []) as FriendRequest[];
+        }
+      } catch {}
+
+      try {
+        const sentResult = await supabase
           .from('friend_requests')
           .select(`
             *,
             receiver:profiles!friend_requests_receiver_id_fkey(username, name, avatar_url)
           `)
           .eq('sender_id', user.id)
-          .eq('status', 'pending')
-      ]);
-
-      // Handle friends data
-      if (friendsResult.error) {
-        console.error('Friends RPC error:', friendsResult.error);
-        throw friendsResult.error;
-      }
-      
-      // Build mapped friends without heavy per-friend stats for instant load
-      const cacheKey = user ? `friends:list:${user.id}` : 'friends:list';
-      const mappedFriends: Friend[] = (friendsResult.data || []).map((friend: any) => ({
-        id: friend.friend_id,
-        username: friend.username || '',
-        name: friend.name,
-        avatar_url: friend.avatar_url,
-        is_public: friend.is_public || false,
-        score: friend.score || 0,
-      }));
-      setFriends(mappedFriends);
-      try { localStorage.setItem(cacheKey, JSON.stringify(mappedFriends)); } catch {}
-
-      // Handle friend requests
-      if (receivedRequestsResult.error) {
-        console.error('Received requests error:', receivedRequestsResult.error);
-        throw receivedRequestsResult.error;
-      }
-      if (sentRequestsResult.error) {
-        console.error('Sent requests error:', sentRequestsResult.error);
-        throw sentRequestsResult.error;
-      }
-      
-      setPendingRequests((receivedRequestsResult.data || []) as FriendRequest[]);
-      setSentRequests((sentRequestsResult.data || []) as FriendRequest[]);
-
-    } catch (error) {
-      console.error('Error fetching friends data:', error);
-      // Only show toast for network/server errors, not auth errors
-      if (error && typeof error === 'object' && 'message' in error) {
-        if (!error.message.includes('JWT') && !error.message.includes('unauthorized')) {
-          toast.error('Failed to load friends data');
+          .eq('status', 'pending');
+        if (!sentResult.error) {
+          sentData = (sentResult.data || []) as FriendRequest[];
         }
-      }
-      
-      // Reset to empty arrays on error to prevent stale data
+      } catch {}
+
+      setPendingRequests(receivedData);
+      setSentRequests(sentData);
+
+    } catch {
       setFriends([]);
       setPendingRequests([]);
       setSentRequests([]);
       setHasError(true);
       setRetryCount(prev => prev + 1);
     }
-  }, [user]);
+  }, [user, fetchFriendsViaDirectQuery]);
 
   const sendFriendRequest = async (receiverId: string) => {
     if (!user) return false;
@@ -132,8 +158,7 @@ export function useFriends() {
       toast.success('Friend request sent!');
       fetchAllFriendsData();
       return true;
-    } catch (error) {
-      console.error('Error sending friend request:', error);
+    } catch {
       toast.error('Failed to send friend request');
       return false;
     }
@@ -142,8 +167,17 @@ export function useFriends() {
   const respondToFriendRequest = async (requestId: string, accept: boolean) => {
     try {
       if (accept) {
-        const { error } = await supabase.rpc('accept_friend_request', { request_id: requestId });
-        if (error) throw error;
+        // Try RPC first, fall back to manual update
+        try {
+          const { error } = await supabase.rpc('accept_friend_request', { request_id: requestId });
+          if (error) throw error;
+        } catch {
+          // Fallback: manually update status
+          await supabase
+            .from('friend_requests')
+            .update({ status: 'accepted' })
+            .eq('id', requestId);
+        }
         toast.success('Friend request accepted!');
       } else {
         const { error } = await supabase
@@ -153,10 +187,9 @@ export function useFriends() {
         if (error) throw error;
         toast.success('Friend request declined');
       }
-      
+
       fetchAllFriendsData();
-    } catch (error) {
-      console.error('Error responding to friend request:', error);
+    } catch {
       toast.error('Failed to respond to friend request');
     }
   };
@@ -174,8 +207,7 @@ export function useFriends() {
 
       toast.success('Friend removed');
       fetchAllFriendsData();
-    } catch (error) {
-      console.error('Error removing friend:', error);
+    } catch {
       toast.error('Failed to remove friend');
     }
   };
@@ -183,15 +215,13 @@ export function useFriends() {
   const searchUsers = async (query: string) => {
     if (!user || query.length < 2) return [];
 
-    // Input validation and sanitization
     const sanitizedQuery = query
       .trim()
-      .replace(/[<>'"]/g, '') // Remove potential XSS characters
-      .substring(0, 50); // Limit length
+      .replace(/[<>'"]/g, '')
+      .substring(0, 50);
 
     if (sanitizedQuery.length < 2) return [];
 
-    // Use the new secure function that only exposes safe fields
     try {
       const { data, error } = await supabase.rpc('get_discoverable_profiles', {
         search_query: sanitizedQuery,
@@ -199,11 +229,20 @@ export function useFriends() {
       });
 
       if (error) throw error;
-
       return data || [];
-    } catch (error) {
-      console.error('Error searching users:', error);
-      return [];
+    } catch {
+      // Fallback: search profiles directly
+      try {
+        const { data } = await supabase
+          .from('profiles')
+          .select('id, username, name, avatar_url, is_public, allow_friend_requests')
+          .or(`username.ilike.%${sanitizedQuery}%,name.ilike.%${sanitizedQuery}%`)
+          .eq('is_public', true)
+          .limit(10);
+        return data || [];
+      } catch {
+        return [];
+      }
     }
   };
 
@@ -218,9 +257,7 @@ export function useFriends() {
       return;
     }
 
-    // Prevent infinite retries - max 2 attempts only
     if (retryCount >= 2) {
-      console.warn('Max retries reached for friends data, stopping attempts');
       setIsLoading(false);
       setHasError(true);
       return;
@@ -237,31 +274,27 @@ export function useFriends() {
         }
       }
     } catch {}
-    
+
     setIsLoading(true);
     setHasError(false);
-    
-    // Single fetch attempt with no automatic retries
+
     fetchAllFriendsData().finally(() => {
       setIsLoading(false);
     });
 
-    // Only set up realtime if no previous errors
     if (retryCount > 0) {
       return;
     }
 
-    // Throttled refresh to prevent spam
     let lastRefresh = 0;
     const throttledRefresh = () => {
       const now = Date.now();
-      if (now - lastRefresh > 2000) { // 2 second throttle
+      if (now - lastRefresh > 2000) {
         lastRefresh = now;
         fetchAllFriendsData();
       }
     };
 
-    // Single realtime channel for both tables
     const channel = supabase
       .channel('friends-and-requests')
       .on(

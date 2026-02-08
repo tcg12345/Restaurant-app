@@ -17,11 +17,6 @@ export default function SavedPlacesPageWrapper({
   const navigate = useNavigate();
   const { restaurants, addRestaurant, updateRestaurant, deleteRestaurant, isLoading } = useRestaurants();
 
-  // Debug logging
-  console.log('SavedPlacesPageWrapper - restaurants:', restaurants.length, 'isLoading:', isLoading);
-  console.log('SavedPlacesPageWrapper - activeSubTab:', activeSubTab);
-  console.log('SavedPlacesPageWrapper - shouldOpenAddDialog:', shouldOpenAddDialog);
-
   const handleAddRestaurant = async (data: RestaurantFormData) => {
     const restaurantId = await addRestaurant(data);
     // If it's a rated restaurant (not wishlist), navigate to rankings page

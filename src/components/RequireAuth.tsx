@@ -30,8 +30,10 @@ export function RequireAuth({ children }: RequireAuthProps) {
   }
 
   if (!user) {
-    // Redirect to auth page
-    return <Navigate to="/auth" state={{ from: location.pathname + location.search }} replace />;
+    // Don't redirect back to settings/profile pages after re-login
+    const skipReturnPaths = ['/settings', '/profile'];
+    const shouldSaveReturnPath = !skipReturnPaths.some(p => location.pathname.startsWith(p));
+    return <Navigate to="/auth" state={shouldSaveReturnPath ? { from: location.pathname + location.search } : undefined} replace />;
   }
 
   return <>{children}</>;

@@ -1,43 +1,18 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Users, Search, Activity, Clock, Grid, List } from 'lucide-react';
+import { Users, Search, Clock, UserPlus, MessageCircle, MoreHorizontal, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Badge } from '@/components/ui/badge';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { useFriends } from '@/hooks/useFriends';
 import { useAuth } from '@/contexts/AuthContext';
-import { FriendCard } from '@/components/friends/FriendCard';
 import { FriendSearch } from '@/components/friends/FriendSearch';
 import { FriendRequests } from '@/components/friends/FriendRequests';
-import { FriendProfilePopup } from '@/components/FriendProfilePopup';
-import { FriendCardSkeleton } from '@/components/skeletons/FriendCardSkeleton';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
-
-interface SearchResult {
-  id: string;
-  username: string;
-  name: string | null;
-  avatar_url: string | null;
-  is_public: boolean;
-}
-
-interface FriendActivity {
-  restaurant_id: string;
-  restaurant_name: string;
-  cuisine: string;
-  rating: number | null;
-  date_visited: string | null;
-  created_at: string;
-  friend_id: string;
-  friend_username: string;
-}
 
 export function FriendsPage({
   initialViewFriendId,
@@ -56,59 +31,17 @@ export function FriendsPage({
     sendFriendRequest,
     respondToFriendRequest,
     removeFriend,
-    searchUsers
   } = useFriends();
-  
-  const [selectedFriend, setSelectedFriend] = useState<any>(null);
-  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+
   const [filterQuery, setFilterQuery] = useState('');
-  const [sortBy, setSortBy] = useState('name');
-  const [activeTab, setActiveTab] = useState('friends');
-  const [friendsActivity, setFriendsActivity] = useState<FriendActivity[]>([]);
-  const [isLoadingActivity, setIsLoadingActivity] = useState(false);
+  const [activeTab, setActiveTab] = useState<'friends' | 'find' | 'requests'>('friends');
 
-  // Load friends activity
-  const loadFriendsActivity = async () => {
-    if (!user || friends.length === 0) return;
-    setIsLoadingActivity(true);
-    try {
-      const { data, error } = await supabase.rpc('get_friends_recent_activity', {
-        requesting_user_id: user.id,
-        activity_limit: 20
-      });
-      if (error) throw error;
-      setFriendsActivity(data || []);
-    } catch (error) {
-      console.error('Error loading friends activity:', error);
-    } finally {
-      setIsLoadingActivity(false);
-    }
-  };
-
-  useEffect(() => {
-    if (user && friends.length > 0 && activeTab === 'activity') {
-      loadFriendsActivity();
-    }
-  }, [user, friends, activeTab]);
-
-  // Filter and sort friends
   const filteredFriends = friends
-    .filter(friend => 
-      friend.username.toLowerCase().includes(filterQuery.toLowerCase()) || 
+    .filter(friend =>
+      friend.username.toLowerCase().includes(filterQuery.toLowerCase()) ||
       friend.name?.toLowerCase().includes(filterQuery.toLowerCase())
     )
-    .sort((a, b) => {
-      switch (sortBy) {
-        case 'name':
-          return a.username.localeCompare(b.username);
-        case 'activity':
-          return 0;
-        case 'score':
-          return 0;
-        default:
-          return 0;
-      }
-    });
+    .sort((a, b) => a.username.localeCompare(b.username));
 
   const handleViewProfile = (friend: any) => {
     navigate(`/friends/${friend.id}`);
@@ -120,14 +53,9 @@ export function FriendsPage({
       const { data: roomId, error } = await supabase.rpc('get_or_create_dm_room', {
         other_user_id: friend.id
       });
-      if (error) {
-        console.error('Error creating chat room:', error);
-        toast.error('Failed to start chat');
-        return;
-      }
+      if (error) throw error;
       navigate(`/chat/${roomId}`);
-    } catch (error) {
-      console.error('Error starting chat:', error);
+    } catch {
       toast.error('Failed to start chat');
     }
   };
@@ -135,57 +63,31 @@ export function FriendsPage({
   const handleRemoveFriend = async (friendId: string) => {
     try {
       await removeFriend(friendId);
-      toast.success('Friend removed successfully');
-    } catch (error) {
+      toast.success('Friend removed');
+    } catch {
       toast.error('Failed to remove friend');
     }
   };
 
-  const isAlreadyFriend = (userId: string) => {
-    return friends.some(friend => friend.id === userId);
-  };
+  const isAlreadyFriend = (userId: string) => friends.some(friend => friend.id === userId);
+  const hasPendingRequest = (userId: string) =>
+    sentRequests.some(request => request.receiver_id === userId || (request.receiver && (request.receiver as any).id === userId));
 
-  const hasPendingRequest = (userId: string) => {
-    return sentRequests.some(request => 
-      request.receiver_id === userId || 
-      (request.receiver && (request.receiver as any).id === userId)
-    );
-  };
-
-  const getRecentActivityCount = () => {
-    return Math.floor(friends.length * 0.6);
-  };
+  const requestCount = pendingRequests.length + sentRequests.length;
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-background">
-        {/* Modern Header Skeleton */}
-        <div className="border-b border-border/50 bg-card/50 backdrop-blur-sm">
-          <div className="max-w-7xl mx-auto px-6 py-8">
-            <div className="flex items-center justify-between">
-              <div className="space-y-3">
-                <div className="animate-pulse bg-muted h-8 w-48 rounded-lg"></div>
-                <div className="animate-pulse bg-muted h-4 w-64 rounded"></div>
+      <div className="min-h-screen bg-background p-4">
+        <div className="max-w-2xl mx-auto space-y-3">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <div key={i} className="animate-pulse flex items-center gap-3 p-3 rounded-xl bg-muted/30">
+              <div className="h-12 w-12 bg-muted rounded-full" />
+              <div className="flex-1 space-y-2">
+                <div className="h-3 bg-muted rounded w-24" />
+                <div className="h-2 bg-muted rounded w-16" />
               </div>
-              <div className="animate-pulse bg-muted h-10 w-32 rounded-lg"></div>
             </div>
-          </div>
-        </div>
-        
-        {/* Stats Skeleton */}
-        <div className="max-w-7xl mx-auto px-6 py-8">
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-            {Array.from({ length: 4 }).map((_, i) => (
-              <div key={i} className="animate-pulse bg-muted h-24 rounded-xl"></div>
-            ))}
-          </div>
-          
-          {/* Content Skeleton */}
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            {Array.from({ length: 8 }).map((_, i) => (
-              <FriendCardSkeleton key={i} />
-            ))}
-          </div>
+          ))}
         </div>
       </div>
     );
@@ -193,169 +95,175 @@ export function FriendsPage({
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-6 py-6">
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="w-full grid grid-cols-4 gap-1 p-1 mb-8 bg-muted/30 rounded-lg border border-border/30">
-            <TabsTrigger 
-              value="friends" 
-              className="flex items-center justify-center gap-1.5 h-10 rounded-md data-[state=active]:bg-background data-[state=active]:shadow-sm data-[state=active]:border data-[state=active]:border-border/50 transition-all duration-200 text-sm font-medium"
+      {/* Tab Switcher */}
+      <div className="sticky top-0 z-10 bg-background/95 backdrop-blur border-b border-border/50 px-4 py-3">
+        <div className="flex justify-center">
+          <div className="flex bg-muted/50 rounded-xl p-1">
+            <button
+              onClick={() => setActiveTab('friends')}
+              className={cn(
+                'px-5 py-2 rounded-lg text-sm font-medium transition-all duration-200 flex items-center gap-1.5',
+                activeTab === 'friends'
+                  ? 'bg-background text-primary shadow-sm border border-border/50'
+                  : 'text-muted-foreground hover:text-foreground'
+              )}
             >
-              <Users className="h-4 w-4 flex-shrink-0" />
-              <span className="flex-shrink-0">Friends</span>
+              <Users className="h-4 w-4" />
+              Friends
               {friends.length > 0 && (
-                <Badge variant="secondary" className="h-4 px-1.5 text-xs flex-shrink-0 flex items-center justify-center">
+                <Badge variant="secondary" className="h-4 px-1.5 text-[10px] ml-0.5">
                   {friends.length}
                 </Badge>
               )}
-            </TabsTrigger>
-            <TabsTrigger 
-              value="activity" 
-              className="flex items-center justify-center gap-1.5 h-10 rounded-md data-[state=active]:bg-background data-[state=active]:shadow-sm data-[state=active]:border data-[state=active]:border-border/50 transition-all duration-200 text-sm font-medium"
+            </button>
+            <button
+              onClick={() => setActiveTab('find')}
+              className={cn(
+                'px-5 py-2 rounded-lg text-sm font-medium transition-all duration-200 flex items-center gap-1.5',
+                activeTab === 'find'
+                  ? 'bg-background text-primary shadow-sm border border-border/50'
+                  : 'text-muted-foreground hover:text-foreground'
+              )}
             >
-              <Activity className="h-4 w-4 flex-shrink-0" />
-              <span className="flex-shrink-0">Activity</span>
-            </TabsTrigger>
-            <TabsTrigger 
-              value="search" 
-              className="flex items-center justify-center gap-1.5 h-10 rounded-md data-[state=active]:bg-background data-[state=active]:shadow-sm data-[state=active]:border data-[state=active]:border-border/50 transition-all duration-200 text-sm font-medium"
+              <UserPlus className="h-4 w-4" />
+              Find
+            </button>
+            <button
+              onClick={() => setActiveTab('requests')}
+              className={cn(
+                'px-5 py-2 rounded-lg text-sm font-medium transition-all duration-200 flex items-center gap-1.5 relative',
+                activeTab === 'requests'
+                  ? 'bg-background text-primary shadow-sm border border-border/50'
+                  : 'text-muted-foreground hover:text-foreground'
+              )}
             >
-              <Search className="h-4 w-4 flex-shrink-0" />
-              <span className="flex-shrink-0">Find</span>
-            </TabsTrigger>
-            <TabsTrigger 
-              value="requests" 
-              className="flex items-center justify-center gap-1.5 h-10 rounded-md data-[state=active]:bg-background data-[state=active]:shadow-sm data-[state=active]:border data-[state=active]:border-border/50 transition-all duration-200 text-sm font-medium relative"
-            >
-              <Clock className="h-4 w-4 flex-shrink-0" />
-              <span className="flex-shrink-0">Requests</span>
-              {(pendingRequests.length + sentRequests.length) > 0 && (
-                <Badge variant="destructive" className="h-4 px-1.5 text-xs flex-shrink-0 flex items-center justify-center">
-                  {pendingRequests.length + sentRequests.length}
+              <Clock className="h-4 w-4" />
+              Requests
+              {requestCount > 0 && (
+                <Badge variant="destructive" className="h-4 px-1.5 text-[10px] ml-0.5">
+                  {requestCount}
                 </Badge>
               )}
-            </TabsTrigger>
-          </TabsList>
+            </button>
+          </div>
+        </div>
+      </div>
 
-          <TabsContent value="friends" className="space-y-6">
+      <div className="max-w-2xl mx-auto px-4 py-4">
+        {/* Friends Tab */}
+        {activeTab === 'friends' && (
+          <>
             {friends.length === 0 ? (
               <div className="text-center py-16">
-                <div className="p-6 rounded-full bg-muted/50 w-24 h-24 mx-auto mb-6 flex items-center justify-center">
-                  <Users className="h-12 w-12 text-muted-foreground" />
+                <div className="p-5 rounded-2xl bg-muted/50 w-20 h-20 mx-auto mb-4 flex items-center justify-center">
+                  <Users className="h-10 w-10 text-muted-foreground" />
                 </div>
-                <h3 className="text-xl font-semibold mb-2">No friends yet</h3>
-                <p className="text-muted-foreground mb-6">
-                  Start building your foodie network by finding and adding friends
+                <h3 className="text-lg font-semibold mb-2">No friends yet</h3>
+                <p className="text-sm text-muted-foreground mb-4">
+                  Start building your foodie network
                 </p>
-                <Button onClick={() => setActiveTab('search')} className="gap-2">
+                <Button onClick={() => setActiveTab('find')} size="sm" className="rounded-full gap-1.5">
                   <UserPlus className="h-4 w-4" />
                   Find Friends
                 </Button>
               </div>
             ) : (
               <>
-                {/* Filters and Controls */}
-                <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
-                  <div className="flex flex-col sm:flex-row gap-3 flex-1">
-                    <div className="relative">
-                      <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                      <Input
-                        placeholder="Search friends..."
-                        value={filterQuery}
-                        onChange={(e) => setFilterQuery(e.target.value)}
-                        className="pl-10 w-full sm:w-64"
-                      />
-                    </div>
-                    <Select value={sortBy} onValueChange={setSortBy}>
-                      <SelectTrigger className="w-full sm:w-48">
-                        <SelectValue placeholder="Sort by" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="name">Name</SelectItem>
-                        <SelectItem value="activity">Activity</SelectItem>
-                        <SelectItem value="score">Score</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  
-                  <div className="flex items-center gap-2">
-                    <Button
-                      variant={viewMode === 'grid' ? 'default' : 'outline'}
-                      size="sm"
-                      onClick={() => setViewMode('grid')}
-                      className="gap-2"
-                    >
-                      <Grid className="h-4 w-4" />
-                    </Button>
-                    <Button
-                      variant={viewMode === 'list' ? 'default' : 'outline'}
-                      size="sm"
-                      onClick={() => setViewMode('list')}
-                      className="gap-2"
-                    >
-                      <List className="h-4 w-4" />
-                    </Button>
-                  </div>
+                {/* Search Bar */}
+                <div className="relative mb-4">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                  <Input
+                    placeholder="Search friends..."
+                    value={filterQuery}
+                    onChange={(e) => setFilterQuery(e.target.value)}
+                    className="pl-10 h-10 rounded-xl"
+                  />
                 </div>
 
-                {/* Friends Grid/List */}
-                <div className={cn(
-                  "grid gap-6",
-                  viewMode === 'grid' 
-                    ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4" 
-                    : "grid-cols-1"
-                )}>
+                {/* Friends List */}
+                <div className="space-y-1">
                   {filteredFriends.map((friend) => (
-                    <FriendCard
+                    <div
                       key={friend.id}
-                      friend={friend}
-                      onViewProfile={handleViewProfile}
-                      onStartChat={handleStartChat}
-                      onRemoveFriend={handleRemoveFriend}
-                      viewMode={viewMode}
-                    />
+                      className="flex items-center gap-3 p-3 rounded-xl hover:bg-muted/50 transition-colors cursor-pointer"
+                      onClick={() => handleViewProfile(friend)}
+                    >
+                      <Avatar className="h-12 w-12">
+                        <AvatarImage src={friend.avatar_url || ''} />
+                        <AvatarFallback className="bg-primary/10 text-primary font-semibold">
+                          {(friend.name || friend.username).charAt(0).toUpperCase()}
+                        </AvatarFallback>
+                      </Avatar>
+                      <div className="flex-1 min-w-0">
+                        <div className="font-medium text-sm truncate">
+                          {friend.name || friend.username}
+                        </div>
+                        <div className="text-xs text-muted-foreground">
+                          @{friend.username}
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-8 w-8"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleStartChat(friend);
+                          }}
+                        >
+                          <MessageCircle className="h-4 w-4 text-muted-foreground" />
+                        </Button>
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="h-8 w-8"
+                              onClick={(e) => e.stopPropagation()}
+                            >
+                              <MoreHorizontal className="h-4 w-4 text-muted-foreground" />
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end">
+                            <DropdownMenuItem onClick={() => handleViewProfile(friend)}>
+                              View Profile
+                            </DropdownMenuItem>
+                            <DropdownMenuItem
+                              className="text-destructive"
+                              onClick={() => handleRemoveFriend(friend.id)}
+                            >
+                              <Trash2 className="h-4 w-4 mr-2" />
+                              Remove Friend
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </div>
+                    </div>
                   ))}
                 </div>
               </>
             )}
-          </TabsContent>
+          </>
+        )}
 
-          <TabsContent value="activity" className="space-y-6">
-            <div className="text-center py-16">
-              <div className="p-6 rounded-full bg-muted/50 w-24 h-24 mx-auto mb-6 flex items-center justify-center">
-                <Activity className="h-12 w-12 text-muted-foreground" />
-              </div>
-              <h3 className="text-xl font-semibold mb-2">Activity Feed</h3>
-              <p className="text-muted-foreground">
-                See what your friends are up to in the food world
-              </p>
-            </div>
-          </TabsContent>
+        {/* Find Friends Tab */}
+        {activeTab === 'find' && (
+          <FriendSearch
+            onSendRequest={sendFriendRequest}
+            isAlreadyFriend={isAlreadyFriend}
+            hasPendingRequest={hasPendingRequest}
+          />
+        )}
 
-          <TabsContent value="search" className="space-y-6">
-            <FriendSearch 
-              onSendRequest={sendFriendRequest}
-              isAlreadyFriend={isAlreadyFriend}
-              hasPendingRequest={hasPendingRequest}
-            />
-          </TabsContent>
-
-          <TabsContent value="requests" className="space-y-6">
-            <FriendRequests 
-              pendingRequests={pendingRequests as any} 
-              sentRequests={sentRequests as any} 
-              onRespondToRequest={respondToFriendRequest} 
-            />
-          </TabsContent>
-        </Tabs>
-
-        {/* Friend Profile Popup */}
-        <FriendProfilePopup 
-          friend={selectedFriend} 
-          isOpen={!!selectedFriend} 
-          onClose={() => setSelectedFriend(null)} 
-          onViewProfile={handleViewProfile} 
-        />
+        {/* Requests Tab */}
+        {activeTab === 'requests' && (
+          <FriendRequests
+            pendingRequests={pendingRequests as any}
+            sentRequests={sentRequests as any}
+            onRespondToRequest={respondToFriendRequest}
+          />
+        )}
       </div>
     </div>
   );

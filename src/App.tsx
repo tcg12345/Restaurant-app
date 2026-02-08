@@ -62,6 +62,8 @@ import AdminExpertApplicationsPage from "./pages/AdminExpertApplicationsPage";
 import EditHotelBookingPage from "./pages/EditHotelBookingPage";
 import RatedRestaurantsPageWrapper from "./pages/RatedRestaurantsPageWrapper";
 import RatedRestaurantsRankingPage from "./pages/RatedRestaurantsRankingPage";
+import ExpertsPage from "./pages/ExpertsPage";
+import TasteProfilePage from "./pages/TasteProfilePage";
 
 const queryClient = new QueryClient();
 
@@ -145,6 +147,12 @@ const App = () => (
                 <Route path="/mobile/restaurant/:restaurantId" element={<RequireAuth><MobileRestaurantDetailsPage /></RequireAuth>} />
                 <Route path="/mobile/search/restaurant" element={<RequireAuth><MobileSearchRestaurantDetailsPage /></RequireAuth>} />
                 <Route path="/share/restaurant/:restaurantId" element={<RequireAuth><ShareRestaurantPage /></RequireAuth>} />
+
+                {/* Experts page */}
+                <Route path="/experts" element={<RequireAuth><Layout activeTab="experts"><ExpertsPage /></Layout></RequireAuth>} />
+
+                {/* Taste Profile */}
+                <Route path="/taste-profile" element={<RequireAuth><TasteProfilePage /></RequireAuth>} />
 
                 {/* Expert application */}
                 <Route path="/apply-expert" element={<RequireAuth><ApplyExpertPage /></RequireAuth>} />

@@ -86,7 +86,6 @@ export const FriendProfilesProvider: React.FC<Props> = ({ children }) => {
   const preloadAllProfiles = useCallback(async () => {
     if (!user || !friends.length || friendsLoading) return;
 
-    console.log('🚀 Preloading friend profiles for instant access...');
     setIsPreloading(true);
 
     const newCache = new Map<string, FriendProfile>();
@@ -104,8 +103,6 @@ export const FriendProfilesProvider: React.FC<Props> = ({ children }) => {
     setProfilesCache(newCache);
     setIsPreloading(false);
     
-    console.log(`✅ Preloaded ${newCache.size} friend profiles`);
-
     // Removed heavy global cache warmer to keep app responsive
   }, [user, friends, friendsLoading, loadFriendProfile]);
 
@@ -141,7 +138,6 @@ export const FriendProfilesProvider: React.FC<Props> = ({ children }) => {
     if (!user || !friends.length) return;
 
     const interval = setInterval(() => {
-      console.log('🔄 Refreshing friend profiles cache...');
       preloadAllProfiles();
     }, 5 * 60 * 1000); // 5 minutes
 

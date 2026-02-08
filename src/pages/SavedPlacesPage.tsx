@@ -43,9 +43,6 @@ export function SavedPlacesPage({
     setCurrentTab(activeSubTab);
   }, [activeSubTab]);
 
-  // Debug logging
-  console.log('SavedPlacesPage - restaurants:', restaurants.length, 'currentTab:', currentTab, 'activeSubTab:', activeSubTab);
-
   const handleCreateList = async (name: string, description?: string) => {
     return await createList(name, description);
   };

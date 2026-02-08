@@ -1,276 +1,142 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { RefreshCw, Filter, TrendingUp, ChevronDown } from 'lucide-react';
+import { RefreshCw, TrendingUp, Crown, Users, Star, ChevronRight, Sparkles, MapPin } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { ScrollArea } from '@/components/ui/scroll-area';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Badge } from '@/components/ui/badge';
 import { toast } from 'sonner';
 import { FeedItemCard } from '@/components/FeedItemCard';
-import { HorizontalFilterChips } from '@/components/HorizontalFilterChips';
-import { EnhancedProfileCarousel } from '@/components/EnhancedProfileCarousel';
-import { EnhancedWishlistCarousel } from '@/components/EnhancedWishlistCarousel';
 import { InfiniteScrollLoader } from '@/components/InfiniteScrollLoader';
-import { FeedSkeletonLoader } from '@/components/skeletons/FeedItemSkeleton';
-import { RestaurantCarouselSkeleton } from '@/components/skeletons/RestaurantCardSkeleton';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
-import { FeedItem, FilterChip, ProfilePreview } from '@/types/feed';
-import { PopularRestaurantsCarousel } from '@/components/PopularRestaurantsCarousel';
-import { ExpertPicksCarousel } from '@/components/ExpertPicksCarousel';
-import { HiddenGemsCarousel } from '@/components/HiddenGemsCarousel';
+import { FeedItem, ProfilePreview } from '@/types/feed';
 import { locationService } from '@/utils/location';
-import { checkExpertStatus } from '@/hooks/useUserRole';
+import { cn } from '@/lib/utils';
 
 export default function FeedPage() {
   const { user } = useAuth();
   const navigate = useNavigate();
-
   const [feedItems, setFeedItems] = useState<FeedItem[]>([]);
-  const [filteredItems, setFilteredItems] = useState<FeedItem[]>([]);
-  const [filters, setFilters] = useState<FilterChip[]>([]);
-  const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
-  const [profiles, setProfiles] = useState<ProfilePreview[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [hasMore, setHasMore] = useState(true);
   const [offset, setOffset] = useState(0);
-  const [userLocation, setUserLocation] = useState<{ latitude: number; longitude: number; city?: string; country?: string } | null>(null);
-  const [isPullToRefresh, setIsPullToRefresh] = useState(false);
-  const [pullDistance, setPullDistance] = useState(0);
-  const [showFilters, setShowFilters] = useState(true);
+  const [profiles, setProfiles] = useState<ProfilePreview[]>([]);
+  const [experts, setExperts] = useState<ProfilePreview[]>([]);
   const scrollRef = useRef<HTMLDivElement>(null);
-  const startY = useRef(0);
-  const currentY = useRef(0);
 
-  // Get current location for personalized sections
   useEffect(() => {
-    locationService.getCurrentLocation()
-      .then(location => {
-        setUserLocation(location);
-      })
-      .catch(err => {
-        console.log('Location access denied or unavailable:', err);
-      });
+    locationService.getCurrentLocation().catch(() => {});
   }, []);
 
-  // Load feed data (friends and experts activity)
   const loadFeedData = useCallback(async (isRefresh = false, loadOffset = 0) => {
     if (!user) return;
     try {
-      if (isRefresh) {
-        setIsRefreshing(true);
-      } else if (loadOffset === 0) {
-        setIsLoading(true);
-      }
+      if (isRefresh) setIsRefreshing(true);
+      else if (loadOffset === 0) setIsLoading(true);
+
       const limit = 20;
 
-      // Get user's friends
+      // Get friends
       const { data: friendsData } = await supabase
         .from('friends')
         .select('user1_id, user2_id')
         .or(`user1_id.eq.${user.id},user2_id.eq.${user.id}`);
       const friendIds = friendsData?.map(f => f.user1_id === user.id ? f.user2_id : f.user1_id) || [];
 
-      // Get expert users
+      // Get experts
       const { data: expertRoles } = await supabase
         .from('user_roles')
         .select('user_id')
         .eq('role', 'expert');
       const expertIds = expertRoles?.map(r => r.user_id) || [];
 
+      const allUserIds = [...new Set([...friendIds, ...expertIds])];
       let allFeedItems: FeedItem[] = [];
 
-      // Fetch friend activity if any friends
-      if (friendIds.length > 0) {
-        // Friend quick ratings
-        const { data: friendRatings } = await supabase
+      if (allUserIds.length > 0) {
+        // Get ratings from all relevant users in one query
+        const { data: ratings } = await supabase
           .from('restaurants')
-          .select(`
-            id, user_id, name, address, city, country, cuisine, rating, price_range, michelin_stars, notes, photos, photo_captions, photo_dish_names, created_at, date_visited, google_place_id, website, phone_number, latitude, longitude
-          `)
-          .in('user_id', friendIds)
+          .select('id, user_id, name, address, city, country, cuisine, rating, price_range, michelin_stars, notes, photos, photo_captions, photo_dish_names, created_at, date_visited, google_place_id, website, phone_number, latitude, longitude')
+          .in('user_id', allUserIds)
           .not('rating', 'is', null)
           .eq('is_wishlist', false)
           .order('created_at', { ascending: false })
           .range(loadOffset, loadOffset + limit - 1);
 
-        // Friend profiles map
-        const { data: friendProfiles } = await supabase
+        // Get all profiles
+        const { data: allProfiles } = await supabase
           .from('profiles')
           .select('id, username, name, avatar_url')
-          .in('id', friendIds);
-        const profileMap = new Map(friendProfiles?.map(p => [p.id, p]) || []);
+          .in('id', allUserIds);
+        const profileMap = new Map(allProfiles?.map(p => [p.id, p]) || []);
 
-        // Friend reviews
-        const { data: friendReviews } = await supabase
+        // Get reviews
+        const { data: reviews } = await supabase
           .from('user_reviews')
           .select('id, user_id, restaurant_name, restaurant_address, overall_rating, review_text, photos, photo_captions, photo_dish_names, created_at, restaurant_place_id, category_ratings')
-          .in('user_id', friendIds)
+          .in('user_id', allUserIds)
           .order('created_at', { ascending: false })
           .range(loadOffset, loadOffset + limit - 1);
 
-        // Transform friend data into feed items
-        const friendRatingItems = (friendRatings || []).map(r => {
+        // Transform ratings
+        const ratingItems: FeedItem[] = (ratings || []).map(r => {
           const profile = profileMap.get(r.user_id);
+          const isExpert = expertIds.includes(r.user_id);
           return {
-            id: `friend-rating-${r.id}`,
-            type: 'friend-rating' as const,
+            id: `${isExpert ? 'expert' : 'friend'}-rating-${r.id}`,
+            type: (isExpert ? 'expert-rating' : 'friend-rating') as FeedItem['type'],
             user_id: r.user_id,
             username: profile?.username,
             name: profile?.name,
             avatar_url: profile?.avatar_url,
             restaurant_name: r.name,
             restaurant_address: r.address,
-            city: r.city,
-            country: r.country,
-            cuisine: r.cuisine,
-            rating: r.rating,
-            price_range: r.price_range,
-            michelin_stars: r.michelin_stars,
-            notes: r.notes,
-            photos: r.photos,
-            photo_captions: r.photo_captions,
-            photo_dish_names: r.photo_dish_names,
-            created_at: r.created_at,
-            date_visited: r.date_visited,
-            google_place_id: r.google_place_id,
-            website: r.website,
-            phone_number: r.phone_number,
-            latitude: r.latitude,
-            longitude: r.longitude
+            city: r.city, country: r.country, cuisine: r.cuisine,
+            rating: r.rating, price_range: r.price_range, michelin_stars: r.michelin_stars,
+            notes: r.notes, photos: r.photos,
+            photo_captions: r.photo_captions, photo_dish_names: r.photo_dish_names,
+            created_at: r.created_at, date_visited: r.date_visited,
+            google_place_id: r.google_place_id, website: r.website,
+            phone_number: r.phone_number, latitude: r.latitude, longitude: r.longitude,
           };
         });
-        const friendReviewItems = (friendReviews || []).map(r => {
+
+        // Transform reviews
+        const reviewItems: FeedItem[] = (reviews || []).map(r => {
           const profile = profileMap.get(r.user_id);
-          const categoryRatings = r.category_ratings as any;
+          const isExpert = expertIds.includes(r.user_id);
+          const catRatings = r.category_ratings as any;
           return {
-            id: `friend-review-${r.id}`,
-            type: 'friend-review' as const,
+            id: `${isExpert ? 'expert' : 'friend'}-review-${r.id}`,
+            type: (isExpert ? 'expert-review' : 'friend-review') as FeedItem['type'],
             user_id: r.user_id,
-            username: profile?.username,
-            name: profile?.name,
-            avatar_url: profile?.avatar_url,
-            restaurant_name: r.restaurant_name,
-            restaurant_address: r.restaurant_address,
-            cuisine: categoryRatings?.cuisine,
-            overall_rating: r.overall_rating,
-            review_text: r.review_text,
-            photos: r.photos,
-            photo_captions: r.photo_captions,
-            photo_dish_names: r.photo_dish_names,
-            created_at: r.created_at,
-            place_id: r.restaurant_place_id
+            username: profile?.username, name: profile?.name, avatar_url: profile?.avatar_url,
+            restaurant_name: r.restaurant_name, restaurant_address: r.restaurant_address,
+            cuisine: catRatings?.cuisine, overall_rating: r.overall_rating,
+            review_text: r.review_text, photos: r.photos,
+            photo_captions: r.photo_captions, photo_dish_names: r.photo_dish_names,
+            created_at: r.created_at, place_id: r.restaurant_place_id,
           };
         });
-        allFeedItems.push(...friendRatingItems, ...friendReviewItems);
+
+        allFeedItems = [...ratingItems, ...reviewItems];
+        allFeedItems.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+        allFeedItems = allFeedItems.filter((item, idx, arr) => idx === arr.findIndex(t => t.id === item.id));
       }
-
-      // Fetch expert activity
-      if (expertIds.length > 0) {
-        // Expert quick ratings
-        const { data: expertRatings } = await supabase
-          .from('restaurants')
-          .select(`
-            id, user_id, name, address, city, country, cuisine, rating, price_range, michelin_stars, notes, photos, photo_captions, photo_dish_names, created_at, date_visited, google_place_id, website, phone_number, latitude, longitude
-          `)
-          .in('user_id', expertIds)
-          .not('rating', 'is', null)
-          .eq('is_wishlist', false)
-          .order('created_at', { ascending: false })
-          .range(loadOffset, loadOffset + limit - 1);
-
-        // Expert profiles map
-        const { data: expertProfiles } = await supabase
-          .from('profiles')
-          .select('id, username, name, avatar_url')
-          .in('id', expertIds);
-        const expertProfileMap = new Map(expertProfiles?.map(p => [p.id, p]) || []);
-
-        // Expert reviews
-        const { data: expertReviews } = await supabase
-          .from('user_reviews')
-          .select('id, user_id, restaurant_name, restaurant_address, overall_rating, review_text, photos, photo_captions, photo_dish_names, created_at, restaurant_place_id, category_ratings')
-          .in('user_id', expertIds)
-          .order('created_at', { ascending: false })
-          .range(loadOffset, loadOffset + limit - 1);
-
-        // Transform expert data into feed items
-        const expertRatingItems = (expertRatings || []).map(r => {
-          const profile = expertProfileMap.get(r.user_id);
-          return {
-            id: `expert-rating-${r.id}`,
-            type: 'expert-rating' as const,
-            user_id: r.user_id,
-            username: profile?.username,
-            name: profile?.name,
-            avatar_url: profile?.avatar_url,
-            restaurant_name: r.name,
-            restaurant_address: r.address,
-            city: r.city,
-            country: r.country,
-            cuisine: r.cuisine,
-            rating: r.rating,
-            price_range: r.price_range,
-            michelin_stars: r.michelin_stars,
-            notes: r.notes,
-            photos: r.photos,
-            photo_captions: r.photo_captions,
-            photo_dish_names: r.photo_dish_names,
-            created_at: r.created_at,
-            date_visited: r.date_visited,
-            google_place_id: r.google_place_id,
-            website: r.website,
-            phone_number: r.phone_number,
-            latitude: r.latitude,
-            longitude: r.longitude
-          };
-        });
-        const expertReviewItems = (expertReviews || []).map(r => {
-          const profile = expertProfileMap.get(r.user_id);
-          const categoryRatings = r.category_ratings as any;
-          return {
-            id: `expert-review-${r.id}`,
-            type: 'expert-review' as const,
-            user_id: r.user_id,
-            username: profile?.username,
-            name: profile?.name,
-            avatar_url: profile?.avatar_url,
-            restaurant_name: r.restaurant_name,
-            restaurant_address: r.restaurant_address,
-            cuisine: categoryRatings?.cuisine,
-            overall_rating: r.overall_rating,
-            review_text: r.review_text,
-            photos: r.photos,
-            photo_captions: r.photo_captions,
-            photo_dish_names: r.photo_dish_names,
-            created_at: r.created_at,
-            place_id: r.restaurant_place_id
-          };
-        });
-        allFeedItems.push(...expertRatingItems, ...expertReviewItems);
-      }
-
-      // Sort by date and remove duplicate entries
-      allFeedItems.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
-      const uniqueItems = allFeedItems.filter((item, index, self) =>
-        index === self.findIndex(t => t.id === item.id)
-      );
 
       if (isRefresh || loadOffset === 0) {
-        setFeedItems(uniqueItems);
+        setFeedItems(allFeedItems);
       } else {
-        setFeedItems(prev => [...prev, ...uniqueItems]);
+        setFeedItems(prev => [...prev, ...allFeedItems]);
       }
-      setHasMore(uniqueItems.length === limit);
-      setOffset(loadOffset + uniqueItems.length);
+      setHasMore(allFeedItems.length === limit);
+      setOffset(loadOffset + allFeedItems.length);
 
-      // Generate filters from feed data
+      // Load profile previews
       if (isRefresh || loadOffset === 0) {
-        generateFilters(uniqueItems);
-      }
-
-      // Load profile previews for "Active Today" carousel
-      if (isRefresh || loadOffset === 0) {
-        await loadProfilePreviews([...friendIds, ...expertIds]);
+        await loadProfilePreviews(friendIds, expertIds);
       }
     } catch (error) {
       console.error('Error loading feed:', error);
@@ -281,330 +147,208 @@ export default function FeedPage() {
     }
   }, [user]);
 
-  // Generate filter chips based on feed content
-  const generateFilters = (items: FeedItem[]) => {
-    const cuisineCounts: Record<string, number> = {};
-    const cityCounts: Record<string, number> = {};
-    const ratingCounts = { high: 0, medium: 0, low: 0 };
-    const priceCounts = { expensive: 0, moderate: 0, affordable: 0 };
-
-    items.forEach(item => {
-      if ((item as any).cuisine) {
-        const cuisine = (item as any).cuisine;
-        cuisineCounts[cuisine] = (cuisineCounts[cuisine] || 0) + 1;
-      }
-      if ((item as any).city) {
-        const city = (item as any).city;
-        cityCounts[city] = (cityCounts[city] || 0) + 1;
-      }
-      const rating = (item as any).overall_rating ?? (item as any).rating;
-      if (rating) {
-        if (rating >= 8) ratingCounts.high++;
-        else if (rating >= 6) ratingCounts.medium++;
-        else ratingCounts.low++;
-      }
-      if ((item as any).price_range) {
-        const price = (item as any).price_range;
-        if (price >= 3) priceCounts.expensive++;
-        else if (price === 2) priceCounts.moderate++;
-        else priceCounts.affordable++;
-      }
-    });
-
-    const newFilters: FilterChip[] = [
-      // Top cuisines
-      ...Object.entries(cuisineCounts)
-        .sort(([, a], [, b]) => b - a)
-        .slice(0, 5)
-        .map(([cuisine, count]) => ({
-          id: `cuisine-${cuisine}`,
-          label: cuisine,
-          type: 'cuisine' as const,
-          value: cuisine,
-          count
-        })),
-      // Top cities
-      ...Object.entries(cityCounts)
-        .sort(([, a], [, b]) => b - a)
-        .slice(0, 3)
-        .map(([city, count]) => ({
-          id: `city-${city}`,
-          label: city,
-          type: 'city' as const,
-          value: city,
-          count
-        })),
-      // Rating filters
-      { id: 'rating-high', label: 'Highly Rated (8+)', type: 'rating' as const, value: 'high', count: ratingCounts.high },
-      { id: 'rating-medium', label: 'Good (6-7)', type: 'rating' as const, value: 'medium', count: ratingCounts.medium },
-      { id: 'rating-low', label: 'Needs Work (<6)', type: 'rating' as const, value: 'low', count: ratingCounts.low },
-      // Price filters
-      { id: 'price-expensive', label: '$$$$', type: 'price' as const, value: 'expensive', count: priceCounts.expensive },
-      { id: 'price-moderate', label: '$$', type: 'price' as const, value: 'moderate', count: priceCounts.moderate },
-      { id: 'price-affordable', label: '$', type: 'price' as const, value: 'affordable', count: priceCounts.affordable }
-    ];
-    setFilters(newFilters);
-    setSelectedFilters([]);
-  };
-
-  // Load profile preview data for "Active Today" carousel
-  const loadProfilePreviews = async (userIds: string[]) => {
+  const loadProfilePreviews = async (friendIds: string[], expertIds: string[]) => {
     try {
-      const uniqueIds = Array.from(new Set(userIds)).slice(0, 10);
-      const { data: profilesData } = await supabase
-        .from('profiles')
-        .select('id, username, name, avatar_url')
-        .in('id', uniqueIds);
-      if (profilesData) {
-        const expertStatuses = await checkExpertStatus(uniqueIds);
-        const profilePreviews: ProfilePreview[] = profilesData.map(profile => ({
-          id: profile.id,
-          username: profile.username,
-          name: profile.name,
-          avatar_url: profile.avatar_url,
-          isExpert: expertStatuses[profile.id] || false,
-          recentActivityCount: feedItems.filter(item => item.user_id === profile.id).length
-        }));
-        setProfiles(profilePreviews);
+      const uniqueFriendIds = [...new Set(friendIds)].slice(0, 10);
+      const uniqueExpertIds = [...new Set(expertIds)].slice(0, 6);
+
+      if (uniqueFriendIds.length > 0) {
+        const { data: friendProfiles } = await supabase
+          .from('profiles')
+          .select('id, username, name, avatar_url')
+          .in('id', uniqueFriendIds);
+        if (friendProfiles) {
+          setProfiles(friendProfiles.map(p => ({
+            id: p.id, username: p.username, name: p.name, avatar_url: p.avatar_url,
+            isExpert: false, recentActivityCount: 0,
+          })));
+        }
+      }
+
+      if (uniqueExpertIds.length > 0) {
+        const { data: expertProfiles } = await supabase
+          .from('profiles')
+          .select('id, username, name, avatar_url')
+          .in('id', uniqueExpertIds);
+        if (expertProfiles) {
+          setExperts(expertProfiles.map(p => ({
+            id: p.id, username: p.username, name: p.name, avatar_url: p.avatar_url,
+            isExpert: true, recentActivityCount: 0,
+          })));
+        }
       }
     } catch (error) {
       console.error('Error loading profiles:', error);
     }
   };
 
-  // Initial load on mount
-  useEffect(() => {
-    loadFeedData();
-  }, [loadFeedData]);
+  useEffect(() => { loadFeedData(); }, [loadFeedData]);
 
-  // Apply filters to feed items
-  useEffect(() => {
-    if (selectedFilters.length === 0) {
-      setFilteredItems(feedItems);
-      return;
-    }
+  const handleRefresh = () => { setOffset(0); loadFeedData(true, 0); };
+  const handleLoadMore = () => { if (!isLoading && hasMore) loadFeedData(false, offset); };
 
-    const filtered = feedItems.filter(item => {
-      return selectedFilters.every(filterId => {
-        const filter = filters.find(f => f.id === filterId);
-        if (!filter) return true;
-
-        switch (filter.type) {
-          case 'cuisine':
-            return (item as any).cuisine === filter.value;
-          case 'city':
-            return (item as any).city === filter.value;
-          case 'rating':
-            const rating = (item as any).overall_rating ?? (item as any).rating;
-            if (!rating) return false;
-            if (filter.value === 'high') return rating >= 8;
-            if (filter.value === 'medium') return rating >= 6 && rating < 8;
-            if (filter.value === 'low') return rating < 6;
-            return true;
-          case 'price':
-            if (!(item as any).price_range) return false;
-            if (filter.value === 'expensive') return (item as any).price_range >= 3;
-            if (filter.value === 'moderate') return (item as any).price_range === 2;
-            if (filter.value === 'affordable') return (item as any).price_range === 1;
-            return true;
-          default:
-            return true;
-        }
-      });
-    });
-
-    setFilteredItems(filtered);
-  }, [feedItems, selectedFilters, filters]);
-
-  const handleRefresh = () => {
-    setOffset(0);
-    loadFeedData(true, 0);
-  };
-
-  const handleLoadMore = () => {
-    if (!isLoading && hasMore) {
-      loadFeedData(false, offset);
-    }
-  };
-
-  const handleFilterToggle = (filterId: string) => {
-    setSelectedFilters(prev =>
-      prev.includes(filterId) ? prev.filter(id => id !== filterId) : [...prev, filterId]
-    );
-  };
-
-  const handleClearFilters = () => {
-    setSelectedFilters([]);
-  };
-
-  // Pull-to-refresh functionality
-  const handleTouchStart = (e: React.TouchEvent) => {
-    if (scrollRef.current?.scrollTop === 0) {
-      startY.current = e.touches[0].clientY;
-    }
-  };
-
-  const handleTouchMove = (e: React.TouchEvent) => {
-    if (scrollRef.current?.scrollTop === 0) {
-      currentY.current = e.touches[0].clientY;
-      const distance = currentY.current - startY.current;
-      
-      if (distance > 0) {
-        setPullDistance(Math.min(distance, 100));
-        if (distance > 60) {
-          setIsPullToRefresh(true);
-        }
-      }
-    }
-  };
-
-  const handleTouchEnd = () => {
-    if (isPullToRefresh && pullDistance > 60) {
-      handleRefresh();
-    }
-    setPullDistance(0);
-    setIsPullToRefresh(false);
-  };
-
-  // Sticky filters scroll behavior
-  useEffect(() => {
-    const handleScroll = () => {
-      if (scrollRef.current) {
-        const scrollTop = scrollRef.current.scrollTop;
-        setShowFilters(scrollTop < 100);
-      }
-    };
-
-    const scrollElement = scrollRef.current;
-    if (scrollElement) {
-      scrollElement.addEventListener('scroll', handleScroll);
-      return () => scrollElement.removeEventListener('scroll', handleScroll);
-    }
-  }, []);
-
-  if (isLoading && feedItems.length === 0) {
+  // Empty state
+  if (!isLoading && feedItems.length === 0) {
     return (
-      <div className="flex items-center justify-center min-h-[400px]">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-      </div>
-    );
-  }
-
-  if (!isLoading && filteredItems.length === 0 && feedItems.length === 0) {
-    return (
-      <div className="flex flex-col items-center justify-center min-h-[400px] px-4">
-        <TrendingUp className="h-16 w-16 text-muted-foreground mb-4" />
-        <h2 className="text-xl font-semibold mb-2">Your Feed is Empty</h2>
-        <p className="text-muted-foreground text-center mb-6">
-          Follow friends and experts to see their restaurant discoveries and reviews here.
-        </p>
-        <div className="flex gap-3">
-          <Button onClick={() => navigate('/friends')}>Find Friends</Button>
-          <Button variant="outline" onClick={() => navigate('/search/experts')}>Discover Experts</Button>
+      <div className="min-h-screen bg-background">
+        <div className="px-4 pt-6 pb-24">
+          <div className="text-center py-8">
+            <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-primary/10 flex items-center justify-center">
+              <Sparkles className="h-8 w-8 text-primary" />
+            </div>
+            <h1 className="text-2xl font-bold mb-2">Welcome to Grubby</h1>
+            <p className="text-muted-foreground text-sm max-w-sm mx-auto">
+              Your feed will come alive as you follow friends and experts. Start building your network!
+            </p>
+          </div>
+          <div className="space-y-3 max-w-md mx-auto">
+            <Button onClick={() => navigate('/friends')} className="w-full justify-between h-14 rounded-xl" variant="outline">
+              <div className="flex items-center gap-3">
+                <Users className="h-5 w-5 text-primary" />
+                <span className="font-medium">Find Friends</span>
+              </div>
+              <ChevronRight className="h-4 w-4 text-muted-foreground" />
+            </Button>
+            <Button onClick={() => navigate('/experts')} className="w-full justify-between h-14 rounded-xl" variant="outline">
+              <div className="flex items-center gap-3">
+                <Crown className="h-5 w-5 text-amber-500" />
+                <span className="font-medium">Discover Experts</span>
+              </div>
+              <ChevronRight className="h-4 w-4 text-muted-foreground" />
+            </Button>
+            <Button onClick={() => navigate('/search/global')} className="w-full justify-between h-14 rounded-xl" variant="outline">
+              <div className="flex items-center gap-3">
+                <TrendingUp className="h-5 w-5 text-emerald-500" />
+                <span className="font-medium">Search Restaurants</span>
+              </div>
+              <ChevronRight className="h-4 w-4 text-muted-foreground" />
+            </Button>
+          </div>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Header */}
-      <div className="sticky top-0 z-50 bg-background/95 backdrop-blur border-b border-border pt-safe-area-top">
-        <div className="flex items-center justify-between p-4">
-          <h1 className="text-xl font-bold">Feed</h1>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={handleRefresh}
-            disabled={isRefreshing}
-            className="text-muted-foreground hover:text-foreground"
-          >
-            <RefreshCw className={`h-4 w-4 ${isRefreshing ? 'animate-spin' : ''}`} />
+    <div className="min-h-screen bg-background pb-20 lg:pb-0">
+      {/* Compact Header */}
+      <div className="sticky top-0 z-30 bg-background/95 backdrop-blur border-b border-border/30">
+        <div className="flex items-center justify-between px-4 py-3">
+          <h1 className="text-lg font-bold">Feed</h1>
+          <Button variant="ghost" size="icon" onClick={handleRefresh} disabled={isRefreshing} className="h-8 w-8">
+            <RefreshCw className={cn('h-4 w-4', isRefreshing && 'animate-spin')} />
           </Button>
         </div>
       </div>
 
-      {/* Trending Near You */}
-      <PopularRestaurantsCarousel 
-        title="Trending Near You" 
-        userLocation={userLocation ? { 
-          latitude: userLocation.latitude, 
-          longitude: userLocation.longitude, 
-          city: userLocation.city, 
-          country: userLocation.country 
-        } : undefined} 
-      />
-
-      {/* Active Today Carousel */}
-      {profiles.length > 0 ? (
-        <EnhancedProfileCarousel 
-          profiles={profiles} 
-          title="Active Today" 
-          subtitle="See what your friends are discovering"
-        />
-      ) : (
-        <RestaurantCarouselSkeleton count={3} />
+      {/* Active Friends Row */}
+      {profiles.length > 0 && (
+        <div className="px-4 pt-4 pb-2">
+          <h2 className="text-sm font-semibold text-foreground mb-3">Active Friends</h2>
+          <div className="flex gap-3 overflow-x-auto scrollbar-hide pb-1">
+            {profiles.map((profile) => (
+              <button
+                key={profile.id}
+                onClick={() => navigate(`/friend-profile/${profile.id}`)}
+                className="flex flex-col items-center gap-1.5 flex-shrink-0"
+              >
+                <Avatar className="h-14 w-14 border-2 border-primary/30">
+                  <AvatarImage src={profile.avatar_url || ''} />
+                  <AvatarFallback className="bg-primary/10 text-primary font-semibold text-sm">
+                    {(profile.name || profile.username || 'U').charAt(0).toUpperCase()}
+                  </AvatarFallback>
+                </Avatar>
+                <span className="text-[11px] text-muted-foreground font-medium truncate w-16 text-center">
+                  {profile.name?.split(' ')[0] || profile.username}
+                </span>
+              </button>
+            ))}
+          </div>
+        </div>
       )}
 
-      {/* Expert Picks Carousel */}
-      <ExpertPicksCarousel />
+      {/* Featured Experts Row */}
+      {experts.length > 0 && (
+        <div className="px-4 pt-3 pb-2">
+          <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center gap-2">
+              <Crown className="h-4 w-4 text-amber-500" />
+              <h2 className="text-sm font-semibold">Featured Experts</h2>
+            </div>
+            <Button variant="ghost" size="sm" className="text-xs h-7 text-primary" onClick={() => navigate('/experts')}>
+              See all
+            </Button>
+          </div>
+          <div className="flex gap-2.5 overflow-x-auto scrollbar-hide pb-1">
+            {experts.map((expert) => (
+              <button
+                key={expert.id}
+                onClick={() => navigate(`/friend-profile/${expert.id}`)}
+                className="flex-shrink-0 p-3 rounded-xl border border-border/50 bg-card hover:bg-muted/50 transition-colors w-36"
+              >
+                <Avatar className="h-10 w-10 mx-auto mb-2 border border-amber-500/30">
+                  <AvatarImage src={expert.avatar_url || ''} />
+                  <AvatarFallback className="bg-amber-500/10 text-amber-600 font-bold text-xs">
+                    {(expert.name || expert.username).charAt(0).toUpperCase()}
+                  </AvatarFallback>
+                </Avatar>
+                <div className="text-xs font-medium truncate text-center">{expert.name || expert.username}</div>
+                <Badge variant="outline" className="mt-1 mx-auto bg-amber-500/10 text-amber-600 border-amber-500/20 text-[9px] px-1.5 py-0 flex w-fit">
+                  <Crown className="h-2.5 w-2.5 mr-0.5" />
+                  Expert
+                </Badge>
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
 
-      {/* Your Wishlist Carousel */}
-      <EnhancedWishlistCarousel />
-
-      {/* Hidden Gems Carousel */}
-      <HiddenGemsCarousel />
-
-      {/* Sticky Filter Chips */}
-      <div className={`sticky top-16 z-40 transition-all duration-300 ${
-        showFilters ? 'translate-y-0 opacity-100' : '-translate-y-full opacity-0'
-      }`}>
-        <HorizontalFilterChips
-          filters={filters}
-          selectedFilters={selectedFilters}
-          onFilterToggle={handleFilterToggle}
-          onClearAll={handleClearFilters}
-        />
+      {/* Quick Actions */}
+      <div className="px-4 pt-2 pb-3">
+        <div className="flex gap-2">
+          <Button variant="outline" size="sm" className="rounded-full text-xs h-8 gap-1.5" onClick={() => navigate('/places')}>
+            <Star className="h-3.5 w-3.5" />
+            Rate a Restaurant
+          </Button>
+          <Button variant="outline" size="sm" className="rounded-full text-xs h-8 gap-1.5" onClick={() => navigate('/search/global')}>
+            <MapPin className="h-3.5 w-3.5" />
+            Discover Nearby
+          </Button>
+        </div>
       </div>
 
-      {/* Feed Content */}
-      <ScrollArea 
-        ref={scrollRef}
-        className="flex-1"
-        onTouchStart={handleTouchStart}
-        onTouchMove={handleTouchMove}
-        onTouchEnd={handleTouchEnd}
-      >
-        <div className="pb-20">
-          {/* Pull to refresh indicator */}
-          {pullDistance > 0 && (
-            <div className="flex justify-center py-4">
-              <div className={`flex items-center gap-2 text-sm text-muted-foreground transition-all ${
-                isPullToRefresh ? 'text-primary' : ''
-              }`}>
-                <RefreshCw className={`h-4 w-4 ${isPullToRefresh ? 'animate-spin' : ''}`} />
-                {isPullToRefresh ? 'Release to refresh' : 'Pull to refresh'}
+      <div className="h-px bg-border/50 mx-4" />
+
+      {/* Feed Section Header */}
+      <div className="px-4 pt-4 pb-2">
+        <h2 className="text-sm font-semibold text-foreground">Recent Activity</h2>
+      </div>
+
+      {/* Loading State */}
+      {isLoading && feedItems.length === 0 && (
+        <div className="px-4 space-y-4">
+          {Array.from({ length: 5 }).map((_, i) => (
+            <div key={i} className="animate-pulse space-y-3 py-4 border-b border-border/30">
+              <div className="flex items-center gap-3">
+                <div className="h-10 w-10 bg-muted rounded-full" />
+                <div className="space-y-2 flex-1">
+                  <div className="h-3 bg-muted rounded w-32" />
+                  <div className="h-2 bg-muted rounded w-48" />
+                </div>
               </div>
+              <div className="h-4 bg-muted rounded w-full" />
             </div>
-          )}
-
-          {/* Loading skeleton */}
-          {isLoading && filteredItems.length === 0 && (
-            <FeedSkeletonLoader count={5} />
-          )}
-
-          {/* Feed items */}
-          {filteredItems.map(item => (
-            <FeedItemCard key={item.id} item={item} />
           ))}
-          
-          <InfiniteScrollLoader
-            hasMore={hasMore}
-            isLoading={isLoading}
-            onLoadMore={handleLoadMore}
-          />
         </div>
-      </ScrollArea>
+      )}
+
+      {/* Feed Items */}
+      <div ref={scrollRef}>
+        {feedItems.map(item => (
+          <FeedItemCard key={item.id} item={item} />
+        ))}
+        <InfiniteScrollLoader hasMore={hasMore} isLoading={isLoading} onLoadMore={handleLoadMore} />
+      </div>
     </div>
   );
 }

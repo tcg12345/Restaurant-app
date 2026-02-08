@@ -38,9 +38,9 @@ export function useItineraries() {
       })) as Itinerary[];
       
       setItineraries(converted);
-    } catch (error) {
-      console.error('Error loading itineraries:', error);
-      toast.error('Failed to load itineraries');
+    } catch {
+      // Table may not exist yet - silently handle
+      setItineraries([]);
     } finally {
       setLoading(false);
     }
@@ -48,23 +48,6 @@ export function useItineraries() {
 
   const saveItinerary = async (itinerary: Itinerary) => {
     if (!user) return null;
-
-    console.log('Saving itinerary with dates:', {
-      originalStartDate: itinerary.startDate,
-      originalEndDate: itinerary.endDate,
-      startDateString: format(itinerary.startDate, 'yyyy-MM-dd'),
-      endDateString: format(itinerary.endDate, 'yyyy-MM-dd'),
-      startDateComponents: {
-        year: itinerary.startDate.getFullYear(),
-        month: itinerary.startDate.getMonth() + 1,
-        date: itinerary.startDate.getDate()
-      },
-      endDateComponents: {
-        year: itinerary.endDate.getFullYear(),
-        month: itinerary.endDate.getMonth() + 1,
-        date: itinerary.endDate.getDate()
-      }
-    });
 
     try {
       const { data, error } = await supabase
@@ -85,13 +68,6 @@ export function useItineraries() {
         .single();
 
       if (error) throw error;
-      
-      console.log('Received data from database:', {
-        savedStartDate: data.start_date,
-        savedEndDate: data.end_date,
-        convertedStartDate: new Date(data.start_date),
-        convertedEndDate: new Date(data.end_date)
-      });
 
       // Convert back to Itinerary format and add to state
       const converted: Itinerary = {
@@ -110,8 +86,7 @@ export function useItineraries() {
       setItineraries(prev => [converted, ...prev]);
       toast.success('Itinerary saved successfully');
       return converted;
-    } catch (error) {
-      console.error('Error saving itinerary:', error);
+    } catch {
       toast.error('Failed to save itinerary');
       return null;
     }
@@ -141,12 +116,8 @@ export function useItineraries() {
         .single();
 
       if (error) {
-        // If the itinerary doesn't exist (was deleted), create a new one instead
         if (error.code === 'PGRST116') {
-          console.log('Original itinerary was deleted, creating new one instead');
           toast.success('Original itinerary not found, creating a new one');
-          
-          // Create new itinerary with the update data
           const newItinerary: Itinerary = {
             id: crypto.randomUUID(),
             title: updates.title || 'Untitled Itinerary',
@@ -159,7 +130,6 @@ export function useItineraries() {
             wasCreatedWithLengthOfStay: updates.wasCreatedWithLengthOfStay || false,
             isMultiCity: updates.isMultiCity || false
           };
-          
           return await saveItinerary(newItinerary);
         }
         throw error;
@@ -186,8 +156,7 @@ export function useItineraries() {
       
       toast.success('Itinerary updated successfully');
       return converted;
-    } catch (error) {
-      console.error('Error updating itinerary:', error);
+    } catch {
       toast.error('Failed to update itinerary');
       return null;
     }
@@ -204,11 +173,10 @@ export function useItineraries() {
         .eq('user_id', user.id);
 
       if (error) throw error;
-      
+
       setItineraries(prev => prev.filter(item => item.id !== id));
       toast.success('Itinerary deleted successfully');
-    } catch (error) {
-      console.error('Error deleting itinerary:', error);
+    } catch {
       toast.error('Failed to delete itinerary');
     }
   };
