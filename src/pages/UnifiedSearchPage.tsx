@@ -584,7 +584,7 @@ export default function UnifiedSearchPage() {
                         placeholder="Search restaurants, cuisines, or dishes..." 
                         value={searchQuery} 
                         onChange={e => setSearchQuery(e.target.value)} 
-                        className="w-full h-11 pl-11 pr-10 rounded-full border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 focus:border-blue-500 dark:focus:border-blue-400 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-800/30 text-sm placeholder:text-slate-500 dark:placeholder:text-slate-400 transition-all duration-300 shadow-sm hover:shadow-md" 
+                        className="w-full h-11 pl-11 pr-10 rounded-full border border-border bg-background focus:border-primary focus:ring-2 focus:ring-primary/20 text-sm placeholder:text-muted-foreground transition-all duration-300 shadow-sm hover:shadow-md" 
                       />
                       {searchQuery && <button onClick={clearSearch} className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors p-1.5 rounded-full hover:bg-muted/50">
                           <X className="h-4 w-4" />
@@ -613,7 +613,7 @@ export default function UnifiedSearchPage() {
                         }} 
                         onFocus={() => locationQuery.length > 1 && setShowLocationSuggestions(true)} 
                         onBlur={() => setTimeout(() => setShowLocationSuggestions(false), 150)} 
-                        className="w-full h-11 pl-11 pr-4 rounded-full border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 focus:border-blue-500 dark:focus:border-blue-400 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-800/30 text-sm placeholder:text-slate-500 dark:placeholder:text-slate-400 transition-all duration-300 shadow-sm hover:shadow-md" 
+                        className="w-full h-11 pl-11 pr-4 rounded-full border border-border bg-background focus:border-primary focus:ring-2 focus:ring-primary/20 text-sm placeholder:text-muted-foreground transition-all duration-300 shadow-sm hover:shadow-md" 
                       />
                       
                       {/* Modern Location Suggestions */}
