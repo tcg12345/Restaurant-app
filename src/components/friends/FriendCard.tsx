@@ -48,14 +48,22 @@ function FriendCardComponent({ friend, onViewProfile, onChat, onRemove, classNam
         if (cached) {
           setCounts({ rated: cached.rated_count, wishlist: cached.wishlist_count });
         } else {
-          // Fallback: quick RPC for counts only
+          // Try RPC first, fall back to direct count queries
           supabase.rpc('get_user_stats', { target_user_id: friend.id })
-            .then(({ data }) => {
-              if (Array.isArray(data) && data[0]) {
+            .then(({ data, error }) => {
+              if (!error && Array.isArray(data) && data[0]) {
                 setCounts({ rated: Number(data[0].rated_count) || 0, wishlist: Number(data[0].wishlist_count) || 0 });
+              } else {
+                // Fallback: count restaurants directly
+                Promise.all([
+                  supabase.from('restaurants').select('id', { count: 'exact', head: true }).eq('user_id', friend.id).eq('is_wishlist', false).not('rating', 'is', null),
+                  supabase.from('restaurants').select('id', { count: 'exact', head: true }).eq('user_id', friend.id).eq('is_wishlist', true),
+                ]).then(([rated, wishlist]) => {
+                  setCounts({ rated: rated.count || 0, wishlist: wishlist.count || 0 });
+                }).catch(() => {});
               }
             })
-            
+            .catch(() => {});
         }
         observer.disconnect();
       }

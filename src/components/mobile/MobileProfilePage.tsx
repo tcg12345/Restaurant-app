@@ -60,10 +60,7 @@ export function MobileProfilePage() {
     const loadStats = async () => {
       if (!user) return;
       try {
-        const {
-          data,
-          error
-        } = await supabase.rpc('get_user_stats', {
+        const { data, error } = await supabase.rpc('get_user_stats', {
           target_user_id: user.id
         });
         if (error) throw error;
@@ -73,10 +70,30 @@ export function MobileProfilePage() {
           avg_rating: data[0]?.avg_rating || 0,
           top_cuisine: data[0]?.top_cuisine || '',
           following_count: friends.length,
-          followers_count: friends.length // Simplified for now
+          followers_count: friends.length
         });
-      } catch (error) {
-        console.error('Error loading stats:', error);
+      } catch {
+        // RPC may not exist - compute stats from restaurants table directly
+        try {
+          const [ratedRes, wishlistRes] = await Promise.all([
+            supabase.from('restaurants').select('rating, cuisine', { count: 'exact' }).eq('user_id', user.id).eq('is_wishlist', false).not('rating', 'is', null),
+            supabase.from('restaurants').select('id', { count: 'exact', head: true }).eq('user_id', user.id).eq('is_wishlist', true),
+          ]);
+          const ratings = (ratedRes.data || []).map((r: any) => r.rating).filter(Boolean);
+          const avgRating = ratings.length > 0 ? ratings.reduce((a: number, b: number) => a + b, 0) / ratings.length : 0;
+          const cuisines = (ratedRes.data || []).map((r: any) => r.cuisine).filter(Boolean);
+          const cuisineCount: Record<string, number> = {};
+          cuisines.forEach((c: string) => { cuisineCount[c] = (cuisineCount[c] || 0) + 1; });
+          const topCuisine = Object.entries(cuisineCount).sort((a, b) => b[1] - a[1])[0]?.[0] || '';
+          setStats({
+            rated_count: ratedRes.count || 0,
+            wishlist_count: wishlistRes.count || 0,
+            avg_rating: Math.round(avgRating * 10) / 10,
+            top_cuisine: topCuisine,
+            following_count: friends.length,
+            followers_count: friends.length
+          });
+        } catch {}
       }
     };
     loadStats();

@@ -7,9 +7,6 @@ export default function Index() {
   const { user, isLoading } = useAuth();
   const navigate = useNavigate();
 
-  // Debug: Log the current authentication state
-  console.log('Auth state:', { user: !!user, isLoading, userEmail: user?.email });
-
   // Redirect authenticated users to the feed page
   useEffect(() => {
     if (!isLoading && user) {

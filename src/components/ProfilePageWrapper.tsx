@@ -13,8 +13,6 @@ export function ProfilePageWrapper({
 }: ProfilePageWrapperProps = {}) {
   const isMobile = useIsMobile();
   
-  console.log('ProfilePageWrapper - isMobile:', isMobile, 'window.innerWidth:', window.innerWidth);
-  
   if (isMobile) {
     return <MobileProfilePage />;
   }

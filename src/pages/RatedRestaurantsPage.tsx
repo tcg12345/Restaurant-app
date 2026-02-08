@@ -81,8 +81,6 @@ export function RatedRestaurantsPage({
 }: RatedRestaurantsPageProps) {
   const navigate = useNavigate();
   
-  // Debug logging
-  console.log('RatedRestaurantsPage - restaurants:', restaurants.length, 'shouldOpenAddDialog:', shouldOpenAddDialog);
   const { lists, createList, deleteList, addRestaurantToList, removeRestaurantFromList, getRestaurantsInList } = useRestaurantLists();
   const [selectedListId, setSelectedListId] = useState<string | null>(null);
   const [cachedLists, setCachedLists] = useState<any[]>([]);

@@ -4,11 +4,13 @@ import { RecommendationCard } from '@/components/RecommendationCard';
 import { RecommendationFilters } from '@/components/RecommendationFilters';
 import { InfiniteScrollLoader } from '@/components/InfiniteScrollLoader';
 import { supabase } from '@/integrations/supabase/client';
-import { Loader2, MapPin, Map } from 'lucide-react';
+import { MapPin, Map, Sparkles } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { RecommendationsMap } from '@/components/RecommendationsMap';
 import { MobileRecommendationsMap } from '@/components/mobile/MobileRecommendationsMap';
 import { Button } from '@/components/ui/button';
+import { scoreRecommendations, TasteProfile } from '@/utils/recommendationAlgorithm';
+import { useNavigate } from 'react-router-dom';
 
 interface RecommendationsPageProps {
   restaurants: Restaurant[];
@@ -29,9 +31,12 @@ interface RecommendationData {
   latitude?: number;
   longitude?: number;
   city?: string;
+  confidenceScore?: number;
+  matchFactors?: string[];
 }
 
 export function RecommendationsPage({ restaurants, onAddRestaurant }: RecommendationsPageProps) {
+  const navigate = useNavigate();
   const [recommendations, setRecommendations] = useState<RecommendationData[]>([]);
   const [displayedCount, setDisplayedCount] = useState(20);
   const [allLoadedRecommendations, setAllLoadedRecommendations] = useState<RecommendationData[]>([]);
@@ -41,13 +46,22 @@ export function RecommendationsPage({ restaurants, onAddRestaurant }: Recommenda
   const [showMap, setShowMap] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [hasLoadedInitial, setHasLoadedInitial] = useState(false);
-  
+  const [tasteProfile, setTasteProfile] = useState<TasteProfile | null>(null);
+
   // Filter states
   const [selectedCities, setSelectedCities] = useState<string[]>([]);
   const [selectedPriceRanges, setSelectedPriceRanges] = useState<number[]>([]);
   const [filteredRecommendations, setFilteredRecommendations] = useState<RecommendationData[]>([]);
-  
+
   const { toast } = useToast();
+
+  // Load taste profile from localStorage
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem('taste_profile');
+      if (saved) setTasteProfile(JSON.parse(saved));
+    } catch {}
+  }, []);
   const observerTarget = useRef<HTMLDivElement>(null);
 
   // Detect mobile screen size
@@ -63,26 +77,62 @@ export function RecommendationsPage({ restaurants, onAddRestaurant }: Recommenda
 
   const ratedRestaurants = restaurants.filter(r => !r.isWishlist && r.rating);
 
-  // Apply filters to recommendations
+  // Apply filters and scoring to recommendations
   useEffect(() => {
     let filtered = allLoadedRecommendations;
-    
+
     // Filter by selected cities
     if (selectedCities.length > 0) {
-      filtered = filtered.filter(rec => 
+      filtered = filtered.filter(rec =>
         rec.city && selectedCities.includes(rec.city)
       );
     }
-    
+
     // Filter by selected price ranges
     if (selectedPriceRanges.length > 0) {
-      filtered = filtered.filter(rec => 
+      filtered = filtered.filter(rec =>
         rec.priceRange && selectedPriceRanges.includes(rec.priceRange)
       );
     }
-    
-    setFilteredRecommendations(filtered);
-  }, [allLoadedRecommendations, selectedCities, selectedPriceRanges]);
+
+    // Score recommendations using the algorithm
+    const ratedRestaurants = restaurants.filter(r => !r.isWishlist && r.rating).map(r => ({
+      name: r.name,
+      cuisine: r.cuisine,
+      rating: r.rating,
+      priceRange: r.priceRange,
+      city: r.city,
+      country: r.country,
+    }));
+
+    const scored = scoreRecommendations(
+      filtered.map(r => ({
+        name: r.name,
+        cuisine: r.cuisine,
+        priceRange: r.priceRange,
+        rating: r.rating,
+        city: r.city,
+        address: r.address,
+        latitude: r.latitude,
+        longitude: r.longitude,
+        place_id: r.place_id,
+        photos: r.photos,
+        isOpen: r.isOpen,
+        openingHours: r.openingHours,
+        distance: r.distance,
+      })),
+      tasteProfile,
+      ratedRestaurants
+    );
+
+    const scoredRecs: RecommendationData[] = scored.map(s => ({
+      ...filtered.find(f => f.place_id === s.place_id) || s,
+      confidenceScore: s.confidenceScore,
+      matchFactors: s.matchFactors,
+    }));
+
+    setFilteredRecommendations(scoredRecs);
+  }, [allLoadedRecommendations, selectedCities, selectedPriceRanges, tasteProfile, restaurants]);
 
   // Update displayed recommendations when displayedCount or filters change
   useEffect(() => {
@@ -531,14 +581,23 @@ export function RecommendationsPage({ restaurants, onAddRestaurant }: Recommenda
       </Button>
 
       <div className="p-2 lg:p-4">
-        <div className="mb-6">
-          <h2 className="text-2xl font-bold mb-2">Recommended For You</h2>
+        <div className="mb-4">
+          <h2 className="text-xl font-bold mb-1">Recommended For You</h2>
           <p className="text-muted-foreground text-sm">
-            {ratedRestaurants.length > 0 
-              ? `Personalized recommendations from ${userCities.length} cities based on your ratings`
-              : `Popular restaurants from ${userCities.length} cities to get you started`
+            {ratedRestaurants.length > 0
+              ? `Personalized picks from ${userCities.length} cities based on your taste`
+              : `Popular restaurants to get you started`
             }
           </p>
+          {!tasteProfile && (
+            <button
+              onClick={() => navigate('/taste-profile')}
+              className="mt-3 flex items-center gap-2 px-4 py-2.5 rounded-xl bg-primary/5 border border-primary/20 text-primary text-sm font-medium hover:bg-primary/10 transition-colors"
+            >
+              <Sparkles className="h-4 w-4" />
+              Take the Taste Quiz for better recommendations
+            </button>
+          )}
         </div>
 
         {/* Filters */}

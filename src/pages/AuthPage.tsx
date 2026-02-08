@@ -80,26 +80,19 @@ export default function AuthPage() {
       
       // If email sign-in fails and we have a username, try to find the user's email
       if (error && username && !email) {
-        console.log('Trying to find user by username:', username);
         const { data: userData, error: userError } = await supabase
           .from('profiles')
           .select('email')
           .eq('username', username)
           .single();
-        
-        console.log('Profile lookup result:', { userData, userError });
-        
+
         if (!userError && userData?.email) {
-          console.log('Found email for username, trying sign-in with:', userData.email);
           const { data: retryData, error: retryError } = await supabase.auth.signInWithPassword({
             email: userData.email,
             password,
           });
           data = retryData;
           error = retryError;
-          console.log('Retry sign-in result:', { retryData, retryError });
-        } else {
-          console.log('No profile found for username or no email in profile');
         }
       }
       
@@ -111,8 +104,7 @@ export default function AuthPage() {
       const redirectTo = state.from || params.get('redirectTo') || '/';
       navigate(redirectTo, { replace: true });
       
-    } catch (error: any) {
-      console.error('Error signing in:', error);
+    } catch {
       toast.error('Invalid credentials. Please check your email/username and password.');
     } finally {
       setIsLoading(false);
@@ -162,24 +154,20 @@ export default function AuthPage() {
         // Create expert role if selected
         if (isExpert && data.user) {
           try {
-            const { error: roleError } = await supabase
+            await supabase
               .from('user_roles')
               .insert({
                 user_id: data.user.id,
                 role: 'expert',
                 created_at: new Date().toISOString()
               });
-            
-            if (roleError) {
-              console.error('Error creating expert role:', roleError);
-            }
-          } catch (roleError) {
-            console.error('Error creating expert role:', roleError);
+          } catch {
+            // Continue even if expert role creation fails
           }
         }
         
-        toast.success('Account created successfully! You can now sign in.');
-        setActiveTab('signin');
+        toast.success('Account created! Complete your taste profile for better recommendations.');
+        navigate('/taste-profile', { replace: true });
         
       } else {
         // Username signup - create account without email
@@ -223,25 +211,18 @@ export default function AuthPage() {
         // The database trigger should create the profile automatically
         // Wait a moment for it to complete, then update email if needed
         if (data.user) {
-          console.log('User created, waiting for profile trigger...');
           // Wait for trigger to complete
           await new Promise(resolve => setTimeout(resolve, 1000));
-          
+
           // Update the profile email for username lookup (only for username accounts)
           if (!useEmail) {
             try {
-              const { error: updateError } = await supabase
+              await supabase
                 .from('profiles')
                 .update({ email: uniqueEmail })
                 .eq('id', data.user.id);
-              
-              if (updateError) {
-                console.error('Error updating profile email:', updateError);
-              } else {
-                console.log('Profile email updated for username lookup');
-              }
-            } catch (updateError) {
-              console.error('Error updating profile email:', updateError);
+            } catch {
+              // Continue even if email update fails
             }
           }
         }
@@ -249,24 +230,20 @@ export default function AuthPage() {
         // Create expert role if selected
         if (isExpert && data.user) {
           try {
-            const { error: roleError } = await supabase
+            await supabase
               .from('user_roles')
               .insert({
                 user_id: data.user.id,
                 role: 'expert',
                 created_at: new Date().toISOString()
               });
-            
-            if (roleError) {
-              console.error('Error creating expert role:', roleError);
-            }
-          } catch (roleError) {
-            console.error('Error creating expert role:', roleError);
+          } catch {
+            // Continue even if expert role creation fails
           }
         }
         
-        toast.success('Account created successfully! You can now sign in.');
-        setActiveTab('signin');
+        toast.success('Account created! Complete your taste profile for better recommendations.');
+        navigate('/taste-profile', { replace: true });
       }
       
     } catch (error: any) {
