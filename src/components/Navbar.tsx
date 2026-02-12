@@ -1,4 +1,4 @@
-import { Home, Search, BarChart3, Heart, User, Settings } from 'lucide-react';
+import { Home, Search, BarChart3, Crown, Heart, User, Settings } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/contexts/AuthContext';
@@ -16,7 +16,7 @@ const desktopTabs = [
   { id: 'home' as const, label: 'Home', icon: Home },
   { id: 'search' as const, label: 'Search', icon: Search },
   { id: 'places' as const, label: 'My Ratings', icon: BarChart3 },
-  { id: 'experts' as const, label: 'Experts', icon: Heart },
+  { id: 'experts' as const, label: 'Experts', icon: Crown },
   { id: 'friends' as const, label: 'Friends', icon: User },
   { id: 'profile' as const, label: 'Profile', icon: User },
 ];
@@ -25,7 +25,7 @@ const mobileTabs = [
   { id: 'home' as const, label: 'Home', icon: Home },
   { id: 'search' as const, label: 'Search', icon: Search },
   { id: 'places' as const, label: 'My Ratings', icon: BarChart3 },
-  { id: 'experts' as const, label: 'Wishlist', icon: Heart },
+  { id: 'experts' as const, label: 'Experts', icon: Crown },
   { id: 'profile' as const, label: 'Profile', icon: User },
 ];
 

@@ -235,7 +235,7 @@ export default function HomePage({ onNavigate, onOpenAddRestaurant }: HomePagePr
           <div className="grid grid-cols-2 gap-3">
             {stats.slice(0, 4).map((stat, index) => (
               <Card key={index} className="bg-card/90 backdrop-blur-sm border border-border shadow-sm">
-                <CardContent className="p-3 bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900 rounded-lg">
+                <CardContent className="p-3 bg-gradient-to-br from-muted/50 to-muted rounded-lg">
                   <div className="flex items-center justify-between mb-2">
                     <div className={`p-2 rounded-lg ${stat.bgColor}`}>
                       <stat.icon className={`h-4 w-4 ${stat.color}`} />
@@ -258,7 +258,7 @@ export default function HomePage({ onNavigate, onOpenAddRestaurant }: HomePagePr
                   className="cursor-pointer active:scale-95 transition-all duration-200 bg-card/90 backdrop-blur-sm border border-border shadow-sm hover:shadow-md"
                   onClick={action.action}
                 >
-                  <CardContent className="p-4 bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900 rounded-lg">
+                  <CardContent className="p-4 bg-gradient-to-br from-muted/50 to-muted rounded-lg">
                     <div className="text-center space-y-3">
                       <div className={`p-3 rounded-2xl ${action.color} text-white mx-auto w-fit shadow-lg`}>
                         <action.icon className="h-6 w-6" />
@@ -290,8 +290,8 @@ export default function HomePage({ onNavigate, onOpenAddRestaurant }: HomePagePr
               </div>
             </div>
             
-            <Card className="bg-white/60 backdrop-blur-sm border border-primary/10 shadow-sm overflow-hidden">
-              <CardContent className="p-4 bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900">
+            <Card className="bg-card/60 backdrop-blur-sm border border-primary/10 shadow-sm overflow-hidden">
+              <CardContent className="p-4 bg-gradient-to-br from-muted/50 to-muted">
                 <div className="flex items-center gap-3 mb-4">
                   <div className="p-2 rounded-lg bg-primary/10">
                     <currentCardData.icon className="h-5 w-5 text-primary" />
@@ -345,8 +345,8 @@ export default function HomePage({ onNavigate, onOpenAddRestaurant }: HomePagePr
           {/* Cuisine Insights - Mobile Optimized */}
           <div className="space-y-3">
             <h2 className="text-lg font-semibold text-foreground">Your Favorites</h2>
-            <Card className="bg-white/60 backdrop-blur-sm border border-primary/10 shadow-sm">
-              <CardContent className="p-4 bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900 rounded-lg">
+            <Card className="bg-card/60 backdrop-blur-sm border border-primary/10 shadow-sm">
+              <CardContent className="p-4 bg-gradient-to-br from-muted/50 to-muted rounded-lg">
                 {topCuisines.length > 0 ? (
                   <div className="space-y-4">
                     {topCuisines.slice(0, 3).map(([cuisine, count], index) => (
