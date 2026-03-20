@@ -212,268 +212,447 @@ export default function ExpertsPage() {
   if (isLoading) {
     return (
       <div className="min-h-screen bg-background p-4">
-        <div className="max-w-4xl mx-auto space-y-4">
-          {Array.from({ length: 4 }).map((_, i) => (
-            <div key={i} className="animate-pulse bg-muted h-28 rounded-xl" />
-          ))}
+        <div className="max-w-4xl mx-auto space-y-6 pt-12">
+          <div className="animate-pulse space-y-3">
+            <div className="h-3 w-32 bg-muted rounded" />
+            <div className="h-10 w-72 bg-muted rounded" />
+            <div className="h-4 w-96 bg-muted rounded" />
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-12">
+            <div className="animate-pulse bg-muted aspect-[3/4] rounded-2xl" />
+            <div className="animate-pulse space-y-4">
+              <div className="h-6 w-48 bg-muted rounded" />
+              <div className="h-4 w-full bg-muted rounded" />
+              <div className="h-4 w-3/4 bg-muted rounded" />
+            </div>
+          </div>
         </div>
       </div>
     );
   }
 
-  // If an expert is selected, show their profile
+  // Selected expert detail view
   if (selectedExpert) {
     return (
       <div className="min-h-screen bg-background">
-        {/* Expert Profile Header */}
-        <div className="bg-gradient-to-b from-primary/5 to-background border-b border-border/50 pt-safe-area-top">
-          <div className="max-w-4xl mx-auto px-4 py-6">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => setSelectedExpert(null)}
-              className="mb-4 -ml-2 text-muted-foreground"
-            >
-              <MIcon name="chevron_right" className="text-sm rotate-180 mr-1" />
-              All Experts
-            </Button>
+        {/* Back navigation */}
+        <div className="max-w-4xl mx-auto px-4 pt-6">
+          <button
+            onClick={() => setSelectedExpert(null)}
+            className="flex items-center gap-1 text-on-surface-variant font-body text-sm hover:text-primary transition-colors mb-8"
+          >
+            <MIcon name="arrow_back" className="text-base" />
+            <span>Back to Tastemakers</span>
+          </button>
+        </div>
 
-            <div className="flex items-start gap-4">
-              <Avatar className="h-20 w-20 border-2 border-primary/20">
-                <AvatarImage src={selectedExpert.avatar_url || ''} />
-                <AvatarFallback className="bg-primary/10 text-primary text-xl font-bold">
-                  {(selectedExpert.name || selectedExpert.username).charAt(0).toUpperCase()}
-                </AvatarFallback>
-              </Avatar>
-              <div className="flex-1">
-                <div className="flex items-center gap-2 mb-1">
-                  <h1 className="text-xl font-bold">{selectedExpert.name || selectedExpert.username}</h1>
-                  <Badge className="bg-secondary/50/10 text-secondary border-amber-500/20 gap-1">
-                    <MIcon name="verified" className="text-xs" filled />
-                    Expert
-                  </Badge>
+        {/* Expert Profile - Editorial Layout */}
+        <div className="max-w-4xl mx-auto px-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+            {/* Large Photo */}
+            <div className="aspect-[3/4] rounded-2xl overflow-hidden bg-surface-container-low">
+              {selectedExpert.avatar_url ? (
+                <img
+                  src={selectedExpert.avatar_url}
+                  alt={selectedExpert.name || selectedExpert.username}
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <div className="w-full h-full flex items-center justify-center bg-surface-container-low">
+                  <span className="font-headline text-6xl text-secondary">
+                    {(selectedExpert.name || selectedExpert.username).charAt(0).toUpperCase()}
+                  </span>
                 </div>
-                <p className="text-sm text-muted-foreground">@{selectedExpert.username}</p>
-                {selectedExpert.bio && (
-                  <p className="text-sm text-foreground mt-2">{selectedExpert.bio}</p>
-                )}
-                {selectedExpert.home_city && (
-                  <div className="flex items-center gap-1 mt-1 text-sm text-muted-foreground">
-                    <MIcon name="location_on" className="text-xs" />
-                    {selectedExpert.home_city}
-                  </div>
-                )}
-                <div className="flex items-center gap-4 mt-3">
-                  <div className="text-center">
-                    <div className="text-lg font-bold">{selectedExpert.restaurantCount}</div>
-                    <div className="text-xs text-muted-foreground">Reviews</div>
-                  </div>
-                  <div className="text-center">
-                    <div className="text-lg font-bold">{selectedExpert.avgRating}</div>
-                    <div className="text-xs text-muted-foreground">Avg Rating</div>
-                  </div>
+              )}
+            </div>
+
+            {/* Profile Info */}
+            <div className="flex flex-col justify-center">
+              <p className="uppercase tracking-widest text-[10px] text-on-surface-variant font-body mb-2">
+                EXPERT PROFILE
+              </p>
+              <h1 className="font-headline text-3xl md:text-4xl text-primary mb-2">
+                {selectedExpert.name || selectedExpert.username}
+              </h1>
+              <p className="font-body text-sm text-on-surface-variant mb-4">@{selectedExpert.username}</p>
+
+              {selectedExpert.topCuisines.length > 0 && (
+                <div className="inline-flex mb-4">
+                  <span className="uppercase tracking-widest text-[10px] font-body bg-secondary/10 text-secondary px-3 py-1 rounded-full">
+                    {selectedExpert.topCuisines[0]} SPECIALIST
+                  </span>
                 </div>
-                <div className="flex gap-2 mt-3">
-                  {!followingIds.has(selectedExpert.id) ? (
-                    <Button size="sm" onClick={() => handleFollow(selectedExpert.id)}>
-                      <MIcon name="person_add" className="text-sm mr-1.5" />
-                      Follow
-                    </Button>
-                  ) : (
-                    <Button size="sm" variant="outline" disabled>
-                      <MIcon name="person" className="text-sm mr-1.5" />
-                      Following
-                    </Button>
-                  )}
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    onClick={() => navigate(`/friend-profile/${selectedExpert.id}`)}
+              )}
+
+              {selectedExpert.bio && (
+                <p className="font-body text-base text-primary/80 italic leading-relaxed mb-6 border-l-2 border-secondary pl-4">
+                  "{selectedExpert.bio}"
+                </p>
+              )}
+
+              {selectedExpert.home_city && (
+                <div className="flex items-center gap-1.5 text-on-surface-variant font-body text-sm mb-6">
+                  <MIcon name="location_on" className="text-sm text-secondary" />
+                  {selectedExpert.home_city}
+                </div>
+              )}
+
+              {/* Stats */}
+              <div className="flex items-center gap-8 mb-6">
+                <div>
+                  <div className="font-headline text-2xl text-primary">{selectedExpert.restaurantCount}</div>
+                  <div className="text-[11px] text-on-surface-variant font-body uppercase tracking-wide">Reviews</div>
+                </div>
+                {selectedExpert.avgRating > 0 && (
+                  <div>
+                    <div className="font-headline text-2xl text-primary">{selectedExpert.avgRating}</div>
+                    <div className="text-[11px] text-on-surface-variant font-body uppercase tracking-wide">Avg Rating</div>
+                  </div>
+                )}
+                {selectedExpert.topCuisines.length > 0 && (
+                  <div>
+                    <div className="font-headline text-2xl text-primary">{selectedExpert.topCuisines.length}</div>
+                    <div className="text-[11px] text-on-surface-variant font-body uppercase tracking-wide">Cuisines</div>
+                  </div>
+                )}
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex items-center gap-3">
+                {!followingIds.has(selectedExpert.id) ? (
+                  <button
+                    onClick={() => handleFollow(selectedExpert.id)}
+                    className="bg-secondary text-white rounded-full px-6 py-2 font-body text-sm font-medium hover:bg-secondary/90 transition-colors"
                   >
-                    View Full Profile
-                  </Button>
-                </div>
+                    Follow
+                  </button>
+                ) : (
+                  <button
+                    disabled
+                    className="bg-surface-container-low text-on-surface-variant rounded-full px-6 py-2 font-body text-sm font-medium border border-secondary/20"
+                  >
+                    Following
+                  </button>
+                )}
+                <button
+                  onClick={() => navigate(`/friend-profile/${selectedExpert.id}`)}
+                  className="border border-primary/20 text-primary rounded-full px-6 py-2 font-body text-sm font-medium hover:bg-primary/5 transition-colors"
+                >
+                  View Full Profile
+                </button>
               </div>
             </div>
           </div>
-        </div>
 
-        {/* Expert's Top Rated Restaurants */}
-        <div className="max-w-4xl mx-auto px-4 py-6">
-          <h2 className="text-lg font-semibold mb-4">Top Rated Restaurants</h2>
-          {loadingRestaurants ? (
-            <div className="space-y-3">
-              {Array.from({ length: 3 }).map((_, i) => (
-                <div key={i} className="animate-pulse bg-muted h-20 rounded-xl" />
-              ))}
+          {/* Expert's Top Rated Restaurants */}
+          <div className="mb-12">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="font-headline text-xl text-primary">Top Rated Restaurants</h2>
+              <span className="text-on-surface-variant font-body text-sm">{expertRestaurants.length} reviews</span>
             </div>
-          ) : expertRestaurants.length === 0 ? (
-            <p className="text-muted-foreground text-sm py-8 text-center">
-              No restaurant reviews yet.
-            </p>
-          ) : (
-            <div className="space-y-2">
-              {expertRestaurants.map((restaurant, idx) => (
-                <button
-                  key={restaurant.id}
-                  onClick={() => {
-                    if (restaurant.google_place_id) {
-                      navigate(`/restaurant/${restaurant.google_place_id}?name=${encodeURIComponent(restaurant.name)}`);
-                    }
-                  }}
-                  className="w-full flex items-center gap-3 p-3 rounded-xl border border-border/50 bg-card hover:bg-muted/50 transition-colors text-left"
-                >
-                  <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-sm font-bold text-primary flex-shrink-0">
-                    {idx + 1}
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="font-medium text-sm truncate">{restaurant.name}</div>
-                    <div className="text-xs text-muted-foreground flex items-center gap-2">
-                      {restaurant.cuisine && <span>{restaurant.cuisine}</span>}
-                      {restaurant.city && (
-                        <>
-                          <span className="text-border">|</span>
-                          <span>{restaurant.city}</span>
-                        </>
-                      )}
+
+            {loadingRestaurants ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {Array.from({ length: 4 }).map((_, i) => (
+                  <div key={i} className="animate-pulse bg-muted h-24 rounded-2xl" />
+                ))}
+              </div>
+            ) : expertRestaurants.length === 0 ? (
+              <div className="text-center py-16 bg-surface-container-low rounded-2xl">
+                <MIcon name="restaurant" className="text-4xl text-on-surface-variant mb-3" />
+                <p className="text-on-surface-variant font-body text-sm">
+                  No restaurant reviews yet.
+                </p>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {expertRestaurants.map((restaurant, idx) => (
+                  <button
+                    key={restaurant.id}
+                    onClick={() => {
+                      if (restaurant.google_place_id) {
+                        navigate(`/restaurant/${restaurant.google_place_id}?name=${encodeURIComponent(restaurant.name)}`);
+                      }
+                    }}
+                    className="flex items-center gap-4 p-4 rounded-2xl bg-surface-container-low hover:bg-surface-container-low/80 transition-colors text-left group"
+                  >
+                    <div className="w-10 h-10 rounded-full bg-secondary/10 flex items-center justify-center font-headline text-sm text-secondary flex-shrink-0">
+                      {idx + 1}
                     </div>
-                  </div>
-                  <div className="flex items-center gap-1 flex-shrink-0">
-                    <MIcon name="grade" className="text-sm text-secondary" filled />
-                    <span className="font-semibold text-sm">{restaurant.rating}</span>
-                  </div>
-                </button>
-              ))}
-            </div>
-          )}
+                    <div className="flex-1 min-w-0">
+                      <div className="font-headline text-sm text-primary truncate group-hover:text-secondary transition-colors">
+                        {restaurant.name}
+                      </div>
+                      <div className="text-[11px] text-on-surface-variant font-body flex items-center gap-2 mt-0.5">
+                        {restaurant.cuisine && <span>{restaurant.cuisine}</span>}
+                        {restaurant.city && (
+                          <>
+                            <span className="text-on-surface-variant/30">|</span>
+                            <span>{restaurant.city}</span>
+                          </>
+                        )}
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-1 flex-shrink-0 bg-secondary/10 px-2.5 py-1 rounded-full">
+                      <MIcon name="grade" className="text-sm text-secondary" filled />
+                      <span className="font-headline text-sm text-secondary">{restaurant.rating}</span>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
       </div>
     );
   }
 
+  // Main experts listing page
+  const featuredExpert = filteredExperts[0];
+  const otherExperts = filteredExperts.slice(1);
+
   return (
     <div className="min-h-screen bg-background">
-      {/* Header */}
-      <div className="border-b border-border/50 bg-background pt-safe-area-top">
-        <div className="max-w-4xl mx-auto px-4 py-4">
-          <div className="flex items-center gap-3 mb-1">
-            <div className="p-2 rounded-xl bg-secondary/50/10">
-              <MIcon name="verified" className="text-base text-secondary" filled />
-            </div>
-            <div>
-              <h1 className="text-xl font-bold">Food Experts</h1>
-              <p className="text-sm text-muted-foreground">
-                Follow trusted experts for curated recommendations
-              </p>
-            </div>
-          </div>
-        </div>
+      {/* Header Section */}
+      <div className="max-w-4xl mx-auto px-4 pt-10 pb-8">
+        <p className="uppercase tracking-widest text-[10px] text-on-surface-variant font-body mb-3">
+          THE DIGITAL MAITRE D'
+        </p>
+        <h1 className="font-headline text-3xl md:text-4xl text-primary mb-3">
+          Meet the <span className="text-secondary">Tastemakers</span>
+        </h1>
+        <p className="font-body text-base text-on-surface-variant max-w-lg leading-relaxed">
+          Discover culinary perspectives from the critics, chefs, and food writers shaping how we dine. Follow their journeys and let their palates guide yours.
+        </p>
       </div>
 
-      <div className="max-w-4xl mx-auto px-4 py-4">
+      <div className="max-w-4xl mx-auto px-4">
         {/* Search */}
-        <div className="relative mb-6">
-          <MIcon name="search" className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground" />
+        <div className="relative mb-8">
+          <MIcon name="search" className="absolute left-4 top-1/2 -translate-y-1/2 text-base text-on-surface-variant" />
           <Input
-            placeholder="Search experts by name or cuisine..."
+            placeholder="Search by name, cuisine, or city..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-10 h-11 rounded-xl"
+            className="pl-11 h-12 rounded-full border-primary/10 bg-surface-container-low font-body text-sm focus:border-secondary"
           />
         </div>
 
-        {/* Expert Cards */}
         {filteredExperts.length === 0 ? (
-          <div className="text-center py-16">
-            <MIcon name="verified" className="text-5xl text-muted-foreground mx-auto mb-4" filled />
-            <h3 className="text-lg font-semibold mb-2">No Experts Found</h3>
-            <p className="text-muted-foreground text-sm">
+          <div className="text-center py-20">
+            <MIcon name="search_off" className="text-5xl text-on-surface-variant/40 mx-auto mb-4" />
+            <h3 className="font-headline text-lg text-primary mb-2">No Experts Found</h3>
+            <p className="text-on-surface-variant font-body text-sm">
               {searchQuery ? 'Try a different search term.' : 'No experts have been verified yet.'}
             </p>
           </div>
         ) : (
-          <div className="space-y-3">
-            {filteredExperts.map((expert) => (
-              <Card
-                key={expert.id}
-                className="border-border/50 hover:border-primary/20 transition-all cursor-pointer overflow-hidden"
-                onClick={() => handleExpertClick(expert)}
-              >
-                <CardContent className="p-4">
-                  <div className="flex items-center gap-3">
-                    <Avatar className="h-14 w-14 border border-amber-500/20">
-                      <AvatarImage src={expert.avatar_url || ''} />
-                      <AvatarFallback className="bg-secondary/50/10 text-secondary font-bold">
-                        {(expert.name || expert.username).charAt(0).toUpperCase()}
-                      </AvatarFallback>
-                    </Avatar>
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2">
-                        <span className="font-semibold text-sm truncate">
-                          {expert.name || expert.username}
+          <>
+            {/* Featured Critics Section */}
+            <div className="mb-10">
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="font-headline text-xl text-primary">Featured Critics</h2>
+                <button className="text-secondary font-body text-sm font-medium hover:underline">
+                  View All
+                </button>
+              </div>
+
+              {/* Featured Expert Card */}
+              {featuredExpert && (
+                <div
+                  className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8 cursor-pointer group"
+                  onClick={() => handleExpertClick(featuredExpert)}
+                >
+                  {/* Large Photo */}
+                  <div className="aspect-[3/4] rounded-2xl overflow-hidden bg-surface-container-low">
+                    {featuredExpert.avatar_url ? (
+                      <img
+                        src={featuredExpert.avatar_url}
+                        alt={featuredExpert.name || featuredExpert.username}
+                        className="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-500"
+                      />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center bg-surface-container-low">
+                        <span className="font-headline text-7xl text-secondary/60">
+                          {(featuredExpert.name || featuredExpert.username).charAt(0).toUpperCase()}
                         </span>
-                        <Badge variant="outline" className="bg-secondary/50/10 text-secondary border-amber-500/20 text-[10px] px-1.5 py-0 gap-0.5 flex-shrink-0">
-                          <MIcon name="verified" className="text-[10px]" filled />
-                          Expert
-                        </Badge>
                       </div>
-                      <p className="text-xs text-muted-foreground">@{expert.username}</p>
-                      {expert.bio && (
-                        <p className="text-xs text-muted-foreground mt-1 line-clamp-1">{expert.bio}</p>
-                      )}
-                      <div className="flex items-center gap-3 mt-1.5">
-                        <span className="text-xs text-muted-foreground">
-                          <strong className="text-foreground">{expert.restaurantCount}</strong> reviews
+                    )}
+                  </div>
+
+                  {/* Featured Expert Info */}
+                  <div className="flex flex-col justify-center">
+                    <h3 className="font-headline text-2xl text-primary mb-1 group-hover:text-secondary transition-colors">
+                      {featuredExpert.name || featuredExpert.username}
+                    </h3>
+                    <p className="font-body text-sm text-on-surface-variant mb-3">@{featuredExpert.username}</p>
+
+                    {featuredExpert.topCuisines.length > 0 && (
+                      <div className="inline-flex mb-4">
+                        <span className="uppercase tracking-widest text-[10px] font-body bg-secondary/10 text-secondary px-3 py-1 rounded-full font-medium">
+                          {featuredExpert.topCuisines[0]} SPECIALIST
                         </span>
-                        {expert.avgRating > 0 && (
-                          <span className="text-xs text-muted-foreground flex items-center gap-0.5">
-                            <MIcon name="grade" className="text-xs text-secondary" filled />
-                            <strong className="text-foreground">{expert.avgRating}</strong> avg
-                          </span>
-                        )}
-                        {expert.home_city && (
-                          <span className="text-xs text-muted-foreground flex items-center gap-0.5">
-                            <MIcon name="location_on" className="text-xs" />
-                            {expert.home_city}
-                          </span>
-                        )}
                       </div>
-                      {expert.topCuisines.length > 0 && (
-                        <div className="flex gap-1 mt-2 flex-wrap">
-                          {expert.topCuisines.map((cuisine) => (
-                            <Badge key={cuisine} variant="secondary" className="text-[10px] px-2 py-0">
-                              {cuisine}
-                            </Badge>
-                          ))}
+                    )}
+
+                    {featuredExpert.bio && (
+                      <p className="font-body text-sm text-primary/70 italic leading-relaxed mb-4 border-l-2 border-secondary/40 pl-4">
+                        "{featuredExpert.bio}"
+                      </p>
+                    )}
+
+                    {/* Stats row */}
+                    <div className="flex items-center gap-6 mb-5">
+                      <div className="font-body text-xs text-on-surface-variant">
+                        <span className="font-headline text-lg text-primary block">{featuredExpert.restaurantCount}</span>
+                        reviews
+                      </div>
+                      {featuredExpert.avgRating > 0 && (
+                        <div className="font-body text-xs text-on-surface-variant">
+                          <span className="font-headline text-lg text-primary block">{featuredExpert.avgRating}</span>
+                          avg rating
                         </div>
                       )}
                     </div>
-                    <div className="flex-shrink-0">
-                      {!followingIds.has(expert.id) ? (
-                        <Button
-                          size="sm"
-                          variant="outline"
+
+                    {/* Follower avatars placeholder + Follow button */}
+                    <div className="flex items-center gap-4">
+                      <div className="flex -space-x-2">
+                        {[0, 1, 2].map(i => (
+                          <div key={i} className="w-7 h-7 rounded-full bg-surface-container-low border-2 border-background flex items-center justify-center">
+                            <MIcon name="person" className="text-[10px] text-on-surface-variant" />
+                          </div>
+                        ))}
+                      </div>
+                      {!followingIds.has(featuredExpert.id) ? (
+                        <button
                           onClick={(e) => {
                             e.stopPropagation();
-                            handleFollow(expert.id);
+                            handleFollow(featuredExpert.id);
                           }}
-                          className="rounded-full text-xs h-8"
+                          className="bg-secondary text-white rounded-full px-6 py-2 font-body text-sm font-medium hover:bg-secondary/90 transition-colors"
                         >
-                          <MIcon name="person_add" className="text-xs mr-1" />
                           Follow
-                        </Button>
+                        </button>
                       ) : (
-                        <Badge variant="outline" className="text-xs text-muted-foreground">
-                          <MIcon name="person" className="text-xs mr-1" />
+                        <span className="text-on-surface-variant font-body text-sm bg-surface-container-low rounded-full px-6 py-2 border border-secondary/20">
                           Following
-                        </Badge>
+                        </span>
                       )}
                     </div>
                   </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
+                </div>
+              )}
+
+              {/* Other Experts - Simpler Cards */}
+              {otherExperts.length > 0 && (
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {otherExperts.map((expert) => (
+                    <div
+                      key={expert.id}
+                      onClick={() => handleExpertClick(expert)}
+                      className="p-5 rounded-2xl bg-surface-container-low hover:shadow-md transition-all cursor-pointer group"
+                    >
+                      <div className="flex items-center gap-3 mb-3">
+                        <Avatar className="h-12 w-12 rounded-full border border-secondary/20">
+                          <AvatarImage src={expert.avatar_url || ''} className="object-cover" />
+                          <AvatarFallback className="bg-secondary/10 text-secondary font-headline text-sm">
+                            {(expert.name || expert.username).charAt(0).toUpperCase()}
+                          </AvatarFallback>
+                        </Avatar>
+                        <div className="flex-1 min-w-0">
+                          <h4 className="font-headline text-sm text-primary truncate group-hover:text-secondary transition-colors">
+                            {expert.name || expert.username}
+                          </h4>
+                          {expert.topCuisines.length > 0 ? (
+                            <p className="text-secondary font-body text-xs">{expert.topCuisines[0]} specialist</p>
+                          ) : (
+                            <p className="text-on-surface-variant font-body text-xs">@{expert.username}</p>
+                          )}
+                        </div>
+                      </div>
+
+                      {expert.bio && (
+                        <p className="font-body text-xs text-on-surface-variant line-clamp-2 leading-relaxed mb-3">
+                          {expert.bio}
+                        </p>
+                      )}
+
+                      <div className="flex items-center justify-between">
+                        <span className="font-body text-[11px] text-on-surface-variant">
+                          {expert.restaurantCount} reviews
+                          {expert.avgRating > 0 && ` · ${expert.avgRating} avg`}
+                        </span>
+                        {!followingIds.has(expert.id) ? (
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleFollow(expert.id);
+                            }}
+                            className="bg-secondary text-white rounded-full px-4 py-1.5 font-body text-[11px] font-medium hover:bg-secondary/90 transition-colors"
+                          >
+                            Follow
+                          </button>
+                        ) : (
+                          <span className="text-on-surface-variant font-body text-[11px] bg-background rounded-full px-4 py-1.5 border border-secondary/20">
+                            Following
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Latest Expert Reviews Section */}
+            {filteredExperts.some(e => e.restaurantCount > 0) && (
+              <div className="mb-12">
+                <h2 className="font-headline text-xl text-primary mb-6">Latest Expert Reviews</h2>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  {filteredExperts
+                    .filter(e => e.restaurantCount > 0 && e.avgRating > 0)
+                    .slice(0, 4)
+                    .map((expert) => (
+                      <div
+                        key={expert.id}
+                        onClick={() => handleExpertClick(expert)}
+                        className="p-5 rounded-2xl bg-surface-container-low hover:shadow-md transition-all cursor-pointer"
+                      >
+                        <div className="flex items-center gap-3 mb-3">
+                          <Avatar className="h-9 w-9 rounded-full">
+                            <AvatarImage src={expert.avatar_url || ''} className="object-cover" />
+                            <AvatarFallback className="bg-secondary/10 text-secondary font-headline text-xs">
+                              {(expert.name || expert.username).charAt(0).toUpperCase()}
+                            </AvatarFallback>
+                          </Avatar>
+                          <div className="flex-1 min-w-0">
+                            <h4 className="font-headline text-sm text-primary truncate">
+                              {expert.name || expert.username}
+                            </h4>
+                          </div>
+                          <div className="flex items-center gap-1 bg-secondary/10 px-2.5 py-1 rounded-full">
+                            <span className="font-headline text-sm text-secondary">{expert.avgRating}</span>
+                            <span className="text-on-surface-variant font-body text-[10px]">/10</span>
+                          </div>
+                        </div>
+                        <p className="font-body text-xs text-on-surface-variant mb-2">
+                          {expert.topCuisines.length > 0
+                            ? `Known for ${expert.topCuisines.join(', ')} cuisine`
+                            : `${expert.restaurantCount} restaurants reviewed`
+                          }
+                        </p>
+                        {expert.bio && (
+                          <p className="font-body text-xs text-primary/60 italic line-clamp-2">
+                            "{expert.bio}"
+                          </p>
+                        )}
+                      </div>
+                    ))}
+                </div>
+              </div>
+            )}
+          </>
         )}
       </div>
     </div>

@@ -621,6 +621,15 @@ export function UnifiedRestaurantDetails({
           {/* Gradient overlay */}
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
           
+          {/* Michelin badge overlay */}
+          {(restaurantData.michelinStars || restaurantData.michelin_stars || 0) > 0 && (
+            <div className="absolute top-16 left-4">
+              <Badge className="bg-destructive text-white text-[10px] uppercase tracking-wider font-bold px-3 py-1">
+                MICHELIN STAR {new Date().getFullYear()}
+              </Badge>
+            </div>
+          )}
+
           {/* Floating action buttons */}
           {showBackButton && (
             <Button
@@ -644,10 +653,28 @@ export function UnifiedRestaurantDetails({
           
           
           {/* Restaurant name overlay */}
-          <div className="absolute bottom-6 left-4 right-4 flex items-center justify-between">
-            <h1 className="text-3xl font-bold text-white leading-tight">
-              {restaurantData.name}
-            </h1>
+          <div className="absolute bottom-6 left-4 right-4">
+            <div className="flex items-center justify-between">
+            <div>
+              <div className="flex items-center gap-2 mb-1">
+                {restaurantData.cuisine && (
+                  <Badge className="bg-black/40 backdrop-blur-sm text-white text-[10px] uppercase tracking-wider px-3 py-1">
+                    {restaurantData.cuisine}
+                  </Badge>
+                )}
+                {(restaurantData.michelinStars || restaurantData.michelin_stars || 0) > 0 && (
+                  <Badge className="bg-black/40 backdrop-blur-sm text-white text-[10px] uppercase tracking-wider px-3 py-1 ml-2">
+                    High-End Fine Dining
+                  </Badge>
+                )}
+              </div>
+              <h1 className="text-3xl font-bold text-white leading-tight">
+                {restaurantData.name}
+              </h1>
+              {restaurantData.notes && (
+                <p className="text-white/80 text-sm mt-2 line-clamp-2">{restaurantData.notes}</p>
+              )}
+            </div>
             {/* View photos button */}
             {(() => {
               const displayPhotos = (photos.length > 0 
@@ -670,24 +697,71 @@ export function UnifiedRestaurantDetails({
                 </Button>
               );
             })()}
+            </div>
           </div>
         </div>
 
         {/* Content */}
         <div className="relative bg-background -mt-4 rounded-t-3xl pt-6">
-          {/* Restaurant metadata */}
+          {/* Restaurant metadata - Editorial Design */}
           <div className="px-4 mb-6">
+            {/* Global Rating & Price Range row */}
+            <div className="flex items-start justify-between mb-4">
+              <div>
+                <span className="text-[10px] uppercase tracking-wider font-bold text-on-surface-variant block mb-1">Global Rating</span>
+                <div className="flex items-center gap-2">
+                  <span className="text-3xl font-headline font-bold text-primary">
+                    {communityStats?.averageRating ? communityStats.averageRating.toFixed(1) : (restaurantData.rating?.toFixed(1) || '—')}
+                  </span>
+                  <div className="flex flex-col">
+                    <StarRating rating={communityStats?.averageRating || restaurantData.rating || 0} readonly size="sm" />
+                    <span className="text-xs text-on-surface-variant mt-0.5">
+                      {communityStats?.totalReviews || restaurantData.reviewCount || 0} reviews
+                    </span>
+                  </div>
+                </div>
+              </div>
+              <div className="text-right">
+                <span className="text-[10px] uppercase tracking-wider font-bold text-on-surface-variant block mb-1">Price Range</span>
+                <span className="text-2xl font-headline font-bold text-secondary">
+                  {getPriceDisplay(restaurantData.priceRange || restaurantData.price_range) || '—'}
+                </span>
+              </div>
+            </div>
+
+            {/* Michelin Stars display */}
             <div className="flex items-center gap-3 flex-wrap mb-4">
               <span className="text-muted-foreground text-base">{restaurantData.cuisine}</span>
-              <span className="text-secondary font-semibold text-base">
-                {getPriceDisplay(restaurantData.priceRange || restaurantData.price_range)}
-              </span>
               <div className="flex items-center gap-1">
-                <MichelinStars 
-                  stars={restaurantData.michelinStars || restaurantData.michelin_stars || 0} 
-                  readonly={true} 
+                <MichelinStars
+                  stars={restaurantData.michelinStars || restaurantData.michelin_stars || 0}
+                  readonly={true}
                   size="sm"
                 />
+              </div>
+            </div>
+
+            {/* Rate Your Experience */}
+            <div className="bg-surface-container-low rounded-2xl p-4 mb-4">
+              <span className="text-[10px] uppercase tracking-wider font-bold text-on-surface-variant block mb-2">Rate Your Experience</span>
+              <div className="flex items-center justify-between">
+                <div className="flex gap-1">
+                  {[1, 2, 3, 4, 5].map((star) => (
+                    <button
+                      key={star}
+                      onClick={() => setIsReviewDialogOpen(true)}
+                      className="text-muted-foreground hover:text-yellow-400 transition-colors"
+                    >
+                      <MIcon name="star" className="text-2xl" />
+                    </button>
+                  ))}
+                </div>
+                <button
+                  onClick={() => setIsReviewDialogOpen(true)}
+                  className="text-sm font-medium text-primary hover:underline"
+                >
+                  Write Review
+                </button>
               </div>
             </div>
             
@@ -800,6 +874,151 @@ export function UnifiedRestaurantDetails({
               <CommunityRating stats={communityStats} isLoading={isLoadingReviews} />
             </div>
           )}
+
+          {/* Expert Perspectives Section */}
+          {deferCommunity && (
+            <div className="px-4 mb-6">
+              <h3 className="text-xl font-headline font-bold text-primary mb-4">Expert Perspectives</h3>
+              {expertStats.count > 0 ? (
+                <div className="space-y-4">
+                  {reviews
+                    .filter((r) => r.overallRating >= 8)
+                    .slice(0, 3)
+                    .map((review) => (
+                      <div key={`expert-${review.reviewId}`} className="bg-surface-container-low rounded-2xl p-4">
+                        <div className="flex items-start justify-between mb-3">
+                          <div className="flex items-center gap-3">
+                            <div className="h-10 w-10 rounded-full bg-primary/20 flex items-center justify-center">
+                              <MIcon name="person" className="text-lg text-primary" />
+                            </div>
+                            <div>
+                              <span className="font-headline font-bold text-sm text-foreground block">{review.username}</span>
+                              <span className="text-xs text-on-surface-variant">Verified Reviewer</span>
+                            </div>
+                          </div>
+                          <span className="font-headline font-bold text-primary text-lg">
+                            {(review.overallRating).toFixed(1)} <span className="text-xs text-on-surface-variant font-normal">/ 10</span>
+                          </span>
+                        </div>
+                        {review.reviewText && (
+                          <p className="text-sm italic text-on-surface-variant">
+                            &ldquo;{review.reviewText}&rdquo;
+                          </p>
+                        )}
+                      </div>
+                    ))}
+                  {reviews.filter((r) => r.overallRating >= 8).length === 0 && (
+                    <div className="bg-surface-container-low rounded-2xl p-4">
+                      <div className="flex items-start justify-between mb-3">
+                        <div className="flex items-center gap-3">
+                          <div className="h-10 w-10 rounded-full bg-primary/20 flex items-center justify-center">
+                            <MIcon name="verified" className="text-lg text-primary" filled />
+                          </div>
+                          <div>
+                            <span className="font-headline font-bold text-sm text-foreground block">Expert Panel</span>
+                            <span className="text-xs text-on-surface-variant">Culinary Critics</span>
+                          </div>
+                        </div>
+                        <span className="font-headline font-bold text-primary text-lg">
+                          {expertStats.avg ? expertStats.avg.toFixed(1) : '—'} <span className="text-xs text-on-surface-variant font-normal">/ 10</span>
+                        </span>
+                      </div>
+                      <p className="text-sm italic text-on-surface-variant">
+                        &ldquo;{expertStats.count} expert {expertStats.count === 1 ? 'review' : 'reviews'} available. Tap the Experts card above to view detailed insights.&rdquo;
+                      </p>
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <p className="text-sm text-on-surface-variant">No expert reviews yet.</p>
+              )}
+            </div>
+          )}
+
+          {/* The Social Circle Section */}
+          {deferCommunity && (
+            <div className="px-4 mb-6">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-xl font-headline font-bold text-primary">The Social Circle</h3>
+                <span className="text-xs text-on-surface-variant">{friendStats.count} {friendStats.count === 1 ? 'Friend has' : 'Friends have'} visited</span>
+              </div>
+              {friendStats.count > 0 ? (
+                <div className="space-y-4">
+                  {reviews.slice(0, 5).map((review) => (
+                    <div key={`social-${review.reviewId}`} className="bg-surface-container-low rounded-2xl p-4">
+                      <div className="flex items-start gap-3 mb-3">
+                        <div className="h-10 w-10 rounded-full bg-secondary/20 flex items-center justify-center flex-shrink-0">
+                          <MIcon name="person" className="text-lg text-secondary" />
+                        </div>
+                        <div className="flex-1">
+                          <div className="flex items-center justify-between">
+                            <span className="font-headline font-bold text-sm text-foreground">{review.username}</span>
+                            <span className="text-xs text-on-surface-variant">
+                              {new Date(review.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                            </span>
+                          </div>
+                          <div className="flex items-center gap-1 mt-0.5">
+                            <StarRating rating={review.overallRating / 2} readonly size="xs" />
+                          </div>
+                        </div>
+                      </div>
+                      {review.reviewText && (
+                        <p className="text-sm text-on-surface-variant mb-3">{review.reviewText}</p>
+                      )}
+                      <div className="flex items-center gap-4">
+                        <button className="flex items-center gap-1 text-xs text-on-surface-variant hover:text-primary transition-colors">
+                          <MIcon name="thumb_up" className="text-sm" />
+                          {review.helpfulCount > 0 ? review.helpfulCount : 'Like'}
+                        </button>
+                        <button className="flex items-center gap-1 text-xs text-on-surface-variant hover:text-primary transition-colors">
+                          <MIcon name="reply" className="text-sm" />
+                          Reply
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="bg-surface-container-low rounded-2xl p-6 text-center">
+                  <MIcon name="group" className="text-3xl text-on-surface-variant mb-2" />
+                  <p className="text-sm text-on-surface-variant">None of your friends have reviewed this restaurant yet.</p>
+                  <button
+                    onClick={() => setIsReviewDialogOpen(true)}
+                    className="text-sm font-medium text-primary hover:underline mt-2 inline-block"
+                  >
+                    Be the first!
+                  </button>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Taste Identity Section */}
+          <div className="px-4 mb-6">
+            <h3 className="text-xl font-headline font-bold text-primary mb-4">Taste Identity</h3>
+            <div className="bg-surface-container-low rounded-2xl p-6">
+              {[
+                { label: 'UMAMI', value: 75 },
+                { label: 'ACIDITY', value: 45 },
+                { label: 'SWEETNESS', value: 30 },
+                { label: 'SMOKINESS', value: 55 },
+                { label: 'BITTERNESS', value: 20 },
+              ].map((dimension) => (
+                <div key={dimension.label} className="flex items-center gap-3 mb-3 last:mb-0">
+                  <span className="text-[10px] uppercase tracking-wider font-bold text-on-surface-variant w-24">{dimension.label}</span>
+                  <div className="flex-1 h-2 bg-muted rounded-full overflow-hidden">
+                    <div
+                      className="h-full bg-primary rounded-full transition-all duration-500"
+                      style={{ width: `${dimension.value}%` }}
+                    />
+                  </div>
+                </div>
+              ))}
+              <p className="text-sm text-on-surface-variant italic mt-4">
+                &ldquo;Savory, rich, and remarkably balanced.&rdquo;
+              </p>
+            </div>
+          </div>
 
           {/* Photos Section - Cards with rounded corners */}
           {deferPhotos && (
