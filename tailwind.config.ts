@@ -19,12 +19,12 @@ export default {
 		},
 		extend: {
 			fontFamily: {
-				'sans': ['Inter', 'ui-sans-serif', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'sans-serif'],
-				'headline': ['Manrope', 'ui-sans-serif', 'system-ui', 'sans-serif'],
-				'body': ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
-				'label': ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
-				'display': ['Manrope', 'ui-sans-serif', 'system-ui', 'sans-serif'],
-				'serif': ['Manrope', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+				'sans': ['Manrope', 'ui-sans-serif', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'sans-serif'],
+				'headline': ['Noto Serif', 'Georgia', 'serif'],
+				'body': ['Manrope', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+				'label': ['Manrope', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+				'display': ['Noto Serif', 'Georgia', 'serif'],
+				'serif': ['Noto Serif', 'Georgia', 'serif'],
 			},
 			fontSize: {
 				'xs': ['0.75rem', { lineHeight: '1rem' }],
@@ -113,43 +113,46 @@ export default {
 					border: 'hsl(var(--glass-border))',
 					highlight: 'hsl(var(--glass-highlight))'
 				},
-				/* Stitch-specific semantic colors */
+				/* Gourmet Canvas semantic colors */
 				'surface': {
-					DEFAULT: '#fcf9f6',
-					container: '#f0edea',
-					'container-low': '#f6f3f0',
-					'container-high': '#eae8e5',
-					'container-highest': '#e5e2df',
+					DEFAULT: '#fff8f6',
+					container: '#f4ecea',
+					'container-low': '#faf2f0',
+					'container-high': '#eee7e4',
+					'container-highest': '#e8e1df',
 					'container-lowest': '#ffffff',
-					dim: '#dcdad7',
-					variant: '#e5e2df',
+					dim: '#e8e1df',
+					variant: '#eee7e4',
 				},
-				'on-surface': '#1c1c1a',
-				'on-surface-variant': '#43474a',
+				'on-surface': '#1e1b1a',
+				'on-surface-variant': '#58413c',
+				'on-primary-container': '#fff1ee',
+				'on-secondary-container': '#62674a',
 				'outline': {
-					DEFAULT: '#73787b',
-					variant: '#c3c7ca',
+					DEFAULT: '#8c716a',
+					variant: '#dfbfb8',
 				},
 				'tertiary': {
-					DEFAULT: '#3b1f00',
-					container: '#56340e',
+					DEFAULT: '#5c564c',
+					container: '#e0d9d0',
 				},
+				'secondary-container': '#e1e6c1',
 			},
-			backgroundImage: {
+		backgroundImage: {
 				'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
 				'gradient-premium': 'var(--gradient-primary)',
 				'gradient-accent': 'var(--gradient-accent)',
 				'gradient-subtle': 'var(--gradient-subtle)',
 				'gradient-hero': 'var(--gradient-hero)',
-				'editorial-gradient': 'linear-gradient(180deg, rgba(25, 40, 48, 0) 0%, rgba(25, 40, 48, 0.8) 100%)',
+				'editorial-gradient': 'linear-gradient(180deg, rgba(159, 48, 18, 0) 0%, rgba(30, 27, 26, 0.8) 100%)',
 			},
 			boxShadow: {
-				'premium': '0 20px 40px -15px rgba(25, 40, 48, 0.08)',
-				'premium-glow': '0 0 30px 10px rgba(154, 68, 45, 0.1)',
-				'premium-xl': '0 20px 40px -12px rgba(25, 40, 48, 0.15)',
-				'premium-2xl': '0 -8px 32px rgba(25, 40, 48, 0.1)',
-				'bottom-sheet': '0 -8px 32px rgba(25, 40, 48, 0.1)',
-				'nav': '0 -4px 24px rgba(28,28,26,0.04)',
+				'premium': '0 20px 40px -15px rgba(30, 27, 26, 0.08)',
+				'premium-glow': '0 0 30px 10px rgba(159, 48, 18, 0.1)',
+				'premium-xl': '0 20px 40px -12px rgba(30, 27, 26, 0.15)',
+				'premium-2xl': '0 -8px 32px rgba(30, 27, 26, 0.1)',
+				'bottom-sheet': '0 -8px 32px rgba(30, 27, 26, 0.1)',
+				'nav': '0 -4px 24px rgba(30,27,26,0.04)',
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
@@ -185,8 +188,8 @@ export default {
 					'100%': { opacity: '1', transform: 'translateX(0)' }
 				},
 				'glow-pulse': {
-					'0%, 100%': { boxShadow: '0 0 0 0 rgba(154, 68, 45, 0.3)' },
-					'50%': { boxShadow: '0 0 30px 10px rgba(154, 68, 45, 0.1)' }
+					'0%, 100%': { boxShadow: '0 0 0 0 rgba(159, 48, 18, 0.3)' },
+					'50%': { boxShadow: '0 0 30px 10px rgba(159, 48, 18, 0.1)' }
 				},
 				'shimmer': {
 					'0%': { backgroundPosition: '-200% 0' },

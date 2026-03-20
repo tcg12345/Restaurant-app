@@ -14,8 +14,8 @@ export function GrubbyLogo({ size = 'md', showText = true, className = '' }: Gru
   return (
     <div className={`flex items-center gap-2 justify-start ${className}`}>
       {showText && (
-        <h1 className={`font-headline font-bold tracking-tight ${textSize[size]} text-primary`}>
-          The Culinary Editorial
+        <h1 className={`font-headline font-bold tracking-tight italic ${textSize[size]} text-primary`}>
+          Grubby
         </h1>
       )}
     </div>

@@ -1,7 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Badge } from '@/components/ui/badge';
 import { toast } from 'sonner';
 import { FeedItemCard } from '@/components/FeedItemCard';
 import { InfiniteScrollLoader } from '@/components/InfiniteScrollLoader';
@@ -178,47 +177,49 @@ export default function FeedPage() {
   if (!isLoading && feedItems.length === 0) {
     return (
       <div className="min-h-screen bg-background">
-        <div className="px-6 pt-8 pb-24 max-w-lg mx-auto">
+        <div className="px-5 pt-8 pb-24 max-w-lg mx-auto">
           <div className="text-center py-10">
-            <span className="material-symbols-outlined text-6xl text-secondary/40 mb-6 block">restaurant</span>
-            <h1 className="text-3xl font-headline font-bold tracking-tight text-primary mb-3">Welcome to The Culinary Editorial</h1>
-            <p className="text-on-surface-variant text-base max-w-xs mx-auto leading-relaxed">
+            <span className="material-symbols-outlined text-6xl text-primary/20 mb-6 block">restaurant</span>
+            <h1 className="text-3xl font-headline font-bold tracking-tight text-on-surface mb-3">
+              Welcome to <em className="text-primary italic">Grubby</em>
+            </h1>
+            <p className="text-on-surface-variant text-base max-w-xs mx-auto leading-relaxed font-body">
               Your feed will come alive as you follow friends and experts.
             </p>
           </div>
 
           <div className="space-y-3 mt-4">
-            <button onClick={() => navigate('/friends')} className="w-full flex items-center gap-4 p-5 rounded-xl bg-surface-container-low hover:bg-surface-container transition-all duration-200 text-left">
-              <div className="w-12 h-12 rounded-xl bg-primary-container flex items-center justify-center flex-shrink-0">
-                <span className="material-symbols-outlined text-on-primary-container">group</span>
+            <button onClick={() => navigate('/friends')} className="w-full flex items-center gap-4 p-5 rounded-2xl bg-surface-container-low border border-outline-variant/15 hover:bg-surface-container transition-all duration-200 text-left">
+              <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center flex-shrink-0">
+                <span className="material-symbols-outlined text-primary">group</span>
               </div>
               <div className="flex-1 min-w-0">
-                <div className="font-headline font-bold text-sm text-primary">Find Friends</div>
-                <div className="text-xs text-on-surface-variant mt-0.5">Connect with people you know</div>
+                <div className="font-headline font-bold text-sm text-on-surface">Find Friends</div>
+                <div className="text-xs text-on-surface-variant font-body mt-0.5">Connect with people you know</div>
               </div>
-              <span className="material-symbols-outlined text-on-surface-variant text-sm">chevron_right</span>
+              <span className="material-symbols-outlined text-on-surface-variant/40 text-sm">chevron_right</span>
             </button>
 
-            <button onClick={() => navigate('/experts')} className="w-full flex items-center gap-4 p-5 rounded-xl bg-surface-container-low hover:bg-surface-container transition-all duration-200 text-left">
-              <div className="w-12 h-12 rounded-xl bg-secondary/10 flex items-center justify-center flex-shrink-0">
-                <span className="material-symbols-outlined text-secondary">verified</span>
+            <button onClick={() => navigate('/experts')} className="w-full flex items-center gap-4 p-5 rounded-2xl bg-surface-container-low border border-outline-variant/15 hover:bg-surface-container transition-all duration-200 text-left">
+              <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center flex-shrink-0">
+                <span className="material-symbols-outlined text-primary">auto_awesome</span>
               </div>
               <div className="flex-1 min-w-0">
-                <div className="font-headline font-bold text-sm text-primary">Discover Experts</div>
-                <div className="text-xs text-on-surface-variant mt-0.5">Follow top food critics</div>
+                <div className="font-headline font-bold text-sm text-on-surface">Discover Experts</div>
+                <div className="text-xs text-on-surface-variant font-body mt-0.5">Follow top food critics</div>
               </div>
-              <span className="material-symbols-outlined text-on-surface-variant text-sm">chevron_right</span>
+              <span className="material-symbols-outlined text-on-surface-variant/40 text-sm">chevron_right</span>
             </button>
 
-            <button onClick={() => navigate('/search/global')} className="w-full flex items-center gap-4 p-5 rounded-xl bg-surface-container-low hover:bg-surface-container transition-all duration-200 text-left">
-              <div className="w-12 h-12 rounded-xl bg-surface-container-high flex items-center justify-center flex-shrink-0">
-                <span className="material-symbols-outlined text-primary">search</span>
+            <button onClick={() => navigate('/search/global')} className="w-full flex items-center gap-4 p-5 rounded-2xl bg-surface-container-low border border-outline-variant/15 hover:bg-surface-container transition-all duration-200 text-left">
+              <div className="w-12 h-12 rounded-2xl bg-surface-container-high flex items-center justify-center flex-shrink-0">
+                <span className="material-symbols-outlined text-on-surface-variant">search</span>
               </div>
               <div className="flex-1 min-w-0">
-                <div className="font-headline font-bold text-sm text-primary">Search Restaurants</div>
-                <div className="text-xs text-on-surface-variant mt-0.5">Explore places nearby</div>
+                <div className="font-headline font-bold text-sm text-on-surface">Search Restaurants</div>
+                <div className="text-xs text-on-surface-variant font-body mt-0.5">Explore places nearby</div>
               </div>
-              <span className="material-symbols-outlined text-on-surface-variant text-sm">chevron_right</span>
+              <span className="material-symbols-outlined text-on-surface-variant/40 text-sm">chevron_right</span>
             </button>
           </div>
         </div>
@@ -229,25 +230,25 @@ export default function FeedPage() {
   return (
     <div className="min-h-screen bg-background pb-24 lg:pb-0">
       {/* Header */}
-      <div className="px-6 pt-6 pb-3">
+      <div className="px-5 pt-6 pb-3">
         <div className="flex items-center justify-between">
-          <h1 className="text-2xl font-headline font-bold tracking-tight text-primary">Feed</h1>
+          <h1 className="text-2xl font-headline font-bold tracking-tight text-on-surface">Feed</h1>
           <button
             onClick={handleRefresh}
             disabled={isRefreshing}
-            className="w-10 h-10 flex items-center justify-center rounded-full bg-surface-container hover:bg-surface-container-high transition-colors active:scale-95 duration-200"
+            className="w-10 h-10 flex items-center justify-center rounded-full bg-surface-container-low border border-outline-variant/15 hover:bg-surface-container transition-colors active:scale-95 duration-200"
           >
-            <span className={cn('material-symbols-outlined text-primary text-lg', isRefreshing && 'animate-spin')}>refresh</span>
+            <span className={cn('material-symbols-outlined text-on-surface-variant text-lg', isRefreshing && 'animate-spin')}>refresh</span>
           </button>
         </div>
       </div>
 
       {/* Circle Ratings - Friends */}
       {profiles.length > 0 && (
-        <div className="px-6 pt-3 pb-4">
+        <div className="px-5 pt-3 pb-4">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="font-headline text-lg font-bold text-primary">Circle Ratings</h3>
-            <span className="text-xs font-medium text-secondary bg-secondary/10 px-2 py-0.5 rounded-full">{profiles.length} Friends</span>
+            <h3 className="font-headline text-lg font-bold text-on-surface">Circle Ratings</h3>
+            <span className="text-xs font-body font-semibold text-primary bg-primary/8 px-2.5 py-0.5 rounded-full">{profiles.length} Friends</span>
           </div>
           <div className="flex gap-4 overflow-x-auto hide-scrollbar pb-1">
             {profiles.map((profile) => (
@@ -256,7 +257,7 @@ export default function FeedPage() {
                 onClick={() => navigate(`/friend-profile/${profile.id}`)}
                 className="flex flex-col items-center gap-2 flex-shrink-0"
               >
-                <div className="w-14 h-14 rounded-full p-0.5 border-2 border-secondary/30 relative">
+                <div className="w-14 h-14 rounded-full p-0.5 border-2 border-primary/20 relative">
                   <Avatar className="h-full w-full">
                     <AvatarImage src={profile.avatar_url || ''} className="rounded-full" />
                     <AvatarFallback className="bg-surface-container-high text-on-surface-variant font-headline font-bold text-sm rounded-full">
@@ -264,7 +265,7 @@ export default function FeedPage() {
                     </AvatarFallback>
                   </Avatar>
                 </div>
-                <span className="text-[10px] font-medium text-on-surface-variant truncate w-16 text-center">
+                <span className="text-[10px] font-body font-medium text-on-surface-variant truncate w-16 text-center">
                   {profile.name?.split(' ')[0] || profile.username}
                 </span>
               </button>
@@ -275,69 +276,66 @@ export default function FeedPage() {
 
       {/* Expert Picks */}
       {experts.length > 0 && (
-        <div className="px-6 pt-3 pb-4">
+        <div className="px-5 pt-3 pb-4">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2">
-              <span className="material-symbols-outlined text-secondary" style={{ fontVariationSettings: "'FILL' 1" }}>verified</span>
-              <h3 className="font-headline text-lg font-bold text-primary">Expert Picks</h3>
+              <span className="material-symbols-outlined text-primary" style={{ fontVariationSettings: "'FILL' 1" }}>auto_awesome</span>
+              <h3 className="font-headline text-lg font-bold text-on-surface">Expert Picks</h3>
             </div>
-            <button onClick={() => navigate('/experts')} className="text-sm font-headline font-bold text-secondary">
+            <button onClick={() => navigate('/experts')} className="text-sm font-body font-bold text-primary">
               See all
             </button>
           </div>
-          <div className="flex gap-4 overflow-x-auto hide-scrollbar pb-1">
+          <div className="flex gap-3 overflow-x-auto hide-scrollbar pb-1">
             {experts.map((expert) => (
               <button
                 key={expert.id}
                 onClick={() => navigate(`/friend-profile/${expert.id}`)}
-                className="flex-shrink-0 p-4 rounded-xl bg-surface-container-low hover:bg-surface-container transition-colors w-36"
+                className="flex-shrink-0 p-4 rounded-2xl bg-surface-container-low border border-outline-variant/15 hover:bg-surface-container transition-colors w-36"
               >
-                <Avatar className="h-10 w-10 mx-auto mb-2 border border-secondary/20">
+                <Avatar className="h-10 w-10 mx-auto mb-2 border border-primary/15">
                   <AvatarImage src={expert.avatar_url || ''} />
-                  <AvatarFallback className="bg-secondary/10 text-secondary font-headline font-bold text-xs">
+                  <AvatarFallback className="bg-primary/10 text-primary font-headline font-bold text-xs">
                     {(expert.name || expert.username).charAt(0).toUpperCase()}
                   </AvatarFallback>
                 </Avatar>
-                <div className="text-xs font-headline font-bold truncate text-center text-primary">{expert.name || expert.username}</div>
-                <Badge variant="secondary" className="mt-1.5 mx-auto bg-secondary/10 text-secondary border-0 text-[8px] px-2 py-0.5 flex w-fit">
-                  <span className="material-symbols-outlined text-[10px] mr-0.5" style={{ fontVariationSettings: "'FILL' 1" }}>verified</span>
-                  Expert
-                </Badge>
+                <div className="text-xs font-headline font-bold truncate text-center text-on-surface">{expert.name || expert.username}</div>
+                <div className="mt-1.5 mx-auto flex items-center justify-center gap-0.5 bg-primary/8 text-primary rounded-full px-2 py-0.5 w-fit">
+                  <span className="material-symbols-outlined text-[10px]" style={{ fontVariationSettings: "'FILL' 1" }}>auto_awesome</span>
+                  <span className="text-[8px] font-body font-bold">Expert</span>
+                </div>
               </button>
             ))}
           </div>
         </div>
       )}
 
-      {/* Filter Chips */}
-      <div className="px-6 pt-3 pb-3">
+      {/* Quick Actions */}
+      <div className="px-5 pt-3 pb-3">
         <div className="flex gap-2">
-          <button onClick={() => navigate('/places')} className="flex items-center gap-1.5 px-4 py-2 bg-primary text-primary-foreground rounded-full text-sm font-medium whitespace-nowrap">
+          <button onClick={() => navigate('/places')} className="flex items-center gap-1.5 px-4 py-2 bg-primary text-primary-foreground rounded-full text-sm font-body font-semibold whitespace-nowrap">
             <span className="material-symbols-outlined text-[16px]">grade</span>
             Rate
           </button>
-          <button onClick={() => navigate('/search/global')} className="flex items-center gap-1.5 px-4 py-2 bg-surface-container-high text-on-surface-variant rounded-full text-sm font-medium whitespace-nowrap">
+          <button onClick={() => navigate('/search/global')} className="flex items-center gap-1.5 px-4 py-2 bg-surface-container-high text-on-surface-variant rounded-full text-sm font-body font-semibold whitespace-nowrap">
             <span className="material-symbols-outlined text-[16px]">search</span>
             Discover
           </button>
         </div>
       </div>
 
-      <div className="h-px bg-outline-variant/10 mx-6" />
+      <div className="h-px bg-outline-variant/15 mx-5" />
 
       {/* Section Title */}
-      <div className="px-6 pt-5 pb-3">
+      <div className="px-5 pt-5 pb-3">
         <div className="flex items-center justify-between">
-          <h3 className="font-headline text-xl font-bold text-primary">Community Feed</h3>
-          <button className="text-secondary text-sm font-headline font-bold flex items-center gap-1">
-            View All <span className="material-symbols-outlined text-sm">open_in_new</span>
-          </button>
+          <h3 className="font-headline text-xl font-bold text-on-surface">Community Feed</h3>
         </div>
       </div>
 
       {/* Loading */}
       {isLoading && feedItems.length === 0 && (
-        <div className="px-6 space-y-4">
+        <div className="px-5 space-y-4">
           {Array.from({ length: 4 }).map((_, i) => (
             <div key={i} className="animate-pulse space-y-3 py-4 border-b border-outline-variant/10">
               <div className="flex items-center gap-3">
@@ -354,7 +352,7 @@ export default function FeedPage() {
       )}
 
       {/* Feed Items */}
-      <div ref={scrollRef} className="px-6">
+      <div ref={scrollRef} className="px-5">
         {feedItems.map(item => (
           <FeedItemCard key={item.id} item={item} />
         ))}

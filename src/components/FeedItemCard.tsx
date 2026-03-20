@@ -70,8 +70,8 @@ export function FeedItemCard({ item, onRestaurantClick, onUserClick }: FeedItemC
             </Avatar>
           </button>
           {isExpert && (
-            <div className="absolute -bottom-1 -right-1 bg-secondary w-5 h-5 rounded-full border-2 border-background flex items-center justify-center">
-              <span className="material-symbols-outlined text-[10px] text-white" style={{ fontVariationSettings: "'FILL' 1" }}>verified</span>
+            <div className="absolute -bottom-1 -right-1 bg-primary w-5 h-5 rounded-full border-2 border-background flex items-center justify-center">
+              <span className="material-symbols-outlined text-[10px] text-white" style={{ fontVariationSettings: "'FILL' 1" }}>auto_awesome</span>
             </div>
           )}
           {!isExpert && (
@@ -85,11 +85,11 @@ export function FeedItemCard({ item, onRestaurantClick, onUserClick }: FeedItemC
           {/* User and activity */}
           <div className="flex justify-between items-start mb-2">
             <p className="text-sm font-body">
-              <button onClick={handleUserClick} className="font-headline font-bold text-primary hover:text-secondary transition-colors">
+              <button onClick={handleUserClick} className="font-headline font-bold text-on-surface hover:text-primary transition-colors">
                 {item.name || item.username}
               </button>
               {' '}{getActivityText()}{' '}
-              <button onClick={handleRestaurantClick} className="font-headline font-bold text-primary hover:text-secondary transition-colors">
+              <button onClick={handleRestaurantClick} className="font-headline font-bold text-on-surface hover:text-primary transition-colors">
                 {item.restaurant_name}
               </button>
             </p>
@@ -102,7 +102,7 @@ export function FeedItemCard({ item, onRestaurantClick, onUserClick }: FeedItemC
           {rating && (
             <div className="flex gap-0.5 mb-3">
               {Array.from({ length: Math.min(Math.round(Number(rating) / 2), 5) }).map((_, i) => (
-                <span key={i} className="material-symbols-outlined text-secondary text-base" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
+                <span key={i} className="material-symbols-outlined text-primary text-base" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
               ))}
               {Array.from({ length: Math.max(5 - Math.round(Number(rating) / 2), 0) }).map((_, i) => (
                 <span key={`empty-${i}`} className="material-symbols-outlined text-outline-variant text-base" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
@@ -125,7 +125,7 @@ export function FeedItemCard({ item, onRestaurantClick, onUserClick }: FeedItemC
                   <p className="text-xs text-on-surface-variant leading-relaxed line-clamp-3 mb-2">
                     "{item.review_text || item.notes}"
                   </p>
-                  <p className="text-[10px] font-bold text-secondary uppercase tracking-widest">Read Full Review</p>
+                  <p className="text-[10px] font-bold text-primary uppercase tracking-widest">Read Full Review</p>
                 </div>
               </div>
             </div>

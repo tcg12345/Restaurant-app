@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Users, Search, Clock, UserPlus, MessageCircle, MoreHorizontal, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -77,14 +76,14 @@ export function FriendsPage({
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-background p-4">
+      <div className="min-h-screen bg-background p-5">
         <div className="max-w-2xl mx-auto space-y-3">
           {Array.from({ length: 6 }).map((_, i) => (
-            <div key={i} className="animate-pulse flex items-center gap-3 p-3 rounded-xl bg-muted/30">
-              <div className="h-12 w-12 bg-muted rounded-full" />
+            <div key={i} className="animate-pulse flex items-center gap-3 p-3 rounded-2xl bg-surface-container/30">
+              <div className="h-12 w-12 bg-surface-container rounded-full" />
               <div className="flex-1 space-y-2">
-                <div className="h-3 bg-muted rounded w-24" />
-                <div className="h-2 bg-muted rounded w-16" />
+                <div className="h-3 bg-surface-container rounded w-24" />
+                <div className="h-2 bg-surface-container rounded w-16" />
               </div>
             </div>
           ))}
@@ -94,24 +93,37 @@ export function FriendsPage({
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background pb-24">
+      {/* Header */}
+      <div className="max-w-2xl mx-auto px-5 pt-8 pb-4">
+        <p className="uppercase tracking-widest text-[10px] text-on-surface-variant font-body font-semibold mb-2">
+          YOUR CIRCLE
+        </p>
+        <h1 className="font-headline text-2xl font-bold text-on-surface mb-1">
+          Social & <em className="text-primary italic">Friends</em>
+        </h1>
+        <p className="font-body text-sm text-on-surface-variant">
+          Connect, share discoveries, and see what your circle is eating.
+        </p>
+      </div>
+
       {/* Tab Switcher */}
-      <div className="sticky top-0 z-10 bg-background/95 backdrop-blur border-b border-border/50 px-4 py-3">
-        <div className="flex justify-center">
-          <div className="flex bg-muted/50 rounded-xl p-1">
+      <div className="sticky top-0 z-10 bg-background/90 backdrop-blur-xl border-b border-outline-variant/15 px-5 py-3">
+        <div className="max-w-2xl mx-auto">
+          <div className="flex bg-surface-container-low rounded-2xl p-1 border border-outline-variant/15">
             <button
               onClick={() => setActiveTab('friends')}
               className={cn(
-                'px-5 py-2 rounded-lg text-sm font-medium transition-all duration-200 flex items-center gap-1.5',
+                'flex-1 px-4 py-2 rounded-xl text-sm font-body font-semibold transition-all duration-200 flex items-center justify-center gap-1.5',
                 activeTab === 'friends'
-                  ? 'bg-background text-primary shadow-sm border border-border/50'
-                  : 'text-muted-foreground hover:text-foreground'
+                  ? 'bg-white text-primary shadow-sm'
+                  : 'text-on-surface-variant hover:text-on-surface'
               )}
             >
-              <Users className="h-4 w-4" />
+              <span className="material-symbols-outlined text-base">group</span>
               Friends
               {friends.length > 0 && (
-                <Badge variant="secondary" className="h-4 px-1.5 text-[10px] ml-0.5">
+                <Badge className="h-4 px-1.5 text-[10px] ml-0.5 bg-primary/10 text-primary border-0">
                   {friends.length}
                 </Badge>
               )}
@@ -119,25 +131,25 @@ export function FriendsPage({
             <button
               onClick={() => setActiveTab('find')}
               className={cn(
-                'px-5 py-2 rounded-lg text-sm font-medium transition-all duration-200 flex items-center gap-1.5',
+                'flex-1 px-4 py-2 rounded-xl text-sm font-body font-semibold transition-all duration-200 flex items-center justify-center gap-1.5',
                 activeTab === 'find'
-                  ? 'bg-background text-primary shadow-sm border border-border/50'
-                  : 'text-muted-foreground hover:text-foreground'
+                  ? 'bg-white text-primary shadow-sm'
+                  : 'text-on-surface-variant hover:text-on-surface'
               )}
             >
-              <UserPlus className="h-4 w-4" />
+              <span className="material-symbols-outlined text-base">person_add</span>
               Find
             </button>
             <button
               onClick={() => setActiveTab('requests')}
               className={cn(
-                'px-5 py-2 rounded-lg text-sm font-medium transition-all duration-200 flex items-center gap-1.5 relative',
+                'flex-1 px-4 py-2 rounded-xl text-sm font-body font-semibold transition-all duration-200 flex items-center justify-center gap-1.5 relative',
                 activeTab === 'requests'
-                  ? 'bg-background text-primary shadow-sm border border-border/50'
-                  : 'text-muted-foreground hover:text-foreground'
+                  ? 'bg-white text-primary shadow-sm'
+                  : 'text-on-surface-variant hover:text-on-surface'
               )}
             >
-              <Clock className="h-4 w-4" />
+              <span className="material-symbols-outlined text-base">schedule</span>
               Requests
               {requestCount > 0 && (
                 <Badge variant="destructive" className="h-4 px-1.5 text-[10px] ml-0.5">
@@ -149,21 +161,21 @@ export function FriendsPage({
         </div>
       </div>
 
-      <div className="max-w-2xl mx-auto px-4 py-4">
+      <div className="max-w-2xl mx-auto px-5 py-4">
         {/* Friends Tab */}
         {activeTab === 'friends' && (
           <>
             {friends.length === 0 ? (
               <div className="text-center py-16">
-                <div className="p-5 rounded-2xl bg-muted/50 w-20 h-20 mx-auto mb-4 flex items-center justify-center">
-                  <Users className="h-10 w-10 text-muted-foreground" />
+                <div className="p-5 rounded-2xl bg-primary/5 w-20 h-20 mx-auto mb-4 flex items-center justify-center">
+                  <span className="material-symbols-outlined text-4xl text-primary/40">group</span>
                 </div>
-                <h3 className="text-lg font-semibold mb-2">No friends yet</h3>
-                <p className="text-sm text-muted-foreground mb-4">
+                <h3 className="text-lg font-headline font-bold text-on-surface mb-2">No friends yet</h3>
+                <p className="text-sm text-on-surface-variant font-body mb-4">
                   Start building your foodie network
                 </p>
-                <Button onClick={() => setActiveTab('find')} size="sm" className="rounded-full gap-1.5">
-                  <UserPlus className="h-4 w-4" />
+                <Button onClick={() => setActiveTab('find')} size="sm" className="rounded-full gap-1.5 bg-primary text-white font-body font-semibold">
+                  <span className="material-symbols-outlined text-base">person_add</span>
                   Find Friends
                 </Button>
               </div>
@@ -171,12 +183,12 @@ export function FriendsPage({
               <>
                 {/* Search Bar */}
                 <div className="relative mb-4">
-                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                  <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant/50 text-lg">search</span>
                   <Input
                     placeholder="Search friends..."
                     value={filterQuery}
                     onChange={(e) => setFilterQuery(e.target.value)}
-                    className="pl-10 h-10 rounded-xl"
+                    className="pl-11 h-11 rounded-2xl border-outline-variant/20 bg-surface-container-low font-body text-sm"
                   />
                 </div>
 
@@ -185,20 +197,20 @@ export function FriendsPage({
                   {filteredFriends.map((friend) => (
                     <div
                       key={friend.id}
-                      className="flex items-center gap-3 p-3 rounded-xl hover:bg-muted/50 transition-colors cursor-pointer"
+                      className="flex items-center gap-3 p-3 rounded-2xl hover:bg-surface-container-low transition-colors cursor-pointer"
                       onClick={() => handleViewProfile(friend)}
                     >
-                      <Avatar className="h-12 w-12">
+                      <Avatar className="h-12 w-12 border border-outline-variant/15">
                         <AvatarImage src={friend.avatar_url || ''} />
-                        <AvatarFallback className="bg-primary/10 text-primary font-semibold">
+                        <AvatarFallback className="bg-primary/8 text-primary font-headline font-bold">
                           {(friend.name || friend.username).charAt(0).toUpperCase()}
                         </AvatarFallback>
                       </Avatar>
                       <div className="flex-1 min-w-0">
-                        <div className="font-medium text-sm truncate">
+                        <div className="font-headline font-bold text-sm text-on-surface truncate">
                           {friend.name || friend.username}
                         </div>
-                        <div className="text-xs text-muted-foreground">
+                        <div className="text-xs text-on-surface-variant font-body">
                           @{friend.username}
                         </div>
                       </div>
@@ -206,26 +218,26 @@ export function FriendsPage({
                         <Button
                           variant="ghost"
                           size="icon"
-                          className="h-8 w-8"
+                          className="h-8 w-8 rounded-full"
                           onClick={(e) => {
                             e.stopPropagation();
                             handleStartChat(friend);
                           }}
                         >
-                          <MessageCircle className="h-4 w-4 text-muted-foreground" />
+                          <span className="material-symbols-outlined text-on-surface-variant text-lg">chat</span>
                         </Button>
                         <DropdownMenu>
                           <DropdownMenuTrigger asChild>
                             <Button
                               variant="ghost"
                               size="icon"
-                              className="h-8 w-8"
+                              className="h-8 w-8 rounded-full"
                               onClick={(e) => e.stopPropagation()}
                             >
-                              <MoreHorizontal className="h-4 w-4 text-muted-foreground" />
+                              <span className="material-symbols-outlined text-on-surface-variant text-lg">more_horiz</span>
                             </Button>
                           </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
+                          <DropdownMenuContent align="end" className="rounded-xl">
                             <DropdownMenuItem onClick={() => handleViewProfile(friend)}>
                               View Profile
                             </DropdownMenuItem>
@@ -233,7 +245,7 @@ export function FriendsPage({
                               className="text-destructive"
                               onClick={() => handleRemoveFriend(friend.id)}
                             >
-                              <Trash2 className="h-4 w-4 mr-2" />
+                              <span className="material-symbols-outlined text-sm mr-2">delete</span>
                               Remove Friend
                             </DropdownMenuItem>
                           </DropdownMenuContent>

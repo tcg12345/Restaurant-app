@@ -202,14 +202,14 @@ export function MobileProfilePage() {
     { label: 'UMAMI', value: 90 },
   ];
 
-  return <div className="min-h-screen bg-background">
+  return <div className="min-h-screen bg-background pb-24">
       {/* ===== Profile Header ===== */}
-      <div className="px-6 pt-10 pb-8">
+      <div className="px-5 pt-10 pb-8">
         <div className="flex flex-col items-center space-y-4">
           {/* Avatar */}
-          <Avatar className="w-28 h-28 border-4 border-secondary/20">
+          <Avatar className="w-28 h-28 border-4 border-primary/15">
             <AvatarImage src={profile.avatar_url || ''} alt={profile.name || profile.username || 'User'} />
-            <AvatarFallback className="text-3xl font-headline font-bold bg-surface-container-low text-on-surface-variant">
+            <AvatarFallback className="text-3xl font-headline font-bold bg-primary/5 text-primary">
               {profile.name?.charAt(0) || profile.username?.charAt(0) || 'U'}
             </AvatarFallback>
           </Avatar>
@@ -217,25 +217,25 @@ export function MobileProfilePage() {
           {/* Name */}
           <div className="text-center space-y-1">
             <div className="flex items-center justify-center gap-2">
-              <h1 className="text-2xl font-headline font-bold text-primary">{profile.name || profile.username}</h1>
+              <h1 className="text-2xl font-headline font-bold text-on-surface">{profile.name || profile.username}</h1>
               {isExpert && <ExpertBadge size="md" />}
             </div>
-            <p className="text-[10px] uppercase tracking-widest text-secondary font-body">
+            <p className="text-[10px] uppercase tracking-widest text-primary font-body font-semibold">
               Gourmet Explorer &bull; Level: Connoisseur
             </p>
           </div>
 
           {/* Bio */}
           {profile.bio && (
-            <p className="text-sm text-on-surface-variant italic text-center max-w-xs font-body leading-relaxed">
-              {profile.bio}
+            <p className="text-sm text-on-surface-variant font-headline italic text-center max-w-xs leading-relaxed">
+              "{profile.bio}"
             </p>
           )}
 
           {/* Location */}
           {profile.home_city && (
             <div className="flex items-center gap-1 text-sm text-on-surface-variant">
-              <MIcon name="location_on" className="text-sm text-secondary" />
+              <MIcon name="location_on" className="text-sm text-primary" />
               <span className="font-body">{profile.home_city}</span>
             </div>
           )}
@@ -244,31 +244,31 @@ export function MobileProfilePage() {
           <div className="flex items-center gap-3 pt-2">
             <Button
               variant="outline"
-              className="rounded-full border border-primary text-primary px-5 h-9 text-sm font-body"
+              className="rounded-full border-outline-variant/30 text-on-surface px-5 h-9 text-sm font-body font-semibold"
               onClick={() => navigate('/profile/edit')}
             >
               Edit Profile
             </Button>
             <Button
               variant="outline"
-              className="rounded-full border border-primary text-primary px-5 h-9 text-sm font-body"
+              className="rounded-full border-outline-variant/30 text-on-surface px-5 h-9 text-sm font-body font-semibold"
               onClick={() => {
                 if (navigator.share) {
-                  navigator.share({ title: `${profile.name}'s Gourmet Canvas`, url: window.location.href });
+                  navigator.share({ title: `${profile.name}'s Profile`, url: window.location.href });
                 }
               }}
             >
-              Share Canvas
+              Share Profile
             </Button>
           </div>
         </div>
       </div>
 
       {/* ===== Taste Profile Card ===== */}
-      <div className="px-4 mb-6">
-        <div className="bg-surface-container-low rounded-2xl p-6 space-y-5">
+      <div className="px-5 mb-6">
+        <div className="bg-surface-container-low border border-outline-variant/15 rounded-2xl p-6 space-y-5">
           <div>
-            <h2 className="font-headline font-bold text-lg text-primary">Taste Profile</h2>
+            <h2 className="font-headline font-bold text-lg text-on-surface">Taste Profile</h2>
             <p className="text-xs text-on-surface-variant font-body mt-0.5">
               Based on {stats.rated_count} verified dining experience{stats.rated_count !== 1 ? 's' : ''}
             </p>
@@ -286,7 +286,7 @@ export function MobileProfilePage() {
                 </span>
               ))}
               {stats.top_cuisine && !tasteTags.some(t => t.includes(stats.top_cuisine)) && (
-                <span className="bg-surface-container-high rounded-full px-3 py-1 text-xs font-body text-secondary">
+                <span className="bg-surface-container-high rounded-full px-3 py-1 text-xs font-body text-primary">
                   {stats.top_cuisine} Lover
                 </span>
               )}
@@ -301,7 +301,7 @@ export function MobileProfilePage() {
                 <span className="text-[10px] uppercase tracking-wider text-on-surface-variant w-12 text-right font-body">{dim.label}</span>
                 <div className="flex-1 h-1.5 bg-surface-container-high rounded-full overflow-hidden">
                   <div
-                    className="h-full bg-secondary rounded-full transition-all duration-700"
+                    className="h-full bg-primary rounded-full transition-all duration-700"
                     style={{ width: `${dim.value}%` }}
                   />
                 </div>
@@ -313,12 +313,12 @@ export function MobileProfilePage() {
           {/* Adventure Score */}
           <div className="space-y-1.5">
             <div className="flex items-center justify-between">
-              <span className="text-sm font-headline font-bold text-primary">Adventure Score</span>
-              <span className="text-sm font-bold text-secondary">{adventureScore}%</span>
+              <span className="text-sm font-headline font-bold text-on-surface">Adventure Score</span>
+              <span className="text-sm font-bold text-primary">{adventureScore}%</span>
             </div>
             <div className="h-2 bg-surface-container-high rounded-full overflow-hidden">
               <div
-                className="h-full bg-secondary rounded-full transition-all duration-700"
+                className="h-full bg-primary rounded-full transition-all duration-700"
                 style={{ width: `${adventureScore}%` }}
               />
             </div>
@@ -327,31 +327,31 @@ export function MobileProfilePage() {
           {/* Sustainability Index */}
           <div className="space-y-1.5">
             <div className="flex items-center justify-between">
-              <span className="text-sm font-headline font-bold text-primary">Sustainability Index</span>
-              <span className="text-sm font-bold text-secondary">{sustainabilityIndex}%</span>
+              <span className="text-sm font-headline font-bold text-on-surface">Sustainability Index</span>
+              <span className="text-sm font-bold text-primary">{sustainabilityIndex}%</span>
             </div>
             <div className="h-2 bg-surface-container-high rounded-full overflow-hidden">
               <div
-                className="h-full bg-secondary/70 rounded-full transition-all duration-700"
+                className="h-full bg-primary/70 rounded-full transition-all duration-700"
                 style={{ width: `${sustainabilityIndex}%` }}
               />
             </div>
           </div>
 
           {/* Taste Quote */}
-          <p className="italic text-sm text-on-surface-variant font-body text-center pt-1">
+          <p className="italic text-sm text-on-surface-variant font-headline text-center pt-1">
             &ldquo;A palate shaped by {uniqueCuisineCount} cuisine{uniqueCuisineCount !== 1 ? 's' : ''}, {stats.rated_count} experience{stats.rated_count !== 1 ? 's' : ''}, and an average rating of {stats.avg_rating.toFixed(1)}.&rdquo;
           </p>
         </div>
       </div>
 
       {/* ===== My Wishlist Section ===== */}
-      <div className="px-4 mb-6">
+      <div className="px-5 mb-6">
         <div className="flex items-center justify-between mb-4">
-          <h2 className="font-headline font-bold text-lg text-primary">My Wishlist</h2>
+          <h2 className="font-headline font-bold text-lg text-on-surface">My Wishlist</h2>
           <button
             onClick={() => navigate('/wishlist')}
-            className="text-[10px] uppercase tracking-widest text-secondary font-body font-medium"
+            className="text-[10px] uppercase tracking-widest text-primary font-body font-semibold"
           >
             View All
           </button>
@@ -389,13 +389,13 @@ export function MobileProfilePage() {
                     </div>
                   )}
                   {/* Bookmark overlay */}
-                  <div className="absolute top-3 right-3 bg-secondary/90 text-white rounded-full w-8 h-8 flex items-center justify-center">
+                  <div className="absolute top-3 right-3 bg-primary/90 text-white rounded-full w-8 h-8 flex items-center justify-center">
                     <MIcon name="bookmark" className="text-base" filled />
                   </div>
                 </div>
 
                 {/* Info */}
-                <h3 className="font-headline font-bold text-primary">{restaurant.name}</h3>
+                <h3 className="font-headline font-bold text-on-surface">{restaurant.name}</h3>
                 <p className="text-xs text-on-surface-variant font-body mt-0.5">
                   {[restaurant.city, restaurant.country].filter(Boolean).join(', ')}
                   {restaurant.cuisine && ` \u2022 ${restaurant.cuisine}`}
@@ -403,7 +403,7 @@ export function MobileProfilePage() {
 
                 {/* Social proof badge */}
                 <div className="mt-2">
-                  <span className="bg-secondary/10 rounded-full px-3 py-1 text-xs text-secondary font-body">
+                  <span className="bg-primary/8 rounded-full px-3 py-1 text-xs text-primary font-body font-semibold">
                     Wishlisted by {Math.floor(Math.random() * 12) + 3} Experts
                   </span>
                 </div>
@@ -421,8 +421,8 @@ export function MobileProfilePage() {
       </div>
 
       {/* ===== Recent Ratings Section ===== */}
-      <div className="px-4 mb-6">
-        <h2 className="font-headline font-bold text-lg text-primary mb-4">Recent Ratings</h2>
+      <div className="px-5 mb-6">
+        <h2 className="font-headline font-bold text-lg text-on-surface mb-4">Recent Ratings</h2>
 
         {loadingActivity ? (
           <div className="space-y-3">
@@ -451,7 +451,7 @@ export function MobileProfilePage() {
 
                 {/* Info */}
                 <div className="flex-1 min-w-0">
-                  <p className="font-headline font-bold text-sm text-primary truncate">{activity.name}</p>
+                  <p className="font-headline font-bold text-sm text-on-surface truncate">{activity.name}</p>
                   {/* Star rating */}
                   <div className="flex items-center gap-0.5 mt-0.5">
                     {Array.from({ length: 5 }).map((_, i) => (
@@ -459,7 +459,7 @@ export function MobileProfilePage() {
                         key={i}
                         name="star"
                         filled={i < Math.round(activity.rating)}
-                        className={`text-sm ${i < Math.round(activity.rating) ? 'text-secondary' : 'text-on-surface-variant/20'}`}
+                        className={`text-sm ${i < Math.round(activity.rating) ? 'text-primary' : 'text-on-surface-variant/20'}`}
                       />
                     ))}
                   </div>
