@@ -3,15 +3,11 @@ import { useNavigate } from 'react-router-dom';
 const MIcon = ({ name, className = '', filled = false }: { name: string; className?: string; filled?: boolean }) => (
   <span className={`material-symbols-outlined ${className}`} style={filled ? { fontVariationSettings: "'FILL' 1" } : undefined}>{name}</span>
 );
-import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Badge } from '@/components/ui/badge';
-import { Card, CardContent } from '@/components/ui/card';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { toast } from 'sonner';
-import { cn } from '@/lib/utils';
 
 interface Expert {
   id: string;
@@ -72,7 +68,6 @@ export default function ExpertsPage() {
     if (!user) return;
     setIsLoading(true);
     try {
-      // Get expert user IDs
       const { data: expertRoles } = await supabase
         .from('user_roles')
         .select('user_id')
@@ -86,13 +81,11 @@ export default function ExpertsPage() {
 
       const expertIds = expertRoles.map(r => r.user_id);
 
-      // Get expert profiles
       const { data: profiles } = await supabase
         .from('profiles')
         .select('id, username, name, avatar_url, bio, home_city')
         .in('id', expertIds);
 
-      // Get expert restaurant stats
       const { data: restaurants } = await supabase
         .from('restaurants')
         .select('user_id, cuisine, rating')
@@ -100,7 +93,6 @@ export default function ExpertsPage() {
         .eq('is_wishlist', false)
         .not('rating', 'is', null);
 
-      // Build expert objects
       const expertMap = new Map<string, Expert>();
       profiles?.forEach(p => {
         expertMap.set(p.id, {
@@ -117,7 +109,6 @@ export default function ExpertsPage() {
         });
       });
 
-      // Compute stats
       const expertCuisines: Record<string, Record<string, number>> = {};
       const expertRatings: Record<string, number[]> = {};
 
@@ -211,19 +202,19 @@ export default function ExpertsPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-background p-4">
+      <div className="min-h-screen bg-background p-5">
         <div className="max-w-4xl mx-auto space-y-6 pt-12">
           <div className="animate-pulse space-y-3">
-            <div className="h-3 w-32 bg-muted rounded" />
-            <div className="h-10 w-72 bg-muted rounded" />
-            <div className="h-4 w-96 bg-muted rounded" />
+            <div className="h-3 w-32 bg-surface-container rounded" />
+            <div className="h-10 w-72 bg-surface-container rounded" />
+            <div className="h-4 w-96 bg-surface-container rounded" />
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-12">
-            <div className="animate-pulse bg-muted aspect-[3/4] rounded-2xl" />
+            <div className="animate-pulse bg-surface-container aspect-[3/4] rounded-2xl" />
             <div className="animate-pulse space-y-4">
-              <div className="h-6 w-48 bg-muted rounded" />
-              <div className="h-4 w-full bg-muted rounded" />
-              <div className="h-4 w-3/4 bg-muted rounded" />
+              <div className="h-6 w-48 bg-surface-container rounded" />
+              <div className="h-4 w-full bg-surface-container rounded" />
+              <div className="h-4 w-3/4 bg-surface-container rounded" />
             </div>
           </div>
         </div>
@@ -234,9 +225,8 @@ export default function ExpertsPage() {
   // Selected expert detail view
   if (selectedExpert) {
     return (
-      <div className="min-h-screen bg-background">
-        {/* Back navigation */}
-        <div className="max-w-4xl mx-auto px-4 pt-6">
+      <div className="min-h-screen bg-background pb-24">
+        <div className="max-w-4xl mx-auto px-5 pt-6">
           <button
             onClick={() => setSelectedExpert(null)}
             className="flex items-center gap-1 text-on-surface-variant font-body text-sm hover:text-primary transition-colors mb-8"
@@ -246,8 +236,7 @@ export default function ExpertsPage() {
           </button>
         </div>
 
-        {/* Expert Profile - Editorial Layout */}
-        <div className="max-w-4xl mx-auto px-4">
+        <div className="max-w-4xl mx-auto px-5">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
             {/* Large Photo */}
             <div className="aspect-[3/4] rounded-2xl overflow-hidden bg-surface-container-low">
@@ -258,8 +247,8 @@ export default function ExpertsPage() {
                   className="w-full h-full object-cover"
                 />
               ) : (
-                <div className="w-full h-full flex items-center justify-center bg-surface-container-low">
-                  <span className="font-headline text-6xl text-secondary">
+                <div className="w-full h-full flex items-center justify-center bg-primary/5">
+                  <span className="font-headline text-6xl text-primary/40">
                     {(selectedExpert.name || selectedExpert.username).charAt(0).toUpperCase()}
                   </span>
                 </div>
@@ -271,28 +260,28 @@ export default function ExpertsPage() {
               <p className="uppercase tracking-widest text-[10px] text-on-surface-variant font-body mb-2">
                 EXPERT PROFILE
               </p>
-              <h1 className="font-headline text-3xl md:text-4xl text-primary mb-2">
+              <h1 className="font-headline text-3xl md:text-4xl text-on-surface mb-2">
                 {selectedExpert.name || selectedExpert.username}
               </h1>
               <p className="font-body text-sm text-on-surface-variant mb-4">@{selectedExpert.username}</p>
 
               {selectedExpert.topCuisines.length > 0 && (
                 <div className="inline-flex mb-4">
-                  <span className="uppercase tracking-widest text-[10px] font-body bg-secondary/10 text-secondary px-3 py-1 rounded-full">
+                  <span className="uppercase tracking-widest text-[10px] font-body bg-primary/8 text-primary px-3 py-1 rounded-full font-semibold">
                     {selectedExpert.topCuisines[0]} SPECIALIST
                   </span>
                 </div>
               )}
 
               {selectedExpert.bio && (
-                <p className="font-body text-base text-primary/80 italic leading-relaxed mb-6 border-l-2 border-secondary pl-4">
+                <p className="font-headline text-base text-on-surface/80 italic leading-relaxed mb-6 border-l-2 border-primary pl-4">
                   "{selectedExpert.bio}"
                 </p>
               )}
 
               {selectedExpert.home_city && (
                 <div className="flex items-center gap-1.5 text-on-surface-variant font-body text-sm mb-6">
-                  <MIcon name="location_on" className="text-sm text-secondary" />
+                  <MIcon name="location_on" className="text-sm text-primary" />
                   {selectedExpert.home_city}
                 </div>
               )}
@@ -300,43 +289,42 @@ export default function ExpertsPage() {
               {/* Stats */}
               <div className="flex items-center gap-8 mb-6">
                 <div>
-                  <div className="font-headline text-2xl text-primary">{selectedExpert.restaurantCount}</div>
+                  <div className="font-headline text-2xl text-on-surface">{selectedExpert.restaurantCount}</div>
                   <div className="text-[11px] text-on-surface-variant font-body uppercase tracking-wide">Reviews</div>
                 </div>
                 {selectedExpert.avgRating > 0 && (
                   <div>
-                    <div className="font-headline text-2xl text-primary">{selectedExpert.avgRating}</div>
+                    <div className="font-headline text-2xl text-on-surface">{selectedExpert.avgRating}</div>
                     <div className="text-[11px] text-on-surface-variant font-body uppercase tracking-wide">Avg Rating</div>
                   </div>
                 )}
                 {selectedExpert.topCuisines.length > 0 && (
                   <div>
-                    <div className="font-headline text-2xl text-primary">{selectedExpert.topCuisines.length}</div>
+                    <div className="font-headline text-2xl text-on-surface">{selectedExpert.topCuisines.length}</div>
                     <div className="text-[11px] text-on-surface-variant font-body uppercase tracking-wide">Cuisines</div>
                   </div>
                 )}
               </div>
 
-              {/* Action Buttons */}
               <div className="flex items-center gap-3">
                 {!followingIds.has(selectedExpert.id) ? (
                   <button
                     onClick={() => handleFollow(selectedExpert.id)}
-                    className="bg-secondary text-white rounded-full px-6 py-2 font-body text-sm font-medium hover:bg-secondary/90 transition-colors"
+                    className="bg-primary text-white rounded-full px-6 py-2.5 font-body text-sm font-semibold hover:opacity-90 transition-opacity"
                   >
                     Follow
                   </button>
                 ) : (
                   <button
                     disabled
-                    className="bg-surface-container-low text-on-surface-variant rounded-full px-6 py-2 font-body text-sm font-medium border border-secondary/20"
+                    className="bg-surface-container-low text-on-surface-variant rounded-full px-6 py-2.5 font-body text-sm font-semibold border border-outline-variant/30"
                   >
                     Following
                   </button>
                 )}
                 <button
                   onClick={() => navigate(`/friend-profile/${selectedExpert.id}`)}
-                  className="border border-primary/20 text-primary rounded-full px-6 py-2 font-body text-sm font-medium hover:bg-primary/5 transition-colors"
+                  className="border border-outline-variant/30 text-on-surface rounded-full px-6 py-2.5 font-body text-sm font-semibold hover:bg-surface-container-low transition-colors"
                 >
                   View Full Profile
                 </button>
@@ -347,25 +335,23 @@ export default function ExpertsPage() {
           {/* Expert's Top Rated Restaurants */}
           <div className="mb-12">
             <div className="flex items-center justify-between mb-6">
-              <h2 className="font-headline text-xl text-primary">Top Rated Restaurants</h2>
+              <h2 className="font-headline text-xl text-on-surface">Top Rated Restaurants</h2>
               <span className="text-on-surface-variant font-body text-sm">{expertRestaurants.length} reviews</span>
             </div>
 
             {loadingRestaurants ? (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {Array.from({ length: 4 }).map((_, i) => (
-                  <div key={i} className="animate-pulse bg-muted h-24 rounded-2xl" />
+                  <div key={i} className="animate-pulse bg-surface-container h-24 rounded-2xl" />
                 ))}
               </div>
             ) : expertRestaurants.length === 0 ? (
-              <div className="text-center py-16 bg-surface-container-low rounded-2xl">
-                <MIcon name="restaurant" className="text-4xl text-on-surface-variant mb-3" />
-                <p className="text-on-surface-variant font-body text-sm">
-                  No restaurant reviews yet.
-                </p>
+              <div className="text-center py-16 bg-surface-container-low rounded-2xl border border-outline-variant/15">
+                <MIcon name="restaurant" className="text-4xl text-on-surface-variant/30 mb-3" />
+                <p className="text-on-surface-variant font-body text-sm">No restaurant reviews yet.</p>
               </div>
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 {expertRestaurants.map((restaurant, idx) => (
                   <button
                     key={restaurant.id}
@@ -374,28 +360,28 @@ export default function ExpertsPage() {
                         navigate(`/restaurant/${restaurant.google_place_id}?name=${encodeURIComponent(restaurant.name)}`);
                       }
                     }}
-                    className="flex items-center gap-4 p-4 rounded-2xl bg-surface-container-low hover:bg-surface-container-low/80 transition-colors text-left group"
+                    className="flex items-center gap-4 p-4 rounded-2xl bg-surface-container-low border border-outline-variant/10 hover:bg-surface-container transition-colors text-left group"
                   >
-                    <div className="w-10 h-10 rounded-full bg-secondary/10 flex items-center justify-center font-headline text-sm text-secondary flex-shrink-0">
+                    <div className="w-10 h-10 rounded-full bg-primary/8 flex items-center justify-center font-headline text-sm text-primary flex-shrink-0">
                       {idx + 1}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <div className="font-headline text-sm text-primary truncate group-hover:text-secondary transition-colors">
+                      <div className="font-headline text-sm text-on-surface truncate group-hover:text-primary transition-colors">
                         {restaurant.name}
                       </div>
                       <div className="text-[11px] text-on-surface-variant font-body flex items-center gap-2 mt-0.5">
                         {restaurant.cuisine && <span>{restaurant.cuisine}</span>}
                         {restaurant.city && (
                           <>
-                            <span className="text-on-surface-variant/30">|</span>
+                            <span className="text-outline-variant">|</span>
                             <span>{restaurant.city}</span>
                           </>
                         )}
                       </div>
                     </div>
-                    <div className="flex items-center gap-1 flex-shrink-0 bg-secondary/10 px-2.5 py-1 rounded-full">
-                      <MIcon name="grade" className="text-sm text-secondary" filled />
-                      <span className="font-headline text-sm text-secondary">{restaurant.rating}</span>
+                    <div className="flex items-center gap-1 flex-shrink-0 bg-primary/8 px-2.5 py-1 rounded-full">
+                      <MIcon name="grade" className="text-sm text-primary" filled />
+                      <span className="font-body font-bold text-sm text-primary">{restaurant.rating}</span>
                     </div>
                   </button>
                 ))}
@@ -412,49 +398,49 @@ export default function ExpertsPage() {
   const otherExperts = filteredExperts.slice(1);
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background pb-24">
       {/* Header Section */}
-      <div className="max-w-4xl mx-auto px-4 pt-10 pb-8">
-        <p className="uppercase tracking-widest text-[10px] text-on-surface-variant font-body mb-3">
-          THE DIGITAL MAITRE D'
+      <div className="max-w-4xl mx-auto px-5 pt-10 pb-8">
+        <p className="uppercase tracking-widest text-[10px] text-on-surface-variant font-body font-semibold mb-3">
+          THE DIGITAL MAÎTRE D'
         </p>
-        <h1 className="font-headline text-3xl md:text-4xl text-primary mb-3">
-          Meet the <span className="text-secondary">Tastemakers</span>
+        <h1 className="font-headline text-3xl md:text-4xl text-on-surface mb-3">
+          Meet the <em className="text-primary italic">Tastemakers</em>
         </h1>
         <p className="font-body text-base text-on-surface-variant max-w-lg leading-relaxed">
-          Discover culinary perspectives from the critics, chefs, and food writers shaping how we dine. Follow their journeys and let their palates guide yours.
+          Discover culinary perspectives from the critics, chefs, and food writers shaping how we dine.
         </p>
       </div>
 
-      <div className="max-w-4xl mx-auto px-4">
+      <div className="max-w-4xl mx-auto px-5">
         {/* Search */}
         <div className="relative mb-8">
-          <MIcon name="search" className="absolute left-4 top-1/2 -translate-y-1/2 text-base text-on-surface-variant" />
+          <MIcon name="search" className="absolute left-4 top-1/2 -translate-y-1/2 text-base text-on-surface-variant/50" />
           <Input
             placeholder="Search by name, cuisine, or city..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-11 h-12 rounded-full border-primary/10 bg-surface-container-low font-body text-sm focus:border-secondary"
+            className="pl-11 h-12 rounded-2xl border-outline-variant/20 bg-surface-container-low font-body text-sm focus:border-primary"
           />
         </div>
 
         {filteredExperts.length === 0 ? (
           <div className="text-center py-20">
-            <MIcon name="search_off" className="text-5xl text-on-surface-variant/40 mx-auto mb-4" />
-            <h3 className="font-headline text-lg text-primary mb-2">No Experts Found</h3>
+            <MIcon name="search_off" className="text-5xl text-on-surface-variant/30 mx-auto mb-4" />
+            <h3 className="font-headline text-lg text-on-surface mb-2">No Experts Found</h3>
             <p className="text-on-surface-variant font-body text-sm">
               {searchQuery ? 'Try a different search term.' : 'No experts have been verified yet.'}
             </p>
           </div>
         ) : (
           <>
-            {/* Featured Critics Section */}
+            {/* Featured Critics */}
             <div className="mb-10">
               <div className="flex items-center justify-between mb-6">
-                <h2 className="font-headline text-xl text-primary">Featured Critics</h2>
-                <button className="text-secondary font-body text-sm font-medium hover:underline">
-                  View All
-                </button>
+                <h2 className="font-headline text-xl text-on-surface">Featured Critics</h2>
+                <span className="text-[10px] font-body font-semibold uppercase tracking-widest text-primary">
+                  Curated
+                </span>
               </div>
 
               {/* Featured Expert Card */}
@@ -463,7 +449,6 @@ export default function ExpertsPage() {
                   className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8 cursor-pointer group"
                   onClick={() => handleExpertClick(featuredExpert)}
                 >
-                  {/* Large Photo */}
                   <div className="aspect-[3/4] rounded-2xl overflow-hidden bg-surface-container-low">
                     {featuredExpert.avatar_url ? (
                       <img
@@ -472,55 +457,52 @@ export default function ExpertsPage() {
                         className="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-500"
                       />
                     ) : (
-                      <div className="w-full h-full flex items-center justify-center bg-surface-container-low">
-                        <span className="font-headline text-7xl text-secondary/60">
+                      <div className="w-full h-full flex items-center justify-center bg-primary/5">
+                        <span className="font-headline text-7xl text-primary/30">
                           {(featuredExpert.name || featuredExpert.username).charAt(0).toUpperCase()}
                         </span>
                       </div>
                     )}
                   </div>
 
-                  {/* Featured Expert Info */}
                   <div className="flex flex-col justify-center">
-                    <h3 className="font-headline text-2xl text-primary mb-1 group-hover:text-secondary transition-colors">
+                    <h3 className="font-headline text-2xl text-on-surface mb-1 group-hover:text-primary transition-colors">
                       {featuredExpert.name || featuredExpert.username}
                     </h3>
                     <p className="font-body text-sm text-on-surface-variant mb-3">@{featuredExpert.username}</p>
 
                     {featuredExpert.topCuisines.length > 0 && (
                       <div className="inline-flex mb-4">
-                        <span className="uppercase tracking-widest text-[10px] font-body bg-secondary/10 text-secondary px-3 py-1 rounded-full font-medium">
+                        <span className="uppercase tracking-widest text-[10px] font-body bg-primary/8 text-primary px-3 py-1 rounded-full font-semibold">
                           {featuredExpert.topCuisines[0]} SPECIALIST
                         </span>
                       </div>
                     )}
 
                     {featuredExpert.bio && (
-                      <p className="font-body text-sm text-primary/70 italic leading-relaxed mb-4 border-l-2 border-secondary/40 pl-4">
+                      <p className="font-headline text-sm text-on-surface/70 italic leading-relaxed mb-4 border-l-2 border-primary/40 pl-4">
                         "{featuredExpert.bio}"
                       </p>
                     )}
 
-                    {/* Stats row */}
                     <div className="flex items-center gap-6 mb-5">
                       <div className="font-body text-xs text-on-surface-variant">
-                        <span className="font-headline text-lg text-primary block">{featuredExpert.restaurantCount}</span>
+                        <span className="font-headline text-lg text-on-surface block">{featuredExpert.restaurantCount}</span>
                         reviews
                       </div>
                       {featuredExpert.avgRating > 0 && (
                         <div className="font-body text-xs text-on-surface-variant">
-                          <span className="font-headline text-lg text-primary block">{featuredExpert.avgRating}</span>
+                          <span className="font-headline text-lg text-on-surface block">{featuredExpert.avgRating}</span>
                           avg rating
                         </div>
                       )}
                     </div>
 
-                    {/* Follower avatars placeholder + Follow button */}
                     <div className="flex items-center gap-4">
                       <div className="flex -space-x-2">
                         {[0, 1, 2].map(i => (
                           <div key={i} className="w-7 h-7 rounded-full bg-surface-container-low border-2 border-background flex items-center justify-center">
-                            <MIcon name="person" className="text-[10px] text-on-surface-variant" />
+                            <MIcon name="person" className="text-[10px] text-on-surface-variant/40" />
                           </div>
                         ))}
                       </div>
@@ -530,12 +512,12 @@ export default function ExpertsPage() {
                             e.stopPropagation();
                             handleFollow(featuredExpert.id);
                           }}
-                          className="bg-secondary text-white rounded-full px-6 py-2 font-body text-sm font-medium hover:bg-secondary/90 transition-colors"
+                          className="bg-primary text-white rounded-full px-6 py-2 font-body text-sm font-semibold hover:opacity-90 transition-opacity"
                         >
                           Follow
                         </button>
                       ) : (
-                        <span className="text-on-surface-variant font-body text-sm bg-surface-container-low rounded-full px-6 py-2 border border-secondary/20">
+                        <span className="text-on-surface-variant font-body text-sm bg-surface-container-low rounded-full px-6 py-2 border border-outline-variant/30">
                           Following
                         </span>
                       )}
@@ -544,28 +526,28 @@ export default function ExpertsPage() {
                 </div>
               )}
 
-              {/* Other Experts - Simpler Cards */}
+              {/* Other Experts Grid */}
               {otherExperts.length > 0 && (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                   {otherExperts.map((expert) => (
                     <div
                       key={expert.id}
                       onClick={() => handleExpertClick(expert)}
-                      className="p-5 rounded-2xl bg-surface-container-low hover:shadow-md transition-all cursor-pointer group"
+                      className="p-5 rounded-2xl bg-surface-container-low border border-outline-variant/10 hover:shadow-premium transition-all cursor-pointer group"
                     >
                       <div className="flex items-center gap-3 mb-3">
-                        <Avatar className="h-12 w-12 rounded-full border border-secondary/20">
+                        <Avatar className="h-12 w-12 rounded-full border border-primary/10">
                           <AvatarImage src={expert.avatar_url || ''} className="object-cover" />
-                          <AvatarFallback className="bg-secondary/10 text-secondary font-headline text-sm">
+                          <AvatarFallback className="bg-primary/8 text-primary font-headline text-sm">
                             {(expert.name || expert.username).charAt(0).toUpperCase()}
                           </AvatarFallback>
                         </Avatar>
                         <div className="flex-1 min-w-0">
-                          <h4 className="font-headline text-sm text-primary truncate group-hover:text-secondary transition-colors">
+                          <h4 className="font-headline text-sm text-on-surface truncate group-hover:text-primary transition-colors">
                             {expert.name || expert.username}
                           </h4>
                           {expert.topCuisines.length > 0 ? (
-                            <p className="text-secondary font-body text-xs">{expert.topCuisines[0]} specialist</p>
+                            <p className="text-primary font-body text-xs">{expert.topCuisines[0]} specialist</p>
                           ) : (
                             <p className="text-on-surface-variant font-body text-xs">@{expert.username}</p>
                           )}
@@ -589,12 +571,12 @@ export default function ExpertsPage() {
                               e.stopPropagation();
                               handleFollow(expert.id);
                             }}
-                            className="bg-secondary text-white rounded-full px-4 py-1.5 font-body text-[11px] font-medium hover:bg-secondary/90 transition-colors"
+                            className="bg-primary text-white rounded-full px-4 py-1.5 font-body text-[11px] font-semibold hover:opacity-90 transition-opacity"
                           >
                             Follow
                           </button>
                         ) : (
-                          <span className="text-on-surface-variant font-body text-[11px] bg-background rounded-full px-4 py-1.5 border border-secondary/20">
+                          <span className="text-on-surface-variant font-body text-[11px] bg-background rounded-full px-4 py-1.5 border border-outline-variant/20">
                             Following
                           </span>
                         )}
@@ -605,11 +587,11 @@ export default function ExpertsPage() {
               )}
             </div>
 
-            {/* Latest Expert Reviews Section */}
+            {/* Latest Expert Reviews */}
             {filteredExperts.some(e => e.restaurantCount > 0) && (
               <div className="mb-12">
-                <h2 className="font-headline text-xl text-primary mb-6">Latest Expert Reviews</h2>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <h2 className="font-headline text-xl text-on-surface mb-6">Latest Expert Reviews</h2>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   {filteredExperts
                     .filter(e => e.restaurantCount > 0 && e.avgRating > 0)
                     .slice(0, 4)
@@ -617,22 +599,22 @@ export default function ExpertsPage() {
                       <div
                         key={expert.id}
                         onClick={() => handleExpertClick(expert)}
-                        className="p-5 rounded-2xl bg-surface-container-low hover:shadow-md transition-all cursor-pointer"
+                        className="p-5 rounded-2xl bg-surface-container-low border border-outline-variant/10 hover:shadow-premium transition-all cursor-pointer"
                       >
                         <div className="flex items-center gap-3 mb-3">
                           <Avatar className="h-9 w-9 rounded-full">
                             <AvatarImage src={expert.avatar_url || ''} className="object-cover" />
-                            <AvatarFallback className="bg-secondary/10 text-secondary font-headline text-xs">
+                            <AvatarFallback className="bg-primary/8 text-primary font-headline text-xs">
                               {(expert.name || expert.username).charAt(0).toUpperCase()}
                             </AvatarFallback>
                           </Avatar>
                           <div className="flex-1 min-w-0">
-                            <h4 className="font-headline text-sm text-primary truncate">
+                            <h4 className="font-headline text-sm text-on-surface truncate">
                               {expert.name || expert.username}
                             </h4>
                           </div>
-                          <div className="flex items-center gap-1 bg-secondary/10 px-2.5 py-1 rounded-full">
-                            <span className="font-headline text-sm text-secondary">{expert.avgRating}</span>
+                          <div className="flex items-center gap-1 bg-primary/8 px-2.5 py-1 rounded-full">
+                            <span className="font-body font-bold text-sm text-primary">{expert.avgRating}</span>
                             <span className="text-on-surface-variant font-body text-[10px]">/10</span>
                           </div>
                         </div>
@@ -643,7 +625,7 @@ export default function ExpertsPage() {
                           }
                         </p>
                         {expert.bio && (
-                          <p className="font-body text-xs text-primary/60 italic line-clamp-2">
+                          <p className="font-headline text-xs text-on-surface/60 italic line-clamp-2">
                             "{expert.bio}"
                           </p>
                         )}

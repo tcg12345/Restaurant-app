@@ -27,25 +27,25 @@ export default function SearchTabsPage() {
   };
 
   const LoadingFallback = () => (
-    <div className="p-6 space-y-4">
+    <div className="p-5 space-y-4">
       {Array.from({ length: 3 }).map((_, i) => (
-        <div key={i} className="animate-pulse bg-surface-container h-20 rounded-xl" />
+        <div key={i} className="animate-pulse bg-surface-container h-20 rounded-2xl" />
       ))}
     </div>
   );
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Segmented Control - Stitch Style */}
-      <div className="sticky top-0 z-10 bg-background/80 backdrop-blur-xl px-6 py-4">
-        <div className="flex p-1 bg-surface-container rounded-xl">
+      {/* Segmented Control */}
+      <div className="sticky top-0 z-10 bg-background/90 backdrop-blur-xl px-5 py-4 border-b border-outline-variant/10">
+        <div className="flex p-1 bg-surface-container-low rounded-2xl border border-outline-variant/15">
           <button
             onClick={() => handleTabChange('global')}
             className={cn(
-              'flex-1 py-2.5 text-sm font-semibold rounded-lg transition-all duration-200',
+              'flex-1 py-2.5 text-sm font-body font-semibold rounded-xl transition-all duration-200',
               activeTab === 'global'
-                ? 'bg-surface-container-lowest shadow-sm text-primary'
-                : 'text-on-surface-variant hover:text-primary'
+                ? 'bg-white shadow-sm text-primary'
+                : 'text-on-surface-variant hover:text-on-surface'
             )}
           >
             Global
@@ -53,10 +53,10 @@ export default function SearchTabsPage() {
           <button
             onClick={() => handleTabChange('friends')}
             className={cn(
-              'flex-1 py-2.5 text-sm font-semibold rounded-lg transition-all duration-200',
+              'flex-1 py-2.5 text-sm font-body font-semibold rounded-xl transition-all duration-200',
               activeTab === 'friends'
-                ? 'bg-surface-container-lowest shadow-sm text-primary'
-                : 'text-on-surface-variant hover:text-primary'
+                ? 'bg-white shadow-sm text-primary'
+                : 'text-on-surface-variant hover:text-on-surface'
             )}
           >
             Social Circle

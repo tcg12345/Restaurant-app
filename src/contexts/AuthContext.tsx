@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { createContext, useContext, useState, useEffect, useRef, ReactNode } from 'react';
 import { Session, User } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 
@@ -78,9 +78,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isDemo, setIsDemo] = useState(false);
+  const isDemoRef = useRef(false);
 
   // Sign in as demo user (no credentials required)
   const signInAsDemo = () => {
+    isDemoRef.current = true;
     setSession(DEMO_SESSION);
     setUser(DEMO_USER);
     setProfile(DEMO_PROFILE);
@@ -116,6 +118,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     // Set up auth state listener FIRST
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (event, newSession) => {
+        // Don't let Supabase override demo user state
+        if (isDemoRef.current) return;
+
         setSession(newSession);
         setUser(newSession?.user ?? null);
 
@@ -134,6 +139,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     // THEN check for existing session
     supabase.auth.getSession().then(({ data: { session: currentSession } }) => {
+      // Don't let Supabase override demo user state
+      if (isDemoRef.current) return;
+
       setSession(currentSession);
       setUser(currentSession?.user ?? null);
 
@@ -155,6 +163,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const signOut = async () => {
     try {
       // Clear demo mode
+      isDemoRef.current = false;
       setIsDemo(false);
       localStorage.removeItem('grubby-demo-mode');
 
@@ -176,6 +185,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setSession(null);
       setUser(null);
       setProfile(null);
+      isDemoRef.current = false;
       setIsDemo(false);
       localStorage.removeItem('grubby-demo-mode');
 
