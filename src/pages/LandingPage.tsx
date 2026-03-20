@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { useNavigate } from 'react-router-dom';
 import { GrubbyLogo } from '@/components/GrubbyLogo';
+import { useAuth } from '@/contexts/AuthContext';
 
 const features = [
   { icon: 'search', title: 'Smart Discovery', description: 'AI-powered search with natural language queries and personalized picks.' },
@@ -16,6 +17,12 @@ const features = [
 
 export default function LandingPage() {
   const navigate = useNavigate();
+  const { signInAsDemo } = useAuth();
+
+  const handleSignIn = () => {
+    signInAsDemo();
+    navigate('/home');
+  };
 
   return (
     <div className="min-h-screen bg-background font-body selection:bg-secondary/30">
@@ -28,7 +35,7 @@ export default function LandingPage() {
             <Button
               variant="ghost"
               size="sm"
-              onClick={() => navigate('/auth')}
+              onClick={handleSignIn}
               className="text-secondary font-headline font-bold text-sm"
             >
               Sign In
@@ -48,14 +55,14 @@ export default function LandingPage() {
             <div className="space-y-3 pt-4">
               <Button
                 className="w-full bg-secondary text-secondary-foreground rounded-full py-6 font-headline font-bold text-base shadow-lg shadow-secondary/20"
-                onClick={() => navigate('/auth')}
+                onClick={handleSignIn}
               >
                 Get Started
               </Button>
               <Button
                 variant="outline"
                 className="w-full rounded-full py-6 font-headline font-bold text-base"
-                onClick={() => navigate('/auth')}
+                onClick={handleSignIn}
               >
                 Sign In
               </Button>
@@ -71,12 +78,12 @@ export default function LandingPage() {
           <div className="max-w-screen-xl mx-auto px-6 py-4 flex items-center justify-between">
             <GrubbyLogo size="lg" />
             <div className="flex items-center gap-4">
-              <Button variant="ghost" onClick={() => navigate('/auth')} className="font-headline font-bold">
+              <Button variant="ghost" onClick={handleSignIn} className="font-headline font-bold">
                 Sign In
               </Button>
               <Button
                 className="bg-secondary text-secondary-foreground rounded-full px-8 font-headline font-bold shadow-lg shadow-secondary/20"
-                onClick={() => navigate('/auth')}
+                onClick={handleSignIn}
               >
                 Get Started
               </Button>
@@ -103,7 +110,7 @@ export default function LandingPage() {
                   <Button
                     size="lg"
                     className="bg-secondary text-secondary-foreground rounded-full px-10 py-6 font-headline font-bold text-base shadow-lg shadow-secondary/20"
-                    onClick={() => navigate('/auth')}
+                    onClick={handleSignIn}
                   >
                     Start Discovering
                   </Button>
@@ -111,7 +118,7 @@ export default function LandingPage() {
                     variant="outline"
                     size="lg"
                     className="rounded-full px-10 py-6 font-headline font-bold text-base"
-                    onClick={() => navigate('/demo')}
+                    onClick={handleSignIn}
                   >
                     Try Demo
                   </Button>
@@ -192,7 +199,7 @@ export default function LandingPage() {
               <Button
                 size="lg"
                 className="bg-secondary text-secondary-foreground rounded-full px-10 py-6 font-headline font-bold text-base shadow-lg shadow-secondary/20"
-                onClick={() => navigate('/auth')}
+                onClick={handleSignIn}
               >
                 Get Started Free
               </Button>
@@ -200,7 +207,7 @@ export default function LandingPage() {
                 size="lg"
                 variant="outline"
                 className="rounded-full px-10 py-6 font-headline font-bold text-base border-white/30 text-white hover:bg-background/10"
-                onClick={() => navigate('/demo')}
+                onClick={handleSignIn}
               >
                 Try Demo
               </Button>

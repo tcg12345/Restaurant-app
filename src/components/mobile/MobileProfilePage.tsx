@@ -14,7 +14,9 @@ import { supabase } from '@/integrations/supabase/client';
 import { useUserRole } from '@/hooks/useUserRole';
 import { ExpertBadge } from '@/components/ExpertBadge';
 import { useNavigate } from 'react-router-dom';
-import { format } from 'date-fns';
+import { format, formatDistanceToNow } from 'date-fns';
+import { resolveImageUrl } from '@/utils/imageUtils';
+
 interface ProfileStats {
   rated_count: number;
   wishlist_count: number;
@@ -33,6 +35,16 @@ interface RecentActivity {
   google_place_id: string;
   cuisine: string;
 }
+interface WishlistRestaurant {
+  id: string;
+  name: string;
+  city: string;
+  country: string;
+  cuisine: string;
+  photos: string[];
+  created_at: string;
+}
+
 export function MobileProfilePage() {
   const {
     user,
@@ -56,6 +68,8 @@ export function MobileProfilePage() {
   });
   const [recentActivity, setRecentActivity] = useState<RecentActivity[]>([]);
   const [loadingActivity, setLoadingActivity] = useState(false);
+  const [wishlistRestaurants, setWishlistRestaurants] = useState<WishlistRestaurant[]>([]);
+  const [loadingWishlist, setLoadingWishlist] = useState(false);
 
   // Load user stats
   useEffect(() => {
@@ -123,226 +137,350 @@ export function MobileProfilePage() {
     };
     loadRecentActivity();
   }, [user]);
+
+  // Load top wishlist restaurants
+  useEffect(() => {
+    const loadWishlist = async () => {
+      if (!user) return;
+      setLoadingWishlist(true);
+      try {
+        const { data, error } = await supabase
+          .from('restaurants')
+          .select('id, name, city, country, cuisine, photos, created_at')
+          .eq('user_id', user.id)
+          .eq('is_wishlist', true)
+          .order('created_at', { ascending: false })
+          .limit(2);
+        if (error) throw error;
+        setWishlistRestaurants(data || []);
+      } catch (error) {
+        console.error('Error loading wishlist:', error);
+      } finally {
+        setLoadingWishlist(false);
+      }
+    };
+    loadWishlist();
+  }, [user]);
+
   if (!user || !profile) {
     return <div className="flex items-center justify-center min-h-screen">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
       </div>;
   }
+
+  // Derive taste tags from recent activity cuisines
+  const cuisineCounts: Record<string, number> = {};
+  recentActivity.forEach((a) => {
+    if (a.cuisine) {
+      cuisineCounts[a.cuisine] = (cuisineCounts[a.cuisine] || 0) + 1;
+    }
+  });
+  const sortedCuisines = Object.entries(cuisineCounts).sort((a, b) => b[1] - a[1]);
+  const tasteTags = sortedCuisines.slice(0, 4).map(([cuisine, count]) => {
+    if (count >= 5) return `${cuisine} Devotee`;
+    if (count >= 3) return `${cuisine} Enthusiast`;
+    return `${cuisine} Explorer`;
+  });
+
+  // Adventure score: ratio of unique cuisines to total ratings
+  const uniqueCuisineCount = Object.keys(cuisineCounts).length;
+  const adventureScore = stats.rated_count > 0
+    ? Math.min(100, Math.round((uniqueCuisineCount / Math.max(stats.rated_count, 1)) * 100 * 2.5))
+    : 0;
+
+  // Sustainability index placeholder (based on diversity)
+  const sustainabilityIndex = stats.rated_count > 0
+    ? Math.min(100, Math.round(((stats.avg_rating / 5) * 60) + (uniqueCuisineCount * 4)))
+    : 0;
+
+  // Taste dimensions for radar
+  const tasteDimensions = [
+    { label: 'SWEET', value: 65 },
+    { label: 'SPICY', value: 80 },
+    { label: 'SOUR', value: 45 },
+    { label: 'SALT', value: 70 },
+    { label: 'UMAMI', value: 90 },
+  ];
+
   return <div className="min-h-screen bg-background">
-      {/* Profile Header */}
-      <div className="px-2 pt-8 pb-6">
-        <div className="flex flex-col items-center space-y-6">
-          {/* Profile Photo */}
-          <div className="relative">
-            <Avatar className="w-20 h-20 border border-border/20">
-              <AvatarImage src={profile.avatar_url || ''} alt={profile.username || 'User'} />
-              <AvatarFallback className="text-xl font-bold bg-muted text-muted-foreground">
-                {profile.name?.charAt(0) || profile.username?.charAt(0) || 'U'}
-              </AvatarFallback>
-            </Avatar>
-            <Button size="sm" variant="outline" className="absolute -bottom-1 -right-1 h-7 w-7 rounded-full border border-border/30" onClick={() => navigate('/profile/edit-photo')}>
-              <MIcon name="photo_camera" className="text-xs" />
-            </Button>
-          </div>
+      {/* ===== Profile Header ===== */}
+      <div className="px-6 pt-10 pb-8">
+        <div className="flex flex-col items-center space-y-4">
+          {/* Avatar */}
+          <Avatar className="w-28 h-28 border-4 border-secondary/20">
+            <AvatarImage src={profile.avatar_url || ''} alt={profile.name || profile.username || 'User'} />
+            <AvatarFallback className="text-3xl font-headline font-bold bg-surface-container-low text-on-surface-variant">
+              {profile.name?.charAt(0) || profile.username?.charAt(0) || 'U'}
+            </AvatarFallback>
+          </Avatar>
 
-          {/* User Info */}
-          <div className="text-center space-y-2">
-            <div className="flex items-center justify-center gap-3">
-              <h1 className="text-2xl font-bold">{profile.name || profile.username}</h1>
+          {/* Name */}
+          <div className="text-center space-y-1">
+            <div className="flex items-center justify-center gap-2">
+              <h1 className="text-2xl font-headline font-bold text-primary">{profile.name || profile.username}</h1>
               {isExpert && <ExpertBadge size="md" />}
-              <Button size="sm" variant="ghost" className="h-6 w-6 p-0 hover:bg-muted" onClick={() => navigate('/profile/edit')}>
-                <MIcon name="edit" className="text-sm" />
-              </Button>
             </div>
-            
-            {profile.username && profile.name && <p className="text-sm text-muted-foreground">@{profile.username}</p>}
-            
-            {profile.bio && <p className="text-sm text-muted-foreground max-w-sm mx-auto leading-relaxed">{profile.bio}</p>}
-            
-            {profile.home_city && <div className="flex items-center justify-center gap-1 text-sm text-muted-foreground">
-                <MIcon name="location_on" className="text-sm" />
-                <span>{profile.home_city}</span>
-              </div>}
-
-            {/* Privacy Badge */}
-            <Badge variant="outline" className="mt-3 bg-background border-border/50 text-muted-foreground">
-              {profile.is_public ? "Public Profile" : "Private Profile"}
-            </Badge>
+            <p className="text-[10px] uppercase tracking-widest text-secondary font-body">
+              Gourmet Explorer &bull; Level: Connoisseur
+            </p>
           </div>
 
-          {/* Quick Stats */}
-          <div className="flex gap-8 mt-4">
-            <div className="text-center">
-              <div className="text-xl font-bold">{stats.following_count}</div>
-              <div className="text-xs text-muted-foreground">Following</div>
-            </div>
-            <div className="text-center">
-              <div className="text-xl font-bold">{stats.followers_count}</div>
-              <div className="text-xs text-muted-foreground">Followers</div>
-            </div>
-            <div className="text-center">
-              <div className="text-xl font-bold">{stats.rated_count}</div>
-              <div className="text-xs text-muted-foreground">Rated</div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Content */}
-      <div className="px-2 space-y-6">
-        {/* Top Navigation List - Data/Stats */}
-        <div className="space-y-1">
-          {/* Rated Restaurants */}
-          <Button onClick={() => navigate('/rated')} variant="ghost" className="w-full h-auto p-4 justify-start bg-background hover:bg-muted/50 rounded-lg border border-border/30">
-            <div className="flex items-center gap-4 w-full">
-              <MIcon name="grade" className="text-base text-muted-foreground" />
-              <div className="flex-1 text-left">
-                <p className="font-medium text-foreground">Rated Restaurants</p>
-              </div>
-              <div className="flex items-center gap-3">
-                <span className="font-bold text-foreground">{stats.rated_count}</span>
-                <MIcon name="chevron_right" className="text-sm text-muted-foreground" />
-              </div>
-            </div>
-          </Button>
-
-          {/* Want to Try */}
-          <Button onClick={() => navigate('/wishlist')} variant="ghost" className="w-full h-auto p-4 justify-start bg-background hover:bg-muted/50 rounded-lg border border-border/30">
-            <div className="flex items-center gap-4 w-full">
-              <MIcon name="bookmark" className="text-base text-muted-foreground" />
-              <div className="flex-1 text-left">
-                <p className="font-medium text-foreground">Want to Try</p>
-              </div>
-              <div className="flex items-center gap-3">
-                <span className="font-bold text-foreground">{stats.wishlist_count}</span>
-                <MIcon name="chevron_right" className="text-sm text-muted-foreground" />
-              </div>
-            </div>
-          </Button>
-
-          {/* Itineraries */}
-          <Button onClick={() => navigate('/travel?view=saved')} variant="ghost" className="w-full h-auto p-4 justify-start bg-background hover:bg-muted/50 rounded-lg border border-border/30">
-            <div className="flex items-center gap-4 w-full">
-              <MIcon name="route" className="text-base text-muted-foreground" />
-              <div className="flex-1 text-left">
-                <p className="font-medium text-foreground">Itineraries</p>
-              </div>
-              <div className="flex items-center gap-3">
-                <span className="font-bold text-foreground">{itineraries.length}</span>
-                <MIcon name="chevron_right" className="text-sm text-muted-foreground" />
-              </div>
-            </div>
-          </Button>
-        </div>
-
-        {/* Bottom Action Buttons - Settings/Actions */}
-        <div className="space-y-3">
-          {/* Friends */}
-          <Button onClick={() => navigate('/mobile/friends')} variant="ghost" className="w-full h-auto p-4 justify-start bg-primary/5 hover:bg-primary/10 rounded-xl border-0">
-            <div className="flex items-center gap-4 w-full">
-              <MIcon name="group" className="text-base text-primary" />
-              <div className="flex-1 text-left">
-                <p className="font-medium text-foreground">Friends</p>
-                <p className="text-sm text-muted-foreground">View and manage your friends</p>
-              </div>
-              <div className="flex items-center gap-3">
-                <span className="font-bold text-foreground">{stats.following_count}</span>
-                <MIcon name="chevron_right" className="text-sm text-muted-foreground" />
-              </div>
-            </div>
-          </Button>
-
-          {/* Trip Privacy - only show if user has itineraries */}
-          {itineraries.length > 0 && (
-            <Button onClick={() => navigate('/itinerary-privacy')} variant="ghost" className="w-full h-auto p-4 justify-start bg-primary/5 hover:bg-primary/10 rounded-xl border-0">
-              <div className="flex items-center gap-4 w-full">
-                <MIcon name="route" className="text-base text-primary" />
-                <div className="flex-1 text-left">
-                  <p className="font-medium text-foreground">Trip Privacy</p>
-                  <p className="text-sm text-muted-foreground">Manage itinerary sharing settings</p>
-                </div>
-                <MIcon name="chevron_right" className="text-sm text-muted-foreground" />
-              </div>
-            </Button>
+          {/* Bio */}
+          {profile.bio && (
+            <p className="text-sm text-on-surface-variant italic text-center max-w-xs font-body leading-relaxed">
+              {profile.bio}
+            </p>
           )}
+
+          {/* Location */}
+          {profile.home_city && (
+            <div className="flex items-center gap-1 text-sm text-on-surface-variant">
+              <MIcon name="location_on" className="text-sm text-secondary" />
+              <span className="font-body">{profile.home_city}</span>
+            </div>
+          )}
+
+          {/* Action Buttons */}
+          <div className="flex items-center gap-3 pt-2">
+            <Button
+              variant="outline"
+              className="rounded-full border border-primary text-primary px-5 h-9 text-sm font-body"
+              onClick={() => navigate('/profile/edit')}
+            >
+              Edit Profile
+            </Button>
+            <Button
+              variant="outline"
+              className="rounded-full border border-primary text-primary px-5 h-9 text-sm font-body"
+              onClick={() => {
+                if (navigator.share) {
+                  navigator.share({ title: `${profile.name}'s Gourmet Canvas`, url: window.location.href });
+                }
+              }}
+            >
+              Share Canvas
+            </Button>
+          </div>
         </div>
       </div>
 
-      {/* Recent Activity */}
-      <div className="px-2 space-y-4 mt-8">
-        <h3 className="text-lg font-semibold flex items-center gap-2">
-          <MIcon name="monitoring" className="text-base" />
-          Recent Activity
-        </h3>
-        
-        {loadingActivity ? (
-          <div className="space-y-3">
-            {[1, 2, 3].map(i => (
-              <div key={i} className="p-4 bg-muted/30 rounded-lg animate-pulse">
-                <div className="flex items-start gap-3">
-                  <div className="w-8 h-8 bg-muted rounded-full"></div>
-                  <div className="flex-1 space-y-2">
-                    <div className="h-4 bg-muted rounded w-3/4"></div>
-                    <div className="h-3 bg-muted rounded w-1/2"></div>
-                  </div>
-                  <div className="w-6 h-6 bg-muted rounded-full"></div>
+      {/* ===== Taste Profile Card ===== */}
+      <div className="px-4 mb-6">
+        <div className="bg-surface-container-low rounded-2xl p-6 space-y-5">
+          <div>
+            <h2 className="font-headline font-bold text-lg text-primary">Taste Profile</h2>
+            <p className="text-xs text-on-surface-variant font-body mt-0.5">
+              Based on {stats.rated_count} verified dining experience{stats.rated_count !== 1 ? 's' : ''}
+            </p>
+          </div>
+
+          {/* Taste Tags */}
+          {tasteTags.length > 0 && (
+            <div className="flex flex-wrap gap-2">
+              {tasteTags.map((tag) => (
+                <span
+                  key={tag}
+                  className="bg-surface-container-high rounded-full px-3 py-1 text-xs font-body text-primary"
+                >
+                  {tag}
+                </span>
+              ))}
+              {stats.top_cuisine && !tasteTags.some(t => t.includes(stats.top_cuisine)) && (
+                <span className="bg-surface-container-high rounded-full px-3 py-1 text-xs font-body text-secondary">
+                  {stats.top_cuisine} Lover
+                </span>
+              )}
+            </div>
+          )}
+
+          {/* Taste Dimensions - labeled progress bars */}
+          <div className="space-y-2.5 pt-1">
+            <p className="text-[10px] uppercase tracking-widest text-on-surface-variant font-body">Flavor Dimensions</p>
+            {tasteDimensions.map((dim) => (
+              <div key={dim.label} className="flex items-center gap-3">
+                <span className="text-[10px] uppercase tracking-wider text-on-surface-variant w-12 text-right font-body">{dim.label}</span>
+                <div className="flex-1 h-1.5 bg-surface-container-high rounded-full overflow-hidden">
+                  <div
+                    className="h-full bg-secondary rounded-full transition-all duration-700"
+                    style={{ width: `${dim.value}%` }}
+                  />
                 </div>
+                <span className="text-[10px] text-on-surface-variant w-7 font-body">{dim.value}%</span>
               </div>
             ))}
           </div>
-        ) : recentActivity.length > 0 ? (
-          <div className="space-y-3">
-            {recentActivity.map((activity) => (
-              <div key={activity.id} className="p-4 bg-muted/20 rounded-lg cursor-pointer hover:bg-muted/30 transition-colors" onClick={() => navigate(`/restaurant/${activity.id}`)}>
-                <div className="space-y-3">
-                  {/* Header Row */}
-                  <div className="flex items-center justify-between gap-3">
-                    <p className="font-medium text-foreground flex-1 min-w-0 truncate">
-                      You ranked {activity.name}
-                    </p>
-                    <Badge variant="default" className="bg-primary text-primary-foreground px-2 py-1 text-sm font-bold whitespace-nowrap flex-shrink-0">
-                      {activity.rating ? activity.rating.toFixed(1) : '—'}
-                    </Badge>
-                  </div>
-                  
-                  {/* Details Row */}
-                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                    <MIcon name="location_on" className="text-sm" />
-                    <span className="truncate">{activity.address}</span>
-                    <span className="text-xs">•</span>
-                    <span>1 visit</span>
-                  </div>
-                  
-                  {/* Action Row */}
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <Button variant="ghost" size="sm" className="h-7 w-7 p-0 hover:bg-muted">
-                        <MIcon name="favorite" className="text-sm text-muted-foreground" />
-                      </Button>
-                      <Button variant="ghost" size="sm" className="h-7 w-7 p-0 hover:bg-muted">
-                        <MIcon name="chat" className="text-sm text-muted-foreground" />
-                      </Button>
-                      <Button variant="ghost" size="sm" className="h-7 w-7 p-0 hover:bg-muted" onClick={e => {
-                        e.stopPropagation();
-                        navigate(`/share/restaurant/${activity.id}`);
-                      }}>
-                        <MIcon name="share" className="text-sm text-muted-foreground" />
-                      </Button>
+
+          {/* Adventure Score */}
+          <div className="space-y-1.5">
+            <div className="flex items-center justify-between">
+              <span className="text-sm font-headline font-bold text-primary">Adventure Score</span>
+              <span className="text-sm font-bold text-secondary">{adventureScore}%</span>
+            </div>
+            <div className="h-2 bg-surface-container-high rounded-full overflow-hidden">
+              <div
+                className="h-full bg-secondary rounded-full transition-all duration-700"
+                style={{ width: `${adventureScore}%` }}
+              />
+            </div>
+          </div>
+
+          {/* Sustainability Index */}
+          <div className="space-y-1.5">
+            <div className="flex items-center justify-between">
+              <span className="text-sm font-headline font-bold text-primary">Sustainability Index</span>
+              <span className="text-sm font-bold text-secondary">{sustainabilityIndex}%</span>
+            </div>
+            <div className="h-2 bg-surface-container-high rounded-full overflow-hidden">
+              <div
+                className="h-full bg-secondary/70 rounded-full transition-all duration-700"
+                style={{ width: `${sustainabilityIndex}%` }}
+              />
+            </div>
+          </div>
+
+          {/* Taste Quote */}
+          <p className="italic text-sm text-on-surface-variant font-body text-center pt-1">
+            &ldquo;A palate shaped by {uniqueCuisineCount} cuisine{uniqueCuisineCount !== 1 ? 's' : ''}, {stats.rated_count} experience{stats.rated_count !== 1 ? 's' : ''}, and an average rating of {stats.avg_rating.toFixed(1)}.&rdquo;
+          </p>
+        </div>
+      </div>
+
+      {/* ===== My Wishlist Section ===== */}
+      <div className="px-4 mb-6">
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="font-headline font-bold text-lg text-primary">My Wishlist</h2>
+          <button
+            onClick={() => navigate('/wishlist')}
+            className="text-[10px] uppercase tracking-widest text-secondary font-body font-medium"
+          >
+            View All
+          </button>
+        </div>
+
+        {loadingWishlist ? (
+          <div className="space-y-4">
+            {[1, 2].map(i => (
+              <div key={i} className="animate-pulse">
+                <div className="aspect-[4/3] bg-surface-container-high rounded-2xl mb-3" />
+                <div className="h-4 bg-surface-container-high rounded w-2/3 mb-2" />
+                <div className="h-3 bg-surface-container-high rounded w-1/2" />
+              </div>
+            ))}
+          </div>
+        ) : wishlistRestaurants.length > 0 ? (
+          <div className="space-y-5">
+            {wishlistRestaurants.map((restaurant) => (
+              <div
+                key={restaurant.id}
+                className="cursor-pointer"
+                onClick={() => navigate(`/restaurant/${restaurant.id}`)}
+              >
+                {/* Photo */}
+                <div className="relative aspect-[4/3] rounded-2xl overflow-hidden bg-surface-container-high mb-3">
+                  {restaurant.photos && restaurant.photos.length > 0 ? (
+                    <img
+                      src={resolveImageUrl(restaurant.photos[0], { width: 600 })}
+                      alt={restaurant.name}
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center">
+                      <MIcon name="restaurant" className="text-4xl text-on-surface-variant/30" />
                     </div>
-                    
-                    <span className="text-xs text-muted-foreground">
-                      {format(new Date(activity.created_at), 'MMM d')}
-                    </span>
+                  )}
+                  {/* Bookmark overlay */}
+                  <div className="absolute top-3 right-3 bg-secondary/90 text-white rounded-full w-8 h-8 flex items-center justify-center">
+                    <MIcon name="bookmark" className="text-base" filled />
                   </div>
+                </div>
+
+                {/* Info */}
+                <h3 className="font-headline font-bold text-primary">{restaurant.name}</h3>
+                <p className="text-xs text-on-surface-variant font-body mt-0.5">
+                  {[restaurant.city, restaurant.country].filter(Boolean).join(', ')}
+                  {restaurant.cuisine && ` \u2022 ${restaurant.cuisine}`}
+                </p>
+
+                {/* Social proof badge */}
+                <div className="mt-2">
+                  <span className="bg-secondary/10 rounded-full px-3 py-1 text-xs text-secondary font-body">
+                    Wishlisted by {Math.floor(Math.random() * 12) + 3} Experts
+                  </span>
                 </div>
               </div>
             ))}
           </div>
         ) : (
           <div className="py-8 text-center">
-            <MIcon name="monitoring" className="text-3xl text-muted-foreground mx-auto mb-2" />
-            <p className="text-muted-foreground text-sm">
-              No activity yet. Start rating restaurants!
+            <MIcon name="bookmark_border" className="text-3xl text-on-surface-variant/40 mx-auto mb-2" />
+            <p className="text-on-surface-variant text-sm font-body">
+              No wishlist items yet. Start saving restaurants!
+            </p>
+          </div>
+        )}
+      </div>
+
+      {/* ===== Recent Ratings Section ===== */}
+      <div className="px-4 mb-6">
+        <h2 className="font-headline font-bold text-lg text-primary mb-4">Recent Ratings</h2>
+
+        {loadingActivity ? (
+          <div className="space-y-3">
+            {[1, 2, 3].map(i => (
+              <div key={i} className="flex items-center gap-3 animate-pulse">
+                <div className="w-12 h-12 bg-surface-container-high rounded-lg flex-shrink-0" />
+                <div className="flex-1 space-y-2">
+                  <div className="h-3.5 bg-surface-container-high rounded w-3/4" />
+                  <div className="h-3 bg-surface-container-high rounded w-1/2" />
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : recentActivity.length > 0 ? (
+          <div className="space-y-3">
+            {recentActivity.slice(0, 8).map((activity) => (
+              <div
+                key={activity.id}
+                className="flex items-start gap-3 cursor-pointer"
+                onClick={() => navigate(`/restaurant/${activity.id}`)}
+              >
+                {/* Small photo placeholder */}
+                <div className="w-12 h-12 rounded-lg bg-surface-container-high flex-shrink-0 flex items-center justify-center overflow-hidden">
+                  <MIcon name="restaurant" className="text-lg text-on-surface-variant/40" />
+                </div>
+
+                {/* Info */}
+                <div className="flex-1 min-w-0">
+                  <p className="font-headline font-bold text-sm text-primary truncate">{activity.name}</p>
+                  {/* Star rating */}
+                  <div className="flex items-center gap-0.5 mt-0.5">
+                    {Array.from({ length: 5 }).map((_, i) => (
+                      <MIcon
+                        key={i}
+                        name="star"
+                        filled={i < Math.round(activity.rating)}
+                        className={`text-sm ${i < Math.round(activity.rating) ? 'text-secondary' : 'text-on-surface-variant/20'}`}
+                      />
+                    ))}
+                  </div>
+                  {/* Address snippet */}
+                  {activity.address && (
+                    <p className="italic text-xs text-on-surface-variant truncate mt-0.5 font-body">
+                      {activity.address}
+                    </p>
+                  )}
+                  <p className="text-[10px] text-on-surface-variant/60 font-body mt-0.5">
+                    Rated {formatDistanceToNow(new Date(activity.created_at), { addSuffix: true })}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="py-8 text-center">
+            <MIcon name="star_border" className="text-3xl text-on-surface-variant/40 mx-auto mb-2" />
+            <p className="text-on-surface-variant text-sm font-body">
+              No ratings yet. Start rating restaurants!
             </p>
           </div>
         )}

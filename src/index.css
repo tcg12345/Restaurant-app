@@ -456,6 +456,56 @@
   from { opacity: 0; transform: scale(0.95); }
   to { opacity: 1; transform: scale(1); }
 }
+
+/* Bottom sheet animations */
+@keyframes bottomSheetUp {
+  from {
+    transform: translateY(100%);
+    opacity: 0.5;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+@keyframes bottomSheetDown {
+  from {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+}
+@keyframes overlayFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes overlayFadeOut {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+@keyframes dialogScaleIn {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.92);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+@keyframes dialogScaleOut {
+  from {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.92);
+  }
+}
 @keyframes fade-in-up {
   from { opacity: 0; transform: translateY(12px); }
   to { opacity: 1; transform: translateY(0); }
@@ -679,4 +729,90 @@
     display: flex; align-items: center; justify-content: center;
   }
   .icon-circle:hover { transform: translateY(-1px); }
+
+  /* ── Bottom Sheet ── */
+  .bottom-sheet-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(4px);
+    z-index: 50;
+    animation: overlayFadeIn 0.25s ease-out forwards;
+  }
+  .bottom-sheet-overlay.closing {
+    animation: overlayFadeOut 0.2s ease-in forwards;
+  }
+  .bottom-sheet {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 51;
+    background: hsl(var(--card));
+    border-radius: 1.25rem 1.25rem 0 0;
+    box-shadow: 0 -8px 32px rgba(25, 40, 48, 0.15);
+    max-height: 90vh;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+    animation: bottomSheetUp 0.35s cubic-bezier(0.32, 0.72, 0, 1) forwards;
+  }
+  .bottom-sheet.closing {
+    animation: bottomSheetDown 0.25s cubic-bezier(0.32, 0.72, 0, 1) forwards;
+  }
+  .bottom-sheet-handle {
+    width: 36px;
+    height: 4px;
+    border-radius: 2px;
+    background: hsl(var(--border));
+    margin: 8px auto 4px;
+  }
+
+  /* ── Dialog animations ── */
+  .dialog-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(6px);
+    z-index: 50;
+    animation: overlayFadeIn 0.2s ease-out forwards;
+  }
+  .dialog-content {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    z-index: 51;
+    width: 90%;
+    max-width: 420px;
+    max-height: 85vh;
+    overflow-y: auto;
+    background: hsl(var(--card));
+    border-radius: 1.25rem;
+    box-shadow: 0 20px 60px -12px rgba(25, 40, 48, 0.25);
+    animation: dialogScaleIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+  .dialog-content.closing {
+    animation: dialogScaleOut 0.2s ease-in forwards;
+  }
+
+  /* ── Popup smooth transitions ── */
+  .popup-enter {
+    animation: scaleIn 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+  .popup-exit {
+    animation: scaleIn 0.15s cubic-bezier(0.16, 1, 0.3, 1) reverse forwards;
+  }
+}
+
+/* ── iOS Safe Area Enhancements ── */
+@supports (padding: env(safe-area-inset-top)) {
+  .app-header {
+    padding-top: calc(env(safe-area-inset-top) + 8px);
+  }
+  .app-nav-bottom {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  .modal-bottom-safe {
+    padding-bottom: calc(env(safe-area-inset-bottom) + 16px);
+  }
 }

@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { Check, Sliders, Trash2, ArrowUpDown, ListPlus } from 'lucide-react';
+// Lucide icons replaced with Material Symbols
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { RestaurantCard } from '@/components/RestaurantCard';
@@ -677,7 +677,7 @@ const preloadImages = async () => {
                   }`}
                   data-testid="delete-mode-toggle"
                 >
-                  <Trash2 className="h-3 w-3 mr-1 inline" />
+                  <MIcon name="delete" className="text-xs mr-1 inline" />
                   {isDeleteMode ? 'Done' : 'Edit'}
                 </button>
               </div>
@@ -690,7 +690,7 @@ const preloadImages = async () => {
                   size="sm"
                   className="h-9 px-3 text-muted-foreground hover:text-foreground hover:bg-muted/50 rounded-full text-sm font-medium transition-all duration-200"
                 >
-                  <ArrowUpDown className="h-4 w-4 mr-2" />
+                  <MIcon name="swap_vert" className="text-sm mr-2" />
                   Reorder
                 </Button>
                 <Button
@@ -813,7 +813,7 @@ const preloadImages = async () => {
                 size="sm"
                 className="h-9 px-3 text-muted-foreground hover:text-foreground hover:bg-muted/50 rounded-full text-sm font-medium transition-all duration-200"
               >
-                <ArrowUpDown className="h-4 w-4 mr-2" />
+                <MIcon name="swap_vert" className="text-sm mr-2" />
                 Reorder
               </Button>
               <Button
@@ -936,7 +936,7 @@ const preloadImages = async () => {
                 }`}
                 data-testid="delete-mode-toggle"
               >
-                <Trash2 className="h-4 w-4" />
+                <MIcon name="delete" className="text-sm" />
               </button>
             </div>
           </div>
@@ -1106,7 +1106,7 @@ const preloadImages = async () => {
                        sortBy === 'michelin-high' ? 'Most Stars' :
                        'Least Stars'}
                     </span>
-                    <Sliders className="ml-2 h-4 w-4 flex-shrink-0" />
+                    <MIcon name="tune" className="ml-2 text-sm flex-shrink-0" />
                   </Button>
                 </PopoverTrigger>
                 <PopoverContent className="w-80 p-0">
@@ -1295,7 +1295,7 @@ const preloadImages = async () => {
               onClick={handleDeleteFromListOnly}
               className="w-full justify-start h-12"
             >
-              <ListPlus className="h-4 w-4 mr-2" />
+              <MIcon name="playlist_add" className="text-sm mr-2" />
               <div className="flex flex-col items-start">
                 <span className="font-medium">Remove from list only</span>
                 <span className="text-xs text-muted-foreground">Keeps in your main collection</span>
@@ -1306,7 +1306,7 @@ const preloadImages = async () => {
               onClick={handleDeleteFromBoth}
               className="w-full justify-start h-12"
             >
-              <Trash2 className="h-4 w-4 mr-2" />
+              <MIcon name="delete" className="text-sm mr-2" />
               <div className="flex flex-col items-start">
                 <span className="font-medium">Delete completely</span>
                 <span className="text-xs text-muted-foreground">Removes from all lists</span>

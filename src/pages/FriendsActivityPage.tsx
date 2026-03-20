@@ -687,7 +687,7 @@ export function FriendsActivityPage() {
       <div className="md:hidden grid grid-cols-2 gap-3 mb-4">
         <div className="bg-card rounded-xl p-4 border shadow-sm">
           <div className="flex items-center gap-3">
-            <div className="p-2 bg-secondary/50/10 rounded-lg">
+            <div className="p-2 bg-secondary/10 rounded-lg">
               <MIcon name="grade" className="text-sm text-secondary" />
             </div>
             <div>
@@ -699,7 +699,7 @@ export function FriendsActivityPage() {
         
         <div className="bg-card rounded-xl p-4 border shadow-sm">
           <div className="flex items-center gap-3">
-            <div className="p-2 bg-destructive/50/10 rounded-lg">
+            <div className="p-2 bg-destructive/10 rounded-lg">
               <MIcon name="favorite" className="text-sm text-destructive" />
             </div>
             <div>
@@ -711,7 +711,7 @@ export function FriendsActivityPage() {
 
         <div className="bg-card rounded-xl p-4 border shadow-sm">
           <div className="flex items-center gap-3">
-            <div className="p-2 bg-secondary/50/10 rounded-lg">
+            <div className="p-2 bg-secondary/10 rounded-lg">
               <MIcon name="group" className="text-sm text-secondary" />
             </div>
             <div>
@@ -737,7 +737,7 @@ export function FriendsActivityPage() {
       <div className="hidden md:grid grid-cols-4 gap-4 mb-6">
         <div className="bg-card rounded-xl p-5 border shadow-sm">
           <div className="flex items-center gap-3">
-            <div className="p-3 bg-secondary/50/10 rounded-lg">
+            <div className="p-3 bg-secondary/10 rounded-lg">
               <MIcon name="grade" className="text-base text-secondary" />
             </div>
             <div>
@@ -749,7 +749,7 @@ export function FriendsActivityPage() {
         
         <div className="bg-card rounded-xl p-5 border shadow-sm">
           <div className="flex items-center gap-3">
-            <div className="p-3 bg-destructive/50/10 rounded-lg">
+            <div className="p-3 bg-destructive/10 rounded-lg">
               <MIcon name="favorite" className="text-base text-destructive" />
             </div>
             <div>
@@ -761,7 +761,7 @@ export function FriendsActivityPage() {
 
         <div className="bg-card rounded-xl p-5 border shadow-sm">
           <div className="flex items-center gap-3">
-            <div className="p-3 bg-secondary/50/10 rounded-lg">
+            <div className="p-3 bg-secondary/10 rounded-lg">
               <MIcon name="group" className="text-base text-secondary" />
             </div>
             <div>
@@ -1172,7 +1172,7 @@ export function FriendsActivityPage() {
             </Card>
           </div> : <>
             <div className="space-y-3">
-              {filteredRestaurants.map(restaurant => <div key={restaurant.id} className="bg-[rgb(24,24,27)] rounded-2xl border border-white/8 shadow-[0_8px_30px_rgb(0,0,0,0.12)] hover:shadow-[0_12px_40px_rgb(0,0,0,0.18)] transition-all duration-300 cursor-pointer mx-1 mb-4 animate-fade-in hover-scale overflow-hidden" onClick={() => {
+              {filteredRestaurants.map(restaurant => <div key={restaurant.id} className="bg-card rounded-2xl border border-border/30 shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer mx-1 mb-4 animate-fade-in-up overflow-hidden" onClick={() => {
             // Preserve current search parameters for when user returns
             const currentSearch = searchParams.toString();
             const returnUrl = currentSearch ? `/search/friends?${currentSearch}` : '/search/friends';
@@ -1194,9 +1194,9 @@ export function FriendsActivityPage() {
                           <span className="text-sm text-muted-foreground font-medium">{restaurant.friend.name}</span>
                         </div>
                         <div className={`px-2.5 py-1 rounded-full text-xs font-semibold ${
-                          restaurant.is_wishlist 
-                            ? 'bg-secondary/50/15 text-rose-400 border border-rose-500/20' 
-                            : 'bg-secondary/50/15 text-secondary border border-emerald-500/20'
+                          restaurant.is_wishlist
+                            ? 'bg-destructive/10 text-destructive border border-destructive/20'
+                            : 'bg-secondary/10 text-secondary border border-secondary/20'
                         }`}>
                           {restaurant.is_wishlist ? 'Want' : 'Been'}
                         </div>

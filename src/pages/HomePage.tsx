@@ -1,24 +1,7 @@
-import { useState, useEffect } from 'react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Progress } from '@/components/ui/progress';
-import {
-  Star,
-  MapPin,
-  Heart,
-  Plus,
-  TrendingUp,
-  Award,
-  ChefHat,
-  Users,
-  Clock,
-  Utensils,
-  ArrowRight,
-  Search,
-} from 'lucide-react';
+import { useState, useMemo, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useRestaurants } from '@/contexts/RestaurantContext';
+import { useFriendProfiles } from '@/contexts/FriendProfilesContext';
 import { useNavigate } from 'react-router-dom';
 
 interface HomePageProps {
@@ -30,61 +13,53 @@ export default function HomePage({ onNavigate, onOpenAddRestaurant }: HomePagePr
   const { user, profile } = useAuth();
   const { restaurants } = useRestaurants();
   const navigate = useNavigate();
-  const [rotatingCardIndex, setRotatingCardIndex] = useState(0);
-
-  const ratedRestaurants = restaurants.filter(r => !r.isWishlist);
-  const wishlistRestaurants = restaurants.filter(r => r.isWishlist);
-  const michelinRestaurants = ratedRestaurants.filter(r => r.michelinStars);
-
-  const averageRating = ratedRestaurants.length > 0
-    ? ratedRestaurants.reduce((sum, r) => sum + (r.rating || 0), 0) / ratedRestaurants.length
-    : 0;
-
-  const recentRestaurants = [...ratedRestaurants]
-    .sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime())
-    .slice(0, 3);
-
-  const highestRatedRestaurants = [...ratedRestaurants]
-    .sort((a, b) => (b.rating || 0) - (a.rating || 0))
-    .slice(0, 3);
-
-  const randomRestaurants = [...ratedRestaurants]
-    .sort(() => Math.random() - 0.5)
-    .slice(0, 3);
-
-  const recentWishlistRestaurants = [...wishlistRestaurants]
-    .sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime())
-    .slice(0, 3);
-
-  const cuisineStats = ratedRestaurants.reduce((acc, r) => {
-    acc[r.cuisine] = (acc[r.cuisine] || 0) + 1;
-    return acc;
-  }, {} as Record<string, number>);
-
-  const topCuisines = Object.entries(cuisineStats)
-    .sort(([,a], [,b]) => b - a)
-    .slice(0, 3);
-
-  const topCuisineRestaurants = topCuisines.length > 0
-    ? ratedRestaurants.filter(r => r.cuisine === topCuisines[0][0]).slice(0, 3)
-    : [];
-
-  const cardRotationData = [
-    { title: "Recently Rated", description: "Your latest dining experiences", restaurants: recentRestaurants, icon: 'schedule' },
-    { title: "Highest Rated", description: "Your top-rated restaurants", restaurants: highestRatedRestaurants, icon: 'star' },
-    { title: "Random Picks", description: "A random selection from your collection", restaurants: randomRestaurants, icon: 'trending_up' },
-    { title: "Recently Added", description: "Latest additions to your wishlist", restaurants: recentWishlistRestaurants, icon: 'favorite' },
-    { title: "Top Cuisine", description: `From your favorite ${topCuisines.length > 0 ? topCuisines[0][0] : 'cuisine'}`, restaurants: topCuisineRestaurants, icon: 'restaurant' },
-  ];
+  const [activeFilter, setActiveFilter] = useState<'friends' | 'near'>('friends');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [hasTasteProfile, setHasTasteProfile] = useState(true);
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      setRotatingCardIndex((prev) => (prev + 1) % cardRotationData.length);
-    }, 5000);
-    return () => clearInterval(interval);
-  }, [cardRotationData.length]);
+    try {
+      const saved = localStorage.getItem('taste_profile');
+      setHasTasteProfile(!!saved);
+    } catch {
+      setHasTasteProfile(false);
+    }
+  }, []);
 
-  const currentCardData = cardRotationData[rotatingCardIndex];
+  const { profilesCache: friendProfiles } = useFriendProfiles();
+
+  const ratedRestaurants = restaurants.filter(r => !r.isWishlist);
+
+  // Featured restaurant: highest rated, fallback to most recent
+  const featuredRestaurant = useMemo(() => {
+    if (ratedRestaurants.length === 0) return null;
+    const sorted = [...ratedRestaurants].sort((a, b) => (b.rating || 0) - (a.rating || 0));
+    return sorted[0];
+  }, [ratedRestaurants]);
+
+  // Near you restaurants (all rated, shown as discovery)
+  const nearYouRestaurants = useMemo(() => {
+    return [...ratedRestaurants]
+      .sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime())
+      .slice(0, 6);
+  }, [ratedRestaurants]);
+
+  // Top rated friend data
+  const topFriend = useMemo(() => {
+    const entries = Array.from(friendProfiles.entries());
+    if (entries.length === 0) return null;
+    // Pick the friend with the highest avg rating
+    const sorted = entries.sort(([, a], [, b]) => (b.avg_rating || 0) - (a.avg_rating || 0));
+    const [, friendProfile] = sorted[0];
+    const topRestaurant = friendProfile.recent_restaurants?.[0];
+    return { profile: friendProfile, restaurant: topRestaurant };
+  }, [friendProfiles]);
+
+  // Friend activity summary
+  const friendActivityCount = friendProfiles.size;
+  const friendAvatars = useMemo(() => {
+    return Array.from(friendProfiles.values()).slice(0, 3);
+  }, [friendProfiles]);
 
   const getGreeting = () => {
     const hour = new Date().getHours();
@@ -106,408 +81,313 @@ export default function HomePage({ onNavigate, onOpenAddRestaurant }: HomePagePr
     return 'Food Lover';
   };
 
-  const stats = [
-    { title: 'Rated', value: ratedRestaurants.length, icon: 'restaurant' },
-    { title: 'Wishlist', value: wishlistRestaurants.length, icon: 'favorite' },
-    { title: 'Michelin', value: michelinRestaurants.reduce((sum, r) => sum + (r.michelinStars || 0), 0), icon: 'stars' },
-    { title: 'Avg Rating', value: averageRating.toFixed(1), icon: 'grade' },
-  ];
-
   return (
-    <>
-      {/* Mobile Layout - Editorial Design */}
-      <div className="md:hidden min-h-screen bg-background pb-24">
-        {/* Hero Greeting */}
-        <section className="px-6 pt-6 mb-8">
-          <div className="relative w-full aspect-[4/3] rounded-xl overflow-hidden group cursor-pointer shadow-premium">
-            <div className="absolute inset-0 bg-gradient-to-t from-primary/90 via-primary/30 to-transparent z-10"></div>
-            <div className="absolute inset-0 bg-primary/20"></div>
-            <div className="absolute bottom-6 left-6 right-6 z-20">
-              <p className="text-white/70 font-label text-[10px] font-bold uppercase tracking-widest mb-2">
-                Daily Recommendation
-              </p>
-              <h2 className="text-white font-headline font-bold text-3xl mb-2 leading-tight">
-                {getGreeting()}, {getFirstName()}
-              </h2>
-              <p className="text-white/80 text-sm font-body">
-                Your culinary journey continues
-              </p>
-            </div>
-            <div className="absolute top-4 left-4 z-20">
-              <Badge className="bg-secondary/90 text-secondary-foreground border-0">
-                <span className="material-symbols-outlined text-xs mr-1" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
-                {ratedRestaurants.length} Rated
-              </Badge>
-            </div>
-          </div>
-        </section>
+    <div className="min-h-screen bg-background pb-28">
+      <div className="max-w-2xl mx-auto px-5 pt-5">
 
-        {/* Stats Row */}
-        <section className="px-6 mb-8">
-          <div className="grid grid-cols-4 gap-3">
-            {stats.map((stat, index) => (
-              <div key={index} className="bg-surface-container-low rounded-xl p-3 text-center">
-                <span className="material-symbols-outlined text-secondary text-lg mb-1 block">
-                  {stat.icon}
-                </span>
-                <div className="text-lg font-headline font-bold text-primary">{stat.value}</div>
-                <div className="text-[10px] font-label font-medium uppercase tracking-wider text-on-surface-variant">{stat.title}</div>
+        {/* Greeting */}
+        <p className="text-sm text-on-surface-variant font-body mb-3">
+          {getGreeting()}, {getFirstName()}
+        </p>
+
+        {/* Search Bar */}
+        <div className="mb-4">
+          <div className="relative">
+            <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant text-xl">
+              search
+            </span>
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search cuisines, chefs, or hidden gems..."
+              className="w-full pl-12 pr-4 py-3 bg-surface-container-high rounded-full text-sm font-body text-on-surface placeholder:text-on-surface-variant/60 outline-none focus:ring-2 focus:ring-primary/20 transition-all"
+            />
+          </div>
+        </div>
+
+        {/* Filter Pills */}
+        <div className="flex gap-2 mb-8">
+          <button
+            onClick={() => setActiveFilter('friends')}
+            className={`px-4 py-2 rounded-full text-sm font-body font-medium transition-colors ${
+              activeFilter === 'friends'
+                ? 'bg-primary text-white'
+                : 'bg-surface-container-high text-on-surface-variant'
+            }`}
+          >
+            Friends' Favorites
+          </button>
+          <button
+            onClick={() => setActiveFilter('near')}
+            className={`px-4 py-2 rounded-full text-sm font-body font-medium transition-colors ${
+              activeFilter === 'near'
+                ? 'bg-primary text-white'
+                : 'bg-surface-container-high text-on-surface-variant'
+            }`}
+          >
+            Near You
+          </button>
+        </div>
+
+        {/* Taste Profile Quiz Prompt */}
+        {!hasTasteProfile && (
+          <section className="mb-6">
+            <div
+              className="bg-surface-container-low rounded-2xl p-4 flex items-center gap-4 cursor-pointer group border border-secondary/20"
+              onClick={() => navigate('/taste-profile')}
+            >
+              <div className="w-12 h-12 rounded-full bg-secondary/15 flex items-center justify-center flex-shrink-0">
+                <span className="material-symbols-outlined text-secondary text-2xl">auto_awesome</span>
               </div>
-            ))}
-          </div>
-        </section>
-
-        {/* Quick Actions - Editorial Grid */}
-        <section className="px-6 mb-10">
-          <div className="grid grid-cols-3 gap-3">
-            <button
-              className="bg-secondary text-secondary-foreground py-4 px-3 rounded-xl flex flex-col items-center gap-2 hover:opacity-90 active:scale-95 transition-all"
-              onClick={() => onNavigate('search')}
-            >
-              <span className="material-symbols-outlined text-xl">search</span>
-              <span className="text-[10px] font-bold uppercase tracking-wider">Discover</span>
-            </button>
-            <button
-              className="bg-primary text-primary-foreground py-4 px-3 rounded-xl flex flex-col items-center gap-2 hover:opacity-90 active:scale-95 transition-all"
-              onClick={onOpenAddRestaurant}
-            >
-              <span className="material-symbols-outlined text-xl">add</span>
-              <span className="text-[10px] font-bold uppercase tracking-wider">Rate</span>
-            </button>
-            <button
-              className="bg-surface-container-high text-primary py-4 px-3 rounded-xl flex flex-col items-center gap-2 hover:bg-surface-container-highest active:scale-95 transition-all"
-              onClick={() => navigate('/map')}
-            >
-              <span className="material-symbols-outlined text-xl">map</span>
-              <span className="text-[10px] font-bold uppercase tracking-wider">Map</span>
-            </button>
-          </div>
-        </section>
-
-        {/* Featured Section - Rotating Card */}
-        <section className="px-6 mb-10">
-          <div className="flex items-end justify-between mb-6">
-            <div>
-              <h3 className="font-headline text-2xl font-bold tracking-tight text-primary">Featured</h3>
-              <p className="text-on-surface-variant text-sm">{currentCardData.description}</p>
+              <div className="flex-1 min-w-0">
+                <h4 className="font-headline font-bold text-sm text-primary">Discover Your Palate</h4>
+                <p className="text-xs text-on-surface-variant font-body mt-0.5">
+                  Take a quick taste quiz to get personalized recommendations
+                </p>
+              </div>
+              <span className="material-symbols-outlined text-secondary text-lg group-hover:translate-x-1 transition-transform">
+                arrow_forward
+              </span>
             </div>
-            <div className="flex gap-1">
-              {cardRotationData.map((_, index) => (
-                <div
-                  key={index}
-                  className={`h-1 rounded-full transition-all duration-300 ${
-                    index === rotatingCardIndex ? 'w-8 bg-secondary' : 'w-2 bg-outline-variant/40'
-                  }`}
+          </section>
+        )}
+
+        {/* Featured Restaurant Hero Card */}
+        {featuredRestaurant && (
+          <section className="mb-8">
+            <div
+              className="relative w-full aspect-[4/3] rounded-2xl overflow-hidden cursor-pointer group"
+              onClick={() => navigate(`/restaurant/${featuredRestaurant.id}`)}
+            >
+              {featuredRestaurant.photos?.[0] ? (
+                <img
+                  src={featuredRestaurant.photos[0]}
+                  alt={featuredRestaurant.name}
+                  className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                 />
-              ))}
-            </div>
-          </div>
+              ) : (
+                <div className="absolute inset-0 bg-primary/20" />
+              )}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
 
-          {currentCardData.restaurants.length > 0 ? (
-            <div className="space-y-4">
-              {currentCardData.restaurants.map((restaurant) => (
-                <div key={restaurant.id} className="bg-surface-container-low rounded-xl p-4 flex items-center gap-4 group cursor-pointer hover:bg-surface-container transition-colors">
-                  <div className="w-14 h-14 bg-primary-container rounded-xl flex items-center justify-center flex-shrink-0">
-                    <span className="material-symbols-outlined text-on-primary-container text-xl">restaurant</span>
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <h4 className="font-headline font-bold text-sm text-primary truncate">{restaurant.name}</h4>
-                    <p className="text-xs text-on-surface-variant mt-0.5">{restaurant.cuisine} &bull; {restaurant.city}</p>
-                  </div>
-                  {restaurant.rating && (
-                    <div className="flex items-center gap-1 bg-secondary/10 px-2.5 py-1 rounded-full">
-                      <span className="material-symbols-outlined text-secondary text-[14px]" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
-                      <span className="font-headline font-bold text-sm text-primary">{restaurant.rating}</span>
-                    </div>
-                  )}
+              {/* Restaurant Name Overlay */}
+              <div className="absolute bottom-5 left-5 right-16 z-10">
+                <h2 className="text-2xl font-headline font-bold text-white leading-tight mb-1">
+                  {featuredRestaurant.name}
+                </h2>
+                <p className="text-white/80 text-sm font-body">
+                  {featuredRestaurant.city}{featuredRestaurant.country ? ` \u2022 ${featuredRestaurant.country}` : ''}
+                </p>
+              </div>
+
+              {/* Rating Badge */}
+              {featuredRestaurant.rating && (
+                <div className="absolute bottom-5 right-5 z-10 bg-background/90 backdrop-blur rounded-full px-3 py-1 flex items-center gap-1">
+                  <span
+                    className="material-symbols-outlined text-secondary text-sm"
+                    style={{ fontVariationSettings: "'FILL' 1" }}
+                  >
+                    star
+                  </span>
+                  <span className="font-headline font-bold text-sm text-primary">
+                    {featuredRestaurant.rating}
+                  </span>
                 </div>
-              ))}
+              )}
+            </div>
+          </section>
+        )}
+
+        {/* Empty state when no restaurants */}
+        {!featuredRestaurant && (
+          <section className="mb-8">
+            <div className="w-full aspect-[4/3] rounded-2xl bg-surface-container-low flex flex-col items-center justify-center">
+              <span className="material-symbols-outlined text-5xl text-on-surface-variant/30 mb-3">restaurant</span>
+              <p className="text-on-surface-variant font-body text-sm">No restaurants yet</p>
               <button
-                className="w-full text-secondary text-sm font-headline font-bold flex items-center justify-center gap-1 py-3"
-                onClick={() => onNavigate('places')}
+                onClick={onOpenAddRestaurant}
+                className="mt-4 bg-primary text-white rounded-full px-6 py-2 text-sm font-headline font-bold"
               >
-                View All <span className="material-symbols-outlined text-sm">open_in_new</span>
+                Add Your First
               </button>
             </div>
+          </section>
+        )}
+
+        {/* Top Rated by Friend Section */}
+        {topFriend && topFriend.restaurant && (
+          <section className="mb-8">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-8 h-8 rounded-full bg-secondary/20 flex items-center justify-center overflow-hidden flex-shrink-0">
+                {topFriend.profile.avatar_url ? (
+                  <img
+                    src={topFriend.profile.avatar_url}
+                    alt={topFriend.profile.name}
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <span className="material-symbols-outlined text-secondary text-sm">person</span>
+                )}
+              </div>
+              <h3 className="font-headline font-bold text-base text-primary">
+                Top rated by {topFriend.profile.name || topFriend.profile.username}
+              </h3>
+            </div>
+
+            <div className="bg-surface-container-low rounded-2xl p-4 flex items-center gap-4">
+              <div className="w-16 h-16 rounded-xl bg-primary-container flex items-center justify-center flex-shrink-0 overflow-hidden">
+                {topFriend.restaurant.photo_url ? (
+                  <img
+                    src={topFriend.restaurant.photo_url}
+                    alt={topFriend.restaurant.name}
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <span className="material-symbols-outlined text-on-primary-container text-xl">restaurant</span>
+                )}
+              </div>
+              <div className="flex-1 min-w-0">
+                <h4 className="font-headline font-bold text-sm text-primary truncate">
+                  {topFriend.restaurant.name || 'A favorite spot'}
+                </h4>
+                <p className="text-xs text-on-surface-variant font-body mt-0.5 line-clamp-2">
+                  {topFriend.restaurant.notes || topFriend.restaurant.cuisine || 'Highly recommended'}
+                </p>
+              </div>
+              {topFriend.restaurant.rating && (
+                <div className="flex items-center gap-1 bg-secondary/10 px-2.5 py-1 rounded-full flex-shrink-0">
+                  <span
+                    className="material-symbols-outlined text-secondary text-[14px]"
+                    style={{ fontVariationSettings: "'FILL' 1" }}
+                  >
+                    star
+                  </span>
+                  <span className="font-headline font-bold text-sm text-primary">{topFriend.restaurant.rating}</span>
+                </div>
+              )}
+            </div>
+
+            <button
+              className="mt-3 text-secondary text-sm font-headline font-medium flex items-center gap-1"
+              onClick={() => onNavigate('search')}
+            >
+              View {topFriend.profile.name || topFriend.profile.username}'s Full List
+              <span className="material-symbols-outlined text-sm">arrow_forward</span>
+            </button>
+          </section>
+        )}
+
+        {/* Friend Activity Pill */}
+        {friendActivityCount > 0 && (
+          <section className="mb-8">
+            <div className="bg-surface-container-low rounded-2xl p-4 flex items-center gap-3">
+              {/* Overlapping Avatars */}
+              <div className="flex -space-x-2 flex-shrink-0">
+                {friendAvatars.map((friend, i) => (
+                  <div
+                    key={friend.id || i}
+                    className="w-8 h-8 rounded-full border-2 border-surface-container-low bg-secondary/20 flex items-center justify-center overflow-hidden"
+                  >
+                    {friend.avatar_url ? (
+                      <img
+                        src={friend.avatar_url}
+                        alt={friend.name}
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <span className="material-symbols-outlined text-secondary text-xs">person</span>
+                    )}
+                  </div>
+                ))}
+              </div>
+              <p className="text-sm font-body text-on-surface-variant">
+                <span className="font-bold text-primary">{friendActivityCount} friend{friendActivityCount !== 1 ? 's' : ''}</span>
+                {' '}rated restaurants this week
+              </p>
+            </div>
+          </section>
+        )}
+
+        {/* Near You Section */}
+        <section className="mb-10">
+          <div className="flex items-end justify-between mb-1">
+            <h3 className="font-headline text-xl font-bold text-primary">Near You</h3>
+            <button
+              className="text-secondary text-sm font-headline font-medium"
+              onClick={() => onNavigate('places')}
+            >
+              See all
+            </button>
+          </div>
+          <p className="text-on-surface-variant text-sm font-body mb-5">
+            Discover what's cooking in your neighborhood
+          </p>
+
+          {nearYouRestaurants.length > 0 ? (
+            <div className="grid grid-cols-2 gap-4">
+              {nearYouRestaurants.map((restaurant) => (
+                <div
+                  key={restaurant.id}
+                  className="cursor-pointer group"
+                  onClick={() => navigate(`/restaurant/${restaurant.id}`)}
+                >
+                  {/* Photo */}
+                  <div className="relative aspect-[3/4] rounded-2xl overflow-hidden mb-2">
+                    {restaurant.photos?.[0] ? (
+                      <img
+                        src={restaurant.photos[0]}
+                        alt={restaurant.name}
+                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                      />
+                    ) : (
+                      <div className="w-full h-full bg-surface-container-high flex items-center justify-center">
+                        <span className="material-symbols-outlined text-3xl text-on-surface-variant/30">restaurant</span>
+                      </div>
+                    )}
+
+                    {/* Bookmark Overlay */}
+                    <button
+                      className="absolute top-3 right-3 z-10 w-8 h-8 rounded-full bg-background/70 backdrop-blur flex items-center justify-center"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        // bookmark action placeholder
+                      }}
+                    >
+                      <span className="material-symbols-outlined text-primary text-lg">bookmark</span>
+                    </button>
+
+                    {/* Social Proof Badge */}
+                    {restaurant.rating && restaurant.rating >= 4 && (
+                      <div className="absolute bottom-3 left-3 z-10">
+                        <span className="bg-secondary/10 text-secondary uppercase text-[10px] tracking-wider font-bold px-2 py-1 rounded-full backdrop-blur">
+                          Top Rated by Friends
+                        </span>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Info */}
+                  <h4 className="font-headline font-bold text-sm text-primary truncate">
+                    {restaurant.name}
+                  </h4>
+                  <p className="text-xs text-on-surface-variant font-body mt-0.5 truncate">
+                    {restaurant.cuisine}
+                    {restaurant.city ? ` \u2022 ${restaurant.city}` : ''}
+                  </p>
+                </div>
+              ))}
+            </div>
           ) : (
-            <div className="bg-surface-container-low rounded-xl p-8 text-center">
-              <span className="material-symbols-outlined text-4xl text-on-surface-variant/40 mb-3 block">restaurant</span>
-              <p className="text-sm text-on-surface-variant">No restaurants yet</p>
-              <p className="text-xs text-on-surface-variant/60 mt-1">Start your culinary journey!</p>
+            <div className="bg-surface-container-low rounded-2xl p-8 text-center">
+              <span className="material-symbols-outlined text-4xl text-on-surface-variant/30 mb-3 block">explore</span>
+              <p className="text-sm text-on-surface-variant font-body">No restaurants nearby yet</p>
+              <p className="text-xs text-on-surface-variant/60 font-body mt-1">Start adding your discoveries!</p>
             </div>
           )}
         </section>
 
-        {/* Cuisine Insights */}
-        <section className="px-6 mb-10">
-          <h3 className="font-headline text-2xl font-bold tracking-tight text-primary mb-6">Your Palate</h3>
-          <div className="bg-surface-container-low rounded-xl p-6">
-            {topCuisines.length > 0 ? (
-              <div className="space-y-5">
-                {topCuisines.map(([cuisine, count]) => (
-                  <div key={cuisine} className="space-y-2">
-                    <div className="flex justify-between items-center">
-                      <span className="font-headline font-semibold text-sm text-primary">{cuisine}</span>
-                      <span className="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant">{count} places</span>
-                    </div>
-                    <Progress value={(count / ratedRestaurants.length) * 100} className="h-1.5" />
-                  </div>
-                ))}
-                <div className="pt-4 border-t border-outline-variant/10 flex items-center justify-between">
-                  <div className="text-center">
-                    <div className="text-lg font-headline font-bold text-secondary">{averageRating.toFixed(1)}</div>
-                    <div className="text-[10px] font-label uppercase tracking-widest text-on-surface-variant">Avg Rating</div>
-                  </div>
-                  {michelinRestaurants.length > 0 && (
-                    <div className="text-center">
-                      <div className="text-lg font-headline font-bold text-primary">{michelinRestaurants.length}</div>
-                      <div className="text-[10px] font-label uppercase tracking-widest text-on-surface-variant">Michelin</div>
-                    </div>
-                  )}
-                </div>
-              </div>
-            ) : (
-              <div className="text-center py-6">
-                <span className="material-symbols-outlined text-3xl text-on-surface-variant/40 mb-3 block">psychology</span>
-                <p className="text-sm text-on-surface-variant">Rate restaurants to see insights!</p>
-              </div>
-            )}
-          </div>
-        </section>
-
-        {/* CTA Section */}
-        <section className="px-6 mb-8">
-          <div className="bg-primary-container rounded-xl p-6 text-center relative overflow-hidden">
-            <div className="absolute top-0 right-0 p-4 opacity-10">
-              <span className="material-symbols-outlined text-7xl text-white">restaurant</span>
-            </div>
-            <span className="material-symbols-outlined text-3xl text-secondary-container mb-3 block">
-              {ratedRestaurants.length > 0 ? 'trending_up' : 'restaurant'}
-            </span>
-            <h3 className="font-headline font-bold text-white text-lg mb-2">
-              {ratedRestaurants.length > 0 ? 'Keep Exploring!' : 'Start Your Journey'}
-            </h3>
-            <p className="text-on-primary-container text-sm mb-4">
-              {ratedRestaurants.length > 0
-                ? `${ratedRestaurants.length} restaurants rated. Discover more!`
-                : 'Rate your first restaurant for personalized recommendations'
-              }
-            </p>
-            <Button
-              className="bg-secondary text-secondary-foreground rounded-full px-6 font-headline font-bold"
-              onClick={onOpenAddRestaurant}
-            >
-              <span className="material-symbols-outlined text-sm mr-1">add</span>
-              Add Restaurant
-            </Button>
-          </div>
-        </section>
       </div>
-
-      {/* Desktop Layout */}
-      <div className="hidden md:block w-full py-8 space-y-10 px-6">
-        {/* Hero Section */}
-        <section className="relative w-full aspect-[21/9] rounded-xl overflow-hidden group cursor-pointer shadow-premium-xl">
-          <div className="absolute inset-0 bg-gradient-to-t from-primary/90 via-primary/20 to-transparent z-10"></div>
-          <div className="absolute inset-0 bg-primary/10"></div>
-          <div className="absolute top-6 left-6 z-20">
-            <Badge className="bg-secondary/90 text-secondary-foreground border-0 shadow-lg">
-              <span className="material-symbols-outlined text-xs mr-1" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
-              {ratedRestaurants.length} Restaurants Rated
-            </Badge>
-          </div>
-          <div className="absolute bottom-8 left-8 right-8 z-20">
-            <p className="text-white/70 font-headline font-medium text-sm uppercase tracking-widest mb-2">Welcome Back</p>
-            <h2 className="text-white font-headline font-bold text-5xl mb-4 leading-tight">
-              {getGreeting()}, {getFirstName()}
-            </h2>
-            <div className="flex items-center gap-4 text-white/80">
-              <div className="flex items-center gap-1">
-                <span className="material-symbols-outlined text-lg">restaurant</span>
-                <span className="text-sm font-medium">{ratedRestaurants.length} rated</span>
-              </div>
-              <div className="w-1 h-1 rounded-full bg-background/40"></div>
-              <div className="flex items-center gap-1">
-                <span className="material-symbols-outlined text-lg">favorite</span>
-                <span className="text-sm font-medium">{wishlistRestaurants.length} wishlisted</span>
-              </div>
-              {michelinRestaurants.length > 0 && (
-                <>
-                  <div className="w-1 h-1 rounded-full bg-background/40"></div>
-                  <div className="flex items-center gap-1">
-                    <span className="material-symbols-outlined text-lg">stars</span>
-                    <span className="text-sm font-medium">{michelinRestaurants.length} Michelin</span>
-                  </div>
-                </>
-              )}
-            </div>
-          </div>
-        </section>
-
-        {/* Quick Actions */}
-        <section>
-          <div className="flex items-end justify-between mb-6">
-            <div>
-              <h3 className="font-headline text-2xl font-bold tracking-tight text-primary">Quick Actions</h3>
-              <p className="text-on-surface-variant text-sm">Start exploring your culinary world</p>
-            </div>
-          </div>
-          <div className="grid grid-cols-4 gap-4">
-            <button
-              className="bg-secondary text-secondary-foreground py-5 px-4 rounded-xl flex flex-col items-center gap-2 hover:opacity-90 active:scale-95 transition-all shadow-lg shadow-secondary/20"
-              onClick={() => onNavigate('search')}
-            >
-              <span className="material-symbols-outlined text-2xl">search</span>
-              <span className="text-[10px] font-bold uppercase tracking-wider">Discover</span>
-            </button>
-            <button
-              className="bg-primary text-primary-foreground py-5 px-4 rounded-xl flex flex-col items-center gap-2 hover:opacity-90 active:scale-95 transition-all"
-              onClick={onOpenAddRestaurant}
-            >
-              <span className="material-symbols-outlined text-2xl">add_circle</span>
-              <span className="text-[10px] font-bold uppercase tracking-wider">Add Rating</span>
-            </button>
-            <button
-              className="bg-surface-container-high text-primary py-5 px-4 rounded-xl flex flex-col items-center gap-2 hover:bg-surface-container-highest active:scale-95 transition-all"
-              onClick={() => navigate('/map')}
-            >
-              <span className="material-symbols-outlined text-2xl">map</span>
-              <span className="text-[10px] font-bold uppercase tracking-wider">Map View</span>
-            </button>
-            <button
-              className="bg-surface-container-high text-primary py-5 px-4 rounded-xl flex flex-col items-center gap-2 hover:bg-surface-container-highest active:scale-95 transition-all"
-              onClick={() => onNavigate('places')}
-            >
-              <span className="material-symbols-outlined text-2xl">favorite</span>
-              <span className="text-[10px] font-bold uppercase tracking-wider">Wishlist</span>
-            </button>
-          </div>
-        </section>
-
-        {/* Two Column Layout */}
-        <div className="grid grid-cols-2 gap-8">
-          {/* Featured Restaurants */}
-          <section>
-            <div className="flex items-end justify-between mb-6">
-              <div>
-                <h3 className="font-headline text-2xl font-bold tracking-tight text-primary">{currentCardData.title}</h3>
-                <p className="text-on-surface-variant text-sm">{currentCardData.description}</p>
-              </div>
-              <div className="flex gap-1">
-                {cardRotationData.map((_, index) => (
-                  <div
-                    key={index}
-                    className={`h-1 rounded-full transition-all duration-300 ${
-                      index === rotatingCardIndex ? 'w-8 bg-secondary' : 'w-2 bg-outline-variant/40'
-                    }`}
-                  />
-                ))}
-              </div>
-            </div>
-            <div className="space-y-3">
-              {currentCardData.restaurants.length > 0 ? (
-                <>
-                  {currentCardData.restaurants.map((restaurant) => (
-                    <div key={restaurant.id} className="bg-surface-container-low rounded-xl p-4 flex items-center gap-4 group cursor-pointer hover:bg-surface-container transition-colors">
-                      <div className="w-14 h-14 bg-primary-container rounded-xl flex items-center justify-center flex-shrink-0">
-                        <span className="material-symbols-outlined text-on-primary-container text-xl">restaurant</span>
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <h4 className="font-headline font-bold text-sm text-primary truncate">{restaurant.name}</h4>
-                        <p className="text-xs text-on-surface-variant mt-0.5">{restaurant.cuisine} &bull; {restaurant.city}</p>
-                      </div>
-                      {restaurant.rating && (
-                        <div className="flex items-center gap-1 bg-secondary/10 px-2.5 py-1 rounded-full">
-                          <span className="material-symbols-outlined text-secondary text-[14px]" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
-                          <span className="font-headline font-bold text-sm text-primary">{restaurant.rating}</span>
-                        </div>
-                      )}
-                    </div>
-                  ))}
-                  <Button
-                    variant="outline"
-                    className="w-full border-border/20 text-secondary hover:bg-secondary/5"
-                    onClick={() => onNavigate('places')}
-                  >
-                    View All Ratings
-                  </Button>
-                </>
-              ) : (
-                <div className="bg-surface-container-low rounded-xl p-12 text-center">
-                  <span className="material-symbols-outlined text-5xl text-on-surface-variant/30 mb-4 block">restaurant</span>
-                  <p className="text-on-surface-variant">No restaurants rated yet</p>
-                  <p className="text-sm text-on-surface-variant/60 mt-1">Start your culinary journey!</p>
-                </div>
-              )}
-            </div>
-          </section>
-
-          {/* Cuisine Insights */}
-          <section>
-            <div className="mb-6">
-              <h3 className="font-headline text-2xl font-bold tracking-tight text-primary">Your Palate</h3>
-              <p className="text-on-surface-variant text-sm">Most visited cuisine types</p>
-            </div>
-            <div className="bg-surface-container-low rounded-xl p-6 space-y-5">
-              {topCuisines.length > 0 ? (
-                <>
-                  {topCuisines.map(([cuisine, count]) => (
-                    <div key={cuisine} className="space-y-2">
-                      <div className="flex justify-between items-center">
-                        <span className="font-headline font-semibold text-sm text-primary">{cuisine}</span>
-                        <span className="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant">{count} restaurants</span>
-                      </div>
-                      <Progress value={(count / ratedRestaurants.length) * 100} className="h-1.5" />
-                    </div>
-                  ))}
-                  <div className="pt-4 border-t border-outline-variant/10 grid grid-cols-2 gap-4">
-                    <div className="bg-background rounded-lg p-3 text-center">
-                      <div className="text-2xl font-headline font-bold text-secondary">{averageRating.toFixed(1)}</div>
-                      <div className="text-[10px] font-label uppercase tracking-widest text-on-surface-variant mt-1">Avg Rating</div>
-                    </div>
-                    {michelinRestaurants.length > 0 && (
-                      <div className="bg-background rounded-lg p-3 text-center">
-                        <div className="text-2xl font-headline font-bold text-primary">{michelinRestaurants.length}</div>
-                        <div className="text-[10px] font-label uppercase tracking-widest text-on-surface-variant mt-1">Michelin Starred</div>
-                      </div>
-                    )}
-                  </div>
-                </>
-              ) : (
-                <div className="text-center py-8">
-                  <span className="material-symbols-outlined text-4xl text-on-surface-variant/30 mb-3 block">psychology</span>
-                  <p className="text-on-surface-variant">No cuisine data yet</p>
-                  <p className="text-sm text-on-surface-variant/60 mt-1">Start rating restaurants!</p>
-                </div>
-              )}
-            </div>
-          </section>
-        </div>
-
-        {/* CTA Banner */}
-        <section className="bg-primary-container rounded-xl p-8 flex items-center justify-between relative overflow-hidden">
-          <div className="absolute top-0 right-0 p-6 opacity-5">
-            <span className="material-symbols-outlined text-[120px] text-white">format_quote</span>
-          </div>
-          <div>
-            <h3 className="font-headline font-bold text-white text-xl mb-2">
-              {ratedRestaurants.length > 0 ? 'Continue Your Culinary Journey' : 'Start Your Culinary Journey'}
-            </h3>
-            <p className="text-on-primary-container text-sm">
-              {ratedRestaurants.length > 0
-                ? `${ratedRestaurants.length} restaurants rated, ${wishlistRestaurants.length} on your wishlist`
-                : 'Rate your first restaurant and unlock personalized recommendations'
-              }
-            </p>
-          </div>
-          <Button
-            className="bg-secondary text-secondary-foreground rounded-full px-8 py-4 font-headline font-bold shadow-lg shadow-secondary/20"
-            onClick={onOpenAddRestaurant}
-          >
-            Add Restaurant
-          </Button>
-        </section>
-      </div>
-    </>
+    </div>
   );
 }

@@ -41,8 +41,8 @@ export function RecommendationCard({ restaurant, onAdd, onAddToWishlist }: Recom
 
   const getConfidenceColor = (score?: number) => {
     if (!score) return 'text-muted-foreground bg-muted';
-    if (score >= 80) return 'text-emerald-700 bg-secondary/50/15 border-emerald-500/30';
-    if (score >= 60) return 'text-secondary bg-secondary/50/15 border-amber-500/30';
+    if (score >= 80) return 'text-emerald-700 bg-secondary/15 border-emerald-500/30';
+    if (score >= 60) return 'text-secondary bg-secondary/15 border-amber-500/30';
     return 'text-muted-foreground bg-muted/50 border-border';
   };
 
@@ -95,7 +95,7 @@ export function RecommendationCard({ restaurant, onAdd, onAddToWishlist }: Recom
 
             {/* Google Rating */}
             {restaurant.rating && (
-              <div className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-md bg-secondary/50/10 border border-amber-500/20">
+              <div className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-md bg-secondary/10 border border-amber-500/20">
                 <MIcon name="grade" className="text-xs text-secondary" filled />
                 <span className="text-secondary dark:text-secondary/70 font-medium text-xs">
                   {restaurant.rating.toFixed(1)}
@@ -131,8 +131,8 @@ export function RecommendationCard({ restaurant, onAdd, onAddToWishlist }: Recom
               <span className={cn(
                 'text-[11px] font-medium px-1.5 py-0.5 rounded-full',
                 restaurant.isOpen
-                  ? 'text-secondary bg-secondary/50/10'
-                  : 'text-destructive bg-destructive/50/10'
+                  ? 'text-secondary bg-secondary/10'
+                  : 'text-destructive bg-destructive/10'
               )}>
                 {restaurant.isOpen ? 'Open' : 'Closed'}
               </span>
@@ -156,7 +156,7 @@ export function RecommendationCard({ restaurant, onAdd, onAddToWishlist }: Recom
             <Button
               variant="ghost"
               size="icon"
-              className="h-7 w-7 rounded-full hover:bg-destructive/50/10 hover:text-destructive"
+              className="h-7 w-7 rounded-full hover:bg-destructive/10 hover:text-destructive"
               onClick={(e) => handleButtonClick(e, onAddToWishlist || (() => {}))}
             >
               <MIcon name="favorite" className="text-sm" />

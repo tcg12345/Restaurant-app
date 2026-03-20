@@ -188,7 +188,7 @@ export function WishlistPage({
               {/* Primary Action - Right Side */}
               <Button 
                 onClick={() => setIsAddDialogOpen(true)}
-                className="h-9 px-5 rounded-full bg-primary hover:bg-blue-700 text-white font-semibold shadow-md hover:shadow-lg transition-all duration-200"
+                className="h-9 px-5 rounded-full bg-primary hover:bg-primary/90 text-white font-semibold shadow-md hover:shadow-lg transition-all duration-200"
               >
                 <MIcon name="add" className="text-sm mr-2" />
                 Add Restaurant
@@ -204,7 +204,7 @@ export function WishlistPage({
                   onClick={() => setActiveCity('all')}
                   className={`rounded-full px-4 py-1.5 font-medium transition-all duration-200 text-sm flex-shrink-0 ${
                     activeCity === 'all' 
-                      ? 'bg-primary hover:bg-blue-700 text-white shadow-sm' 
+                      ? 'bg-primary hover:bg-primary/90 text-white shadow-sm' 
                       : 'border-border hover:border-primary hover:bg-primary/10'
                   }`}
                 >
@@ -219,7 +219,7 @@ export function WishlistPage({
                     onClick={() => setActiveCity(city)}
                     className={`rounded-full px-4 py-1.5 font-medium transition-all duration-200 text-sm flex-shrink-0 ${
                       activeCity === city 
-                        ? 'bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm' 
+                        ? 'bg-secondary hover:bg-secondary/90 text-white shadow-sm' 
                         : 'border-border hover:border-primary hover:bg-primary/10'
                     }`}
                   >
@@ -255,7 +255,7 @@ export function WishlistPage({
             <div className="">
               <Button
                 onClick={() => setIsAddDialogOpen(true)}
-                className="w-full h-10 rounded-full bg-primary hover:bg-blue-700 text-white font-semibold shadow-md hover:shadow-lg transition-all duration-200"
+                className="w-full h-10 rounded-full bg-primary hover:bg-primary/90 text-white font-semibold shadow-md hover:shadow-lg transition-all duration-200"
               >
                 <MIcon name="add" className="text-sm mr-2" />
                 Add Restaurant
@@ -337,7 +337,7 @@ export function WishlistPage({
                     onClick={() => setActiveCity('all')}
                     className={`rounded-full px-3 py-1.5 font-medium transition-all duration-200 text-xs flex-shrink-0 ${
                       activeCity === 'all' 
-                        ? 'bg-primary hover:bg-blue-700 text-white shadow-sm' 
+                        ? 'bg-primary hover:bg-primary/90 text-white shadow-sm' 
                         : 'border-border hover:border-primary hover:bg-primary/10'
                     }`}
                   >
@@ -352,7 +352,7 @@ export function WishlistPage({
                       onClick={() => setActiveCity(city)}
                       className={`rounded-full px-3 py-1.5 font-medium transition-all duration-200 text-xs flex-shrink-0 ${
                         activeCity === city 
-                          ? 'bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm' 
+                          ? 'bg-secondary hover:bg-secondary/90 text-white shadow-sm' 
                           : 'border-border hover:border-primary hover:bg-primary/10'
                       }`}
                     >

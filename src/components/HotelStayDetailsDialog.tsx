@@ -223,7 +223,7 @@ export function HotelStayDetailsDialog({
       {/* Dates Section */}
       <div className="bg-card/50 backdrop-blur-sm rounded-2xl p-6 border border-border/50">
         <div className="flex items-center gap-3 mb-4">
-          <div className="p-2 bg-primary/50/10 rounded-xl">
+          <div className="p-2 bg-primary/10 rounded-xl">
             <Calendar className="w-5 h-5 text-primary" />
           </div>
           <div>
@@ -356,7 +356,7 @@ export function HotelStayDetailsDialog({
       {/* Guests Section */}
       <div className="bg-card/50 backdrop-blur-sm rounded-2xl p-6 border border-border/50">
         <div className="flex items-center gap-3 mb-4">
-          <div className="p-2 bg-tertiary/50/10 rounded-xl">
+          <div className="p-2 bg-tertiary/10 rounded-xl">
             <Users className="w-5 h-5 text-tertiary" />
           </div>
           <div>
@@ -403,7 +403,7 @@ export function HotelStayDetailsDialog({
       {/* Additional Details Section */}
       <div className="bg-card/50 backdrop-blur-sm rounded-2xl p-6 border border-border/50">
         <div className="flex items-center gap-3 mb-4">
-          <div className="p-2 bg-secondary/50/10 rounded-xl">
+          <div className="p-2 bg-secondary/10 rounded-xl">
             <FileText className="w-5 h-5 text-secondary" />
           </div>
           <div>
