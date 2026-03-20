@@ -6,7 +6,7 @@ import { supabase } from '@/integrations/supabase/client';
 // DEMO MODE CONFIGURATION
 // Set to false to require real authentication credentials
 // =============================================================================
-export const DEMO_MODE_ENABLED = false;
+export const DEMO_MODE_ENABLED = true;
 
 // Demo user data - all users share this account in demo mode
 const DEMO_USER_ID = 'demo-user-00000000-0000-0000-0000-000000000000';
@@ -81,10 +81,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   // Sign in as demo user (no credentials required)
   const signInAsDemo = () => {
-    if (!DEMO_MODE_ENABLED) {
-      console.warn('Demo mode is disabled');
-      return;
-    }
     setSession(DEMO_SESSION);
     setUser(DEMO_USER);
     setProfile(DEMO_PROFILE);
