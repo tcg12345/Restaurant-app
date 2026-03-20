@@ -2,6 +2,7 @@ import { createContext, useContext, useState, useCallback, useMemo, ReactNode, u
 import { Restaurant, RestaurantFormData, CategoryRating } from '@/types/restaurant';
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
+import { DEMO_MODE_ENABLED } from '@/contexts/AuthContext';
 import { Json } from '@/integrations/supabase/types';
 import { resolveImageUrl } from '@/utils/imageUtils';
 
@@ -96,7 +97,14 @@ export function RestaurantProvider({ children }: RestaurantProviderProps) {
     
     const loadRestaurants = async () => {
       if (!isSubscribed) return;
-      
+
+      // In demo mode, skip Supabase calls (no real session exists)
+      if (DEMO_MODE_ENABLED && localStorage.getItem('grubby-demo-mode') === 'true') {
+        setRestaurants([]);
+        setIsLoading(false);
+        return;
+      }
+
       setIsLoading(true);
       try {
         // Check if user is authenticated
