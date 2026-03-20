@@ -1,5 +1,8 @@
 import { useState, useEffect } from 'react';
-import { ArrowLeft, Save, Eye, EyeOff, User, Mail, Phone, MapPin, Settings as SettingsIcon, Shield, Key, Moon, Sun, Map, Satellite, Trash2, Palette, Plus, X, FileText, ExternalLink, Award, Star } from 'lucide-react';
+// Material Symbols helper
+const MIcon = ({ name, className = '', filled = false }: { name: string; className?: string; filled?: boolean }) => (
+  <span className={`material-symbols-outlined ${className}`} style={filled ? { fontVariationSettings: "'FILL' 1" } : undefined}>{name}</span>
+);
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -292,12 +295,12 @@ export default function SettingsPage({ onBack }: SettingsPageProps) {
               onClick={onBack}
               className="flex items-center gap-2"
             >
-              <ArrowLeft className="h-4 w-4" />
+              <MIcon name="arrow_back" className="text-sm" />
               Back
             </Button>
             <div className="flex items-center gap-2">
-              <SettingsIcon className="h-6 w-6" />
-              <h1 className="text-2xl font-bold bg-gradient-to-r from-primary to-primary-glow bg-clip-text text-transparent">Settings</h1>
+              <MIcon name="settings" className="text-xl" />
+              <h1 className="text-2xl font-headline font-bold text-primary">Settings</h1>
             </div>
           </div>
         </div>
@@ -308,19 +311,19 @@ export default function SettingsPage({ onBack }: SettingsPageProps) {
         <Tabs defaultValue="profile" className="space-y-6">
           <TabsList className="grid w-full grid-cols-4">
             <TabsTrigger value="profile" className="flex items-center gap-2">
-              <User className="h-4 w-4" />
+              <MIcon name="person" className="text-sm" />
               Profile
             </TabsTrigger>
             <TabsTrigger value="preferences" className="flex items-center gap-2">
-              <SettingsIcon className="h-4 w-4" />
+              <MIcon name="settings" className="text-sm" />
               Preferences
             </TabsTrigger>
             <TabsTrigger value="security" className="flex items-center gap-2">
-              <Shield className="h-4 w-4" />
+              <MIcon name="shield" className="text-sm" />
               Security
             </TabsTrigger>
             <TabsTrigger value="account" className="flex items-center gap-2">
-              <Key className="h-4 w-4" />
+              <MIcon name="key" className="text-sm" />
               Account
             </TabsTrigger>
           </TabsList>
@@ -330,7 +333,7 @@ export default function SettingsPage({ onBack }: SettingsPageProps) {
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <User className="h-5 w-5" />
+                  <MIcon name="person" className="text-lg" />
                   Personal Information
                 </CardTitle>
                 <CardDescription>
@@ -374,7 +377,7 @@ export default function SettingsPage({ onBack }: SettingsPageProps) {
 
                 <div className="space-y-4">
                   <h4 className="font-medium flex items-center gap-2">
-                    <MapPin className="h-4 w-4" />
+                    <MIcon name="location_on" className="text-sm" />
                     Address Information
                   </h4>
                   
@@ -424,7 +427,7 @@ export default function SettingsPage({ onBack }: SettingsPageProps) {
                   disabled={isUpdatingProfile}
                   className="w-full md:w-auto"
                 >
-                  <Save className="h-4 w-4 mr-2" />
+                  <MIcon name="save" className="text-sm mr-2" />
                   {isUpdatingProfile ? 'Updating...' : 'Save Changes'}
                 </Button>
               </CardContent>
@@ -436,7 +439,7 @@ export default function SettingsPage({ onBack }: SettingsPageProps) {
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <SettingsIcon className="h-5 w-5" />
+                  <MIcon name="settings" className="text-lg" />
                   App Preferences
                 </CardTitle>
                 <CardDescription>
@@ -460,12 +463,12 @@ export default function SettingsPage({ onBack }: SettingsPageProps) {
                   >
                     {theme === 'light' ? (
                       <>
-                        <Sun className="h-4 w-4" />
+                        <MIcon name="light_mode" className="text-sm" />
                         Light
                       </>
                     ) : (
                       <>
-                        <Moon className="h-4 w-4" />
+                        <MIcon name="dark_mode" className="text-sm" />
                         Dark
                       </>
                     )}
@@ -477,7 +480,7 @@ export default function SettingsPage({ onBack }: SettingsPageProps) {
                 <div className="space-y-4">
                   <div className="space-y-0.5">
                     <Label className="flex items-center gap-2">
-                      <Palette className="h-4 w-4" />
+                      <MIcon name="palette" className="text-sm" />
                       Color Theme
                     </Label>
                     <p className="text-sm text-muted-foreground">
@@ -523,14 +526,14 @@ export default function SettingsPage({ onBack }: SettingsPageProps) {
                                      deleteCustomTheme(themeOption.id);
                                    }}
                                  >
-                                   <X className="h-3 w-3" />
+                                   <MIcon name="close" className="text-xs" />
                                  </Button>
                                )}
                              </div>
                            </div>
                            {currentTheme === themeOption.id && (
                              <div className="w-5 h-5 rounded-full bg-primary flex items-center justify-center">
-                               <div className="w-2 h-2 rounded-full bg-white"></div>
+                               <div className="w-2 h-2 rounded-full bg-background"></div>
                              </div>
                            )}
                          </div>
@@ -545,7 +548,7 @@ export default function SettingsPage({ onBack }: SettingsPageProps) {
                     onClick={() => setShowCustomThemeCreator(!showCustomThemeCreator)}
                     className="w-full"
                   >
-                    <Plus className="h-4 w-4 mr-2" />
+                    <MIcon name="add" className="text-sm mr-2" />
                     Create Custom Theme
                   </Button>
                 
@@ -557,7 +560,7 @@ export default function SettingsPage({ onBack }: SettingsPageProps) {
                     <div className="space-y-6 p-4 bg-muted/50 rounded-lg">
                       <div className="space-y-0.5">
                         <Label className="flex items-center gap-2">
-                          <Palette className="h-4 w-4" />
+                          <MIcon name="palette" className="text-sm" />
                           Create Custom Theme
                         </Label>
                         <p className="text-sm text-muted-foreground">
@@ -628,7 +631,7 @@ export default function SettingsPage({ onBack }: SettingsPageProps) {
                           }}
                           disabled={!customThemeName.trim()}
                         >
-                          <Save className="h-4 w-4 mr-2" />
+                          <MIcon name="save" className="text-sm mr-2" />
                           Save Theme
                         </Button>
                       </div>
@@ -654,7 +657,7 @@ export default function SettingsPage({ onBack }: SettingsPageProps) {
                       onClick={() => setDefaultMapStyle('streets')}
                       className="flex items-center gap-2"
                     >
-                      <Map className="h-4 w-4" />
+                      <MIcon name="map" className="text-sm" />
                       Streets
                     </Button>
                     
@@ -664,7 +667,7 @@ export default function SettingsPage({ onBack }: SettingsPageProps) {
                       onClick={() => setDefaultMapStyle('satellite')}
                       className="flex items-center gap-2"
                     >
-                      <Satellite className="h-4 w-4" />
+                      <MIcon name="satellite_alt" className="text-sm" />
                       Satellite
                     </Button>
                     
@@ -674,7 +677,7 @@ export default function SettingsPage({ onBack }: SettingsPageProps) {
                       onClick={() => setDefaultMapStyle('hybrid')}
                       className="flex items-center gap-2"
                     >
-                      <Satellite className="h-4 w-4" />
+                      <MIcon name="satellite_alt" className="text-sm" />
                       Hybrid
                     </Button>
                   </div>
@@ -688,7 +691,7 @@ export default function SettingsPage({ onBack }: SettingsPageProps) {
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <Shield className="h-5 w-5" />
+                  <MIcon name="shield" className="text-lg" />
                   Privacy Settings
                 </CardTitle>
                 <CardDescription>
@@ -729,7 +732,7 @@ export default function SettingsPage({ onBack }: SettingsPageProps) {
                   disabled={isUpdatingProfile}
                   className="w-full md:w-auto"
                 >
-                  <Save className="h-4 w-4 mr-2" />
+                  <MIcon name="save" className="text-sm mr-2" />
                   {isUpdatingProfile ? 'Updating...' : 'Save Privacy Settings'}
                 </Button>
               </CardContent>
@@ -738,7 +741,7 @@ export default function SettingsPage({ onBack }: SettingsPageProps) {
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <Key className="h-5 w-5" />
+                  <MIcon name="key" className="text-lg" />
                   Change Password
                 </CardTitle>
                 <CardDescription>
@@ -764,7 +767,7 @@ export default function SettingsPage({ onBack }: SettingsPageProps) {
                       className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
                       onClick={() => setShowPasswords(!showPasswords)}
                     >
-                      {showPasswords ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                      {showPasswords ? <MIcon name="visibility_off" className="text-sm" /> : <MIcon name="visibility" className="text-sm" />}
                     </Button>
                   </div>
                 </div>
@@ -790,7 +793,7 @@ export default function SettingsPage({ onBack }: SettingsPageProps) {
                   disabled={isChangingPassword || !newPassword || !confirmPassword}
                   className="w-full md:w-auto"
                 >
-                  <Key className="h-4 w-4 mr-2" />
+                  <MIcon name="key" className="text-sm mr-2" />
                   {isChangingPassword ? 'Changing Password...' : 'Change Password'}
                 </Button>
               </CardContent>
@@ -802,7 +805,7 @@ export default function SettingsPage({ onBack }: SettingsPageProps) {
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <Mail className="h-5 w-5" />
+                  <MIcon name="mail" className="text-lg" />
                   Account Information
                 </CardTitle>
                 <CardDescription>
@@ -843,10 +846,10 @@ export default function SettingsPage({ onBack }: SettingsPageProps) {
             </Card>
 
             {/* Expert Status Card */}
-            <Card className={isExpert ? "border-amber-200 dark:border-amber-800 bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-950/20 dark:to-orange-950/20" : ""}>
+            <Card className={isExpert ? "border-secondary/20 dark:border-secondary/40 bg-gradient-to-r from-secondary/5 to-secondary/10 dark:from-secondary/10 dark:to-secondary/20" : ""}>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  {isExpert ? <Award className="h-5 w-5 text-amber-600" /> : <Star className="h-5 w-5" />}
+                  {isExpert ? <MIcon name="verified" className="text-lg text-secondary" filled /> : <MIcon name="grade" className="text-lg" />}
                   Expert Status
                 </CardTitle>
                 <CardDescription>
@@ -858,11 +861,11 @@ export default function SettingsPage({ onBack }: SettingsPageProps) {
               </CardHeader>
               <CardContent>
                 {isExpert ? (
-                  <div className="flex items-center gap-2 p-4 bg-amber-100 dark:bg-amber-900/30 rounded-lg border border-amber-200 dark:border-amber-800">
-                    <Award className="h-5 w-5 text-amber-600" />
+                  <div className="flex items-center gap-2 p-4 bg-secondary/10 dark:bg-amber-900/30 rounded-lg border border-secondary/20 dark:border-secondary/40">
+                    <MIcon name="verified" className="text-lg text-secondary" filled />
                     <div>
-                      <p className="font-medium text-amber-800 dark:text-amber-200">Expert Account</p>
-                      <p className="text-sm text-amber-700 dark:text-amber-300">
+                      <p className="font-medium text-secondary dark:text-secondary">Expert Account</p>
+                      <p className="text-sm text-secondary dark:text-secondary/70">
                         Your reviews are highlighted with expert badges and special features.
                       </p>
                     </div>
@@ -881,9 +884,9 @@ export default function SettingsPage({ onBack }: SettingsPageProps) {
                     <Button
                       onClick={handleConvertToExpert}
                       disabled={isConvertingToExpert}
-                      className="w-full md:w-auto bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600"
+                      className="w-full md:w-auto bg-secondary text-secondary-foreground hover:opacity-90"
                     >
-                      <Award className="h-4 w-4 mr-2" />
+                      <MIcon name="verified" className="text-sm mr-2" filled />
                       {isConvertingToExpert ? 'Converting...' : 'Become an Expert'}
                     </Button>
                   </div>
@@ -894,7 +897,7 @@ export default function SettingsPage({ onBack }: SettingsPageProps) {
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <FileText className="h-5 w-5" />
+                  <MIcon name="description" className="text-lg" />
                   Legal & Privacy
                 </CardTitle>
                 <CardDescription>
@@ -907,9 +910,9 @@ export default function SettingsPage({ onBack }: SettingsPageProps) {
                   variant="outline"
                   className="w-full md:w-auto flex items-center gap-2"
                 >
-                  <Shield className="h-4 w-4" />
+                  <MIcon name="shield" className="text-sm" />
                   Privacy Policy
-                  <ExternalLink className="h-4 w-4" />
+                  <MIcon name="open_in_new" className="text-sm" />
                 </Button>
               </CardContent>
             </Card>
@@ -935,7 +938,7 @@ export default function SettingsPage({ onBack }: SettingsPageProps) {
             <Card className="border-destructive">
               <CardHeader>
                 <CardTitle className="text-destructive flex items-center gap-2">
-                  <Trash2 className="h-5 w-5" />
+                  <MIcon name="delete" className="text-lg" />
                   Delete Account
                 </CardTitle>
                 <CardDescription>
@@ -965,7 +968,7 @@ export default function SettingsPage({ onBack }: SettingsPageProps) {
                         className="w-full md:w-auto"
                         disabled={isDeletingAccount}
                       >
-                        <Trash2 className="h-4 w-4 mr-2" />
+                        <MIcon name="delete" className="text-sm mr-2" />
                         {isDeletingAccount ? 'Deleting Account...' : 'Delete My Account'}
                       </Button>
                     </AlertDialogTrigger>

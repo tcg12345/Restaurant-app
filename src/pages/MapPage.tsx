@@ -16,8 +16,12 @@ import { Slider } from '@/components/ui/slider';
 import { Label } from '@/components/ui/label';
 import { Drawer, DrawerContent, DrawerFooter, DrawerTitle, DrawerDescription } from '@/components/ui/drawer';
 import { useNavigate } from 'react-router-dom';
-import { Filter, X, Star, DollarSign, MapPin, ChevronDown, GripVertical, ArrowLeft, Utensils, Search, Satellite } from 'lucide-react';
+import { DollarSign, GripVertical, Utensils, Satellite } from 'lucide-react';
 import { Input } from '@/components/ui/input';
+
+const MIcon = ({ name, className = '', filled = false }: { name: string; className?: string; filled?: boolean }) => (
+  <span className={`material-symbols-outlined ${className}`} style={filled ? { fontVariationSettings: "'FILL' 1" } : undefined}>{name}</span>
+);
 
 interface MapPageProps {
   restaurants: Restaurant[];
@@ -249,13 +253,13 @@ export function MapPage({ restaurants, onEditRestaurant, onDeleteRestaurant }: M
           size="sm"
           className="flex-shrink-0"
         >
-          <ArrowLeft className="h-4 w-4" />
+          <MIcon name="arrow_back" className="text-sm" />
         </Button>
 
         {/* Search bar */}
         <div className="flex-1 min-w-0">
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+            <MIcon name="search" className="absolute left-3 top-1/2 text-sm -translate-y-1/2 text-muted-foreground" />
             <Input
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
@@ -276,7 +280,7 @@ export function MapPage({ restaurants, onEditRestaurant, onDeleteRestaurant }: M
             <SelectContent>
               <SelectItem value="streets">
                 <div className="flex items-center gap-2">
-                  <MapPin className="h-4 w-4" />
+                  <MIcon name="location_on" className="text-sm" />
                   Streets
                 </div>
               </SelectItem>
@@ -297,7 +301,7 @@ export function MapPage({ restaurants, onEditRestaurant, onDeleteRestaurant }: M
           size="sm"
           className="flex-shrink-0"
         >
-          <Filter className="h-4 w-4" />
+          <MIcon name="filter_list" className="text-sm" />
           {getActiveFilterCount() > 0 && (
             <Badge variant="secondary" className="ml-1 h-4 w-4 rounded-full p-0 text-xs">
               {getActiveFilterCount()}
@@ -323,7 +327,7 @@ export function MapPage({ restaurants, onEditRestaurant, onDeleteRestaurant }: M
             <div className="flex items-center justify-between">
               <CardTitle className="flex items-center gap-2 pointer-events-none">
                 <GripVertical className="h-4 w-4 text-muted-foreground" />
-                <Filter className="h-5 w-5" />
+                <MIcon name="filter_list" className="text-base" />
                 Filters
               </CardTitle>
               <Button
@@ -333,7 +337,7 @@ export function MapPage({ restaurants, onEditRestaurant, onDeleteRestaurant }: M
                 className="h-8 w-8 pointer-events-auto"
                 onMouseDown={(e) => e.stopPropagation()}
               >
-                <X className="h-4 w-4" />
+                <MIcon name="close" className="text-sm" />
               </Button>
             </div>
           </CardHeader>
@@ -366,7 +370,7 @@ export function MapPage({ restaurants, onEditRestaurant, onDeleteRestaurant }: M
                           : `${filterCuisines.length} cuisines`
                       }
                     </span>
-                    <ChevronDown className="ml-2 h-4 w-4" />
+                    <MIcon name="expand_more" className="ml-2 text-sm" />
                   </Button>
                 </PopoverTrigger>
                 <PopoverContent className="w-[300px] p-0">
@@ -404,7 +408,7 @@ export function MapPage({ restaurants, onEditRestaurant, onDeleteRestaurant }: M
                           : `${filterPrices.length} prices`
                       }
                     </span>
-                    <ChevronDown className="ml-2 h-4 w-4" />
+                    <MIcon name="expand_more" className="ml-2 text-sm" />
                   </Button>
                 </PopoverTrigger>
                 <PopoverContent className="w-[300px] p-0">
@@ -476,7 +480,7 @@ export function MapPage({ restaurants, onEditRestaurant, onDeleteRestaurant }: M
             <div className="sticky top-0 z-10 border-b border-border/50 bg-gradient-to-b from-background/95 via-background to-background/80 px-5 pt-4 pb-3">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <Filter className="h-5 w-5" />
+                  <MIcon name="filter_list" className="text-base" />
                   <DrawerTitle className="text-base font-semibold">Filters</DrawerTitle>
                   {getActiveFilterCount() > 0 && (
                     <Badge variant="secondary" className="h-5 px-2 text-xs">{getActiveFilterCount()}</Badge>
@@ -488,7 +492,7 @@ export function MapPage({ restaurants, onEditRestaurant, onDeleteRestaurant }: M
                   onClick={() => setShowFilters(false)}
                   className="h-9 w-9 rounded-full bg-muted/50 hover:bg-muted"
                 >
-                  <X className="h-4 w-4" />
+                  <MIcon name="close" className="text-sm" />
                 </Button>
               </div>
               <DrawerDescription className="text-xs text-muted-foreground mt-1">Refine map results</DrawerDescription>
@@ -519,7 +523,7 @@ export function MapPage({ restaurants, onEditRestaurant, onDeleteRestaurant }: M
                       <Badge variant="outline" className="h-5 px-2 text-xs">{filterCuisines.length}</Badge>
                     )}
                   </div>
-                  <ChevronDown className={`h-4 w-4 transition-transform ${showCuisineDropdown ? 'rotate-180' : ''}`} />
+                  <MIcon name="expand_more" className={`text-sm transition-transform ${showCuisineDropdown ? 'rotate-180' : ''}`} />
                 </Button>
                 
                 {showCuisineDropdown && (
@@ -554,7 +558,7 @@ export function MapPage({ restaurants, onEditRestaurant, onDeleteRestaurant }: M
                       <Badge variant="outline" className="h-5 px-2 text-xs">{filterPrices.length}</Badge>
                     )}
                   </div>
-                  <ChevronDown className={`h-4 w-4 transition-transform ${showPriceDropdown ? 'rotate-180' : ''}`} />
+                  <MIcon name="expand_more" className={`text-sm transition-transform ${showPriceDropdown ? 'rotate-180' : ''}`} />
                 </Button>
                 
                 {showPriceDropdown && (
@@ -583,10 +587,10 @@ export function MapPage({ restaurants, onEditRestaurant, onDeleteRestaurant }: M
                   onClick={() => setShowRatingDropdown(!showRatingDropdown)}
                 >
                   <div className="flex items-center gap-2">
-                    <Star className="h-4 w-4" />
+                    <MIcon name="grade" className="text-sm" />
                     Rating Range
                   </div>
-                  <ChevronDown className={`h-4 w-4 transition-transform ${showRatingDropdown ? 'rotate-180' : ''}`} />
+                  <MIcon name="expand_more" className={`text-sm transition-transform ${showRatingDropdown ? 'rotate-180' : ''}`} />
                 </Button>
                 
                 {showRatingDropdown && (
@@ -629,7 +633,7 @@ export function MapPage({ restaurants, onEditRestaurant, onDeleteRestaurant }: M
         className="hidden lg:flex absolute bottom-4 left-4 z-20 items-center gap-2"
         variant={showFilters ? "default" : "secondary"}
       >
-        <Filter className="h-4 w-4" />
+        <MIcon name="filter_list" className="text-sm" />
         Filters
         {getActiveFilterCount() > 0 && (
           <Badge variant="destructive" className="ml-1 h-5 w-5 rounded-full p-0 text-xs">

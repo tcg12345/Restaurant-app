@@ -1,6 +1,9 @@
 import { useState } from 'react';
-import { Star } from 'lucide-react';
 import { Slider } from '@/components/ui/slider';
+
+const MIcon = ({ name, className = '', filled = false }: { name: string; className?: string; filled?: boolean }) => (
+  <span className={`material-symbols-outlined ${className}`} style={filled ? { fontVariationSettings: "'FILL' 1" } : undefined}>{name}</span>
+);
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 interface StarRatingProps {
@@ -22,9 +25,9 @@ export function StarRating({
   const [sliderStep, setSliderStep] = useState<number>(0.01);
 
   const sizeClasses = {
-    sm: 'h-5 w-5',
-    md: 'h-6 w-6',
-    lg: 'h-7 w-7'
+    sm: 'text-base',
+    md: 'text-lg',
+    lg: 'text-xl'
   };
 
   const textSizeClasses = {
@@ -62,20 +65,24 @@ export function StarRating({
                 }`}
               >
                 <div className="relative">
-                  <Star
+                  <MIcon
+                    name="grade"
                     className={`${sizeClasses[size]} transition-colors duration-150 ${
                       isFilled
-                        ? 'fill-rating-filled text-rating-filled'
-                        : 'fill-rating-empty text-rating-empty hover:fill-rating-hover hover:text-rating-hover'
+                        ? 'text-rating-filled'
+                        : 'text-rating-empty hover:text-rating-hover'
                     }`}
+                    filled={isFilled}
                   />
                   {isPartiallyFilled && (
                     <div 
                       className="absolute inset-0 overflow-hidden"
                       style={{ width: `${((displayRating % 1) * 100)}%` }}
                     >
-                      <Star
-                        className={`${sizeClasses[size]} fill-rating-filled text-rating-filled`}
+                      <MIcon
+                        name="grade"
+                        className={`${sizeClasses[size]} text-rating-filled`}
+                        filled
                       />
                     </div>
                   )}

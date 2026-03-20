@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import { X, ChevronLeft, ChevronRight, Download, Grid3X3, ArrowLeft, Heart } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { Sheet, SheetContent } from '@/components/ui/sheet';
@@ -211,7 +210,7 @@ export function PhotoGallery({
               <Button
                 variant="ghost"
                 size="icon"
-                className="h-10 w-10 text-white hover:bg-white/20"
+                className="h-10 w-10 text-white hover:bg-background/20"
                 onClick={() => setShowSearchPage(true)}
               >
                 <ArrowLeft className="h-5 w-5" />
@@ -225,7 +224,7 @@ export function PhotoGallery({
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="h-10 w-10 text-white hover:bg-white/20"
+                  className="h-10 w-10 text-white hover:bg-background/20"
                   onClick={() => setShowGrid(!showGrid)}
                 >
                   <Grid3X3 className="h-5 w-5" />
@@ -233,7 +232,7 @@ export function PhotoGallery({
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="h-10 w-10 text-white hover:bg-white/20"
+                  className="h-10 w-10 text-white hover:bg-background/20"
                   onClick={downloadImage}
                 >
                   <Download className="h-5 w-5" />

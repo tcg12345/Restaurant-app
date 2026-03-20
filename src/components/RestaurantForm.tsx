@@ -1,6 +1,9 @@
 import { useState, useEffect } from 'react';
-import { PlusCircle, Trash2, Calendar, MapPin, Camera, Images, Monitor, Upload, Search, Loader, Sparkles, Star, Award } from 'lucide-react';
 import { Camera as CapacitorCamera, CameraResultType, CameraSource } from '@capacitor/camera';
+
+const MIcon = ({ name, className = '', filled = false }: { name: string; className?: string; filled?: boolean }) => (
+  <span className={`material-symbols-outlined ${className}`} style={filled ? { fontVariationSettings: "'FILL' 1" } : undefined}>{name}</span>
+);
 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -970,7 +973,7 @@ export function RestaurantForm({ initialData, onSubmit, onCancel, defaultWishlis
       {!hideSearch && (
         <div className="p-4 border rounded-lg bg-muted/30 space-y-4">
           <div className="flex items-center gap-2">
-            <Search className="h-5 w-5 text-primary" />
+            <MIcon name="search" className="text-base text-primary" />
             <h3 className="text-lg font-semibold">Search for Restaurant</h3>
           </div>
           <p className="text-sm text-muted-foreground">
@@ -1072,7 +1075,7 @@ export function RestaurantForm({ initialData, onSubmit, onCancel, defaultWishlis
             )}
           </Label>
           <div className="flex items-center gap-2">
-            <MapPin className="h-4 w-4 text-muted-foreground" />
+            <MIcon name="location_on" className="text-sm text-muted-foreground" />
             <Input
               id="address"
               name="address"
@@ -1245,7 +1248,7 @@ export function RestaurantForm({ initialData, onSubmit, onCancel, defaultWishlis
                         variant="outline"
                         className="w-full justify-start text-left font-normal"
                       >
-                        <Calendar className="mr-2 h-4 w-4" />
+                        <MIcon name="calendar_month" className="mr-2 text-sm" />
                         {date ? format(date, 'PPP') : <span>Pick a date</span>}
                       </Button>
                     </PopoverTrigger>
@@ -1298,7 +1301,7 @@ export function RestaurantForm({ initialData, onSubmit, onCancel, defaultWishlis
           {isProcessingPhotos && (
             <div className="space-y-2">
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                <Upload className="h-4 w-4 animate-pulse" />
+                <MIcon name="upload" className="text-sm animate-pulse" />
                 Processing {photosToProcess} photo{photosToProcess > 1 ? 's' : ''}...
               </div>
               <Progress value={photoProgress} className="w-full" />
@@ -1317,7 +1320,7 @@ export function RestaurantForm({ initialData, onSubmit, onCancel, defaultWishlis
           >
             {previewImages.length === 0 && !isDragOver && (
               <div className="col-span-full flex flex-col items-center justify-center py-8 text-center">
-                <Upload className="h-8 w-8 text-muted-foreground mb-2" />
+                <MIcon name="upload" className="text-2xl text-muted-foreground mb-2" />
                 <p className="text-sm text-muted-foreground mb-1">
                   Drag and drop photos here, or click to select
                 </p>
@@ -1329,7 +1332,7 @@ export function RestaurantForm({ initialData, onSubmit, onCancel, defaultWishlis
             
             {isDragOver && (
               <div className="col-span-full flex flex-col items-center justify-center py-8 text-center">
-                <Upload className="h-8 w-8 text-primary mb-2" />
+                <MIcon name="upload" className="text-2xl text-primary mb-2" />
                 <p className="text-sm text-primary font-medium">
                   Drop your photos here
                 </p>
@@ -1382,9 +1385,9 @@ export function RestaurantForm({ initialData, onSubmit, onCancel, defaultWishlis
                       e.stopPropagation();
                       removePhoto(index);
                     }}
-                    className="absolute top-2 right-2 flex items-center justify-center w-8 h-8 bg-red-500/80 hover:bg-red-500 rounded-full opacity-0 transition-opacity group-hover:opacity-100 z-10"
+                    className="absolute top-2 right-2 flex items-center justify-center w-8 h-8 bg-destructive/50/80 hover:bg-destructive/50 rounded-full opacity-0 transition-opacity group-hover:opacity-100 z-10"
                   >
-                    <Trash2 className="h-4 w-4 text-white" />
+                    <MIcon name="delete" className="text-sm text-white" />
                   </button>
                   <div className="absolute bottom-2 left-2 bg-black/60 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
                     {index + 1}
@@ -1407,8 +1410,8 @@ export function RestaurantForm({ initialData, onSubmit, onCancel, defaultWishlis
                        {dishRatings[index] ? `Rated: ${dishRatings[index]}/10` : 'Not rated'}
                      </span>
                      {highlightDishIndex === index && (
-                       <div className="flex items-center gap-1 text-xs text-amber-600">
-                         <Award size={12} className="fill-amber-500" />
+                       <div className="flex items-center gap-1 text-xs text-secondary">
+                         <MIcon name="verified" className="text-xs fill-amber-500" filled={true} />
                          <span>Highlight</span>
                        </div>
                      )}
@@ -1420,7 +1423,7 @@ export function RestaurantForm({ initialData, onSubmit, onCancel, defaultWishlis
 
             {/* File System Selection */}
             <label className="flex aspect-square cursor-pointer flex-col items-center justify-center rounded-md border border-dashed bg-muted/50 text-muted-foreground transition-colors hover:bg-muted">
-              <Monitor className="mb-1 h-6 w-6" />
+              <MIcon name="monitor" className="mb-1 text-lg" />
               <span className="text-sm font-medium">Photo Library</span>
               <span className="text-xs opacity-75 text-center">Cmd+click multiple</span>
               <input
@@ -1441,7 +1444,7 @@ export function RestaurantForm({ initialData, onSubmit, onCancel, defaultWishlis
                   onClick={() => setIsDishRatingOpen(true)}
                   className="w-full flex items-center gap-2 border-primary/20 hover:bg-primary/5"
                 >
-                  <Star className="h-4 w-4" />
+                  <MIcon name="grade" className="text-sm" />
                   Rate Restaurant Dishes
                   {dishRatings.some(rating => rating > 0) && (
                     <span className="text-xs bg-primary/10 px-2 py-1 rounded">

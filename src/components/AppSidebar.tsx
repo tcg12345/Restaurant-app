@@ -1,5 +1,8 @@
 import { useState } from 'react';
-import { Calendar, Settings, MessageCircle, Bell, Menu, X, ChevronRight, Sparkles, TrendingUp, Trophy } from 'lucide-react';
+// Material Symbols helper
+const MIcon = ({ name, className = '', filled = false }: { name: string; className?: string; filled?: boolean }) => (
+  <span className={`material-symbols-outlined ${className}`} style={filled ? { fontVariationSettings: "'FILL' 1" } : undefined}>{name}</span>
+);
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
@@ -36,15 +39,15 @@ export function AppSidebar({ onNavigate }: AppSidebarProps) {
       items: [
         {
           path: '/messages',
-          icon: MessageCircle,
+          icon: "chat",
           label: 'Messages',
           description: 'Chat with friends',
           badge: unreadCount > 0 ? unreadCount : undefined,
-          badgeColor: 'bg-blue-500'
+          badgeColor: 'bg-primary/50'
         },
         {
           path: '/travel',
-          icon: Calendar,
+          icon: "calendar_month",
           label: 'Trip Planner',
           description: 'Plan your food adventures',
           badge: undefined
@@ -56,7 +59,7 @@ export function AppSidebar({ onNavigate }: AppSidebarProps) {
       items: [
         {
           path: '/settings',
-          icon: Settings,
+          icon: "settings",
           label: 'Settings',
           description: 'Manage your preferences',
           badge: undefined
@@ -77,9 +80,9 @@ export function AppSidebar({ onNavigate }: AppSidebarProps) {
           )}
           title="Menu"
         >
-          <Menu className="h-5 w-5" />
+          <MIcon name="menu" className="text-lg" />
           {unreadCount > 0 && (
-            <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white ring-2 ring-background">
+            <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-destructive/50 text-[10px] font-bold text-white ring-2 ring-background">
               {unreadCount > 9 ? '9+' : unreadCount}
             </span>
           )}
@@ -108,7 +111,7 @@ export function AppSidebar({ onNavigate }: AppSidebarProps) {
               onClick={() => setIsOpen(false)}
               className="h-8 w-8 rounded-full hover:bg-muted"
             >
-              <X className="h-4 w-4" />
+              <MIcon name="close" className="text-sm" />
             </Button>
           </div>
         </SheetHeader>
@@ -128,7 +131,7 @@ export function AppSidebar({ onNavigate }: AppSidebarProps) {
               
               <div className="space-y-1">
                 {section.items.map((item) => {
-                  const Icon = item.icon;
+                  const iconName = item.icon;
                   const isHovered = hoveredItem === item.path;
                   
                   return (
@@ -158,7 +161,7 @@ export function AppSidebar({ onNavigate }: AppSidebarProps) {
                             ? "bg-primary text-primary-foreground shadow-lg scale-110" 
                             : "bg-muted/50 text-muted-foreground"
                         )}>
-                          <Icon className="h-5 w-5" />
+                          <MIcon name={iconName} className="text-lg" />
                         </div>
                         
                         {/* Content */}
@@ -188,7 +191,7 @@ export function AppSidebar({ onNavigate }: AppSidebarProps) {
                         </div>
                         
                         {/* Arrow indicator */}
-                        <ChevronRight className={cn(
+                        <MIcon name="chevron_right" className={cn(
                           "h-4 w-4 text-muted-foreground transition-all duration-300",
                           isHovered && "text-primary translate-x-1"
                         )} />
@@ -205,7 +208,7 @@ export function AppSidebar({ onNavigate }: AppSidebarProps) {
           
           <div className="mb-3">
             <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground px-3 flex items-center gap-2">
-              <Bell className="h-3 w-3" />
+              <MIcon name="notifications" className="text-xs" />
               Notifications
             </h3>
           </div>
@@ -220,9 +223,9 @@ export function AppSidebar({ onNavigate }: AppSidebarProps) {
         {/* Footer */}
         <div className="border-t bg-gradient-to-r from-muted/30 to-transparent px-6 py-4">
           <div className="flex items-center justify-between text-xs text-muted-foreground">
-            <span>RestoRadar v1.0</span>
+            <span>The Culinary Editorial</span>
             <div className="flex items-center gap-1">
-              <Sparkles className="h-3 w-3" />
+              <MIcon name="auto_awesome" className="text-xs" />
               <span>Premium</span>
             </div>
           </div>

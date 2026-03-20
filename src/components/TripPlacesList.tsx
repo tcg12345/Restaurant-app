@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
-import { Star, MapPin, Calendar, Edit, Info, Globe, Phone, Navigation, DollarSign, Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+
+const MIcon = ({ name, className = '', filled = false }: { name: string; className?: string; filled?: boolean }) => (
+  <span className={`material-symbols-outlined ${className}`} style={filled ? { fontVariationSettings: "'FILL' 1" } : undefined}>{name}</span>
+);
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { format } from 'date-fns';
@@ -229,7 +232,7 @@ export function TripPlacesList({
                     </h3>
                     {rating.overall_rating && (
                       <div className="flex items-center gap-1 mt-1">
-                        <Star className="w-3 h-3 fill-yellow-400 text-yellow-400" />
+                        <Star className="w-3 h-3 fill-yellow-400 text-secondary" />
                         <span className="text-xs font-medium text-muted-foreground">{rating.overall_rating}</span>
                       </div>
                     )}
@@ -264,8 +267,8 @@ export function TripPlacesList({
                           {rating.place_type}
                         </Badge>
                         {rating.overall_rating && (
-                          <div className="flex items-center gap-1 bg-yellow-50 px-2 py-1 rounded-full">
-                            <Star className="w-3 h-3 fill-yellow-400 text-yellow-400" />
+                          <div className="flex items-center gap-1 bg-secondary/5 px-2 py-1 rounded-full">
+                            <Star className="w-3 h-3 fill-yellow-400 text-secondary" />
                             <span className="text-xs font-semibold text-yellow-700">{rating.overall_rating}/10</span>
                           </div>
                         )}
@@ -315,8 +318,8 @@ export function TripPlacesList({
                           {rating.place_type}
                         </Badge>
                         {rating.overall_rating && (
-                          <div className="flex items-center gap-1 bg-yellow-50 px-3 py-1 rounded-full">
-                            <Star className="w-3 h-3 fill-yellow-400 text-yellow-400" />
+                          <div className="flex items-center gap-1 bg-secondary/5 px-3 py-1 rounded-full">
+                            <Star className="w-3 h-3 fill-yellow-400 text-secondary" />
                             <span className="text-xs font-semibold text-yellow-700">{rating.overall_rating}/10</span>
                           </div>
                         )}
@@ -370,8 +373,8 @@ export function TripPlacesList({
                                 key={i}
                                 className={`w-2 h-2 ${
                                   i < Math.floor((score as number) / 2)
-                                    ? 'fill-yellow-400 text-yellow-400'
-                                    : 'text-gray-300'
+                                    ? 'fill-yellow-400 text-secondary'
+                                    : 'text-outline-variant'
                                 }`}
                               />
                             ))}
@@ -401,8 +404,8 @@ export function TripPlacesList({
                           {rating.place_type}
                         </Badge>
                         {rating.overall_rating && (
-                          <div className="flex items-center gap-2 bg-yellow-50 px-3 py-1 rounded-full">
-                            <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                          <div className="flex items-center gap-2 bg-secondary/5 px-3 py-1 rounded-full">
+                            <Star className="w-4 h-4 fill-yellow-400 text-secondary" />
                             <span className="text-sm font-semibold text-yellow-700">{rating.overall_rating}/10</span>
                           </div>
                         )}
@@ -464,7 +467,7 @@ export function TripPlacesList({
                         href={rating.website} 
                         target="_blank" 
                         rel="noopener noreferrer"
-                        className="flex items-center gap-2 text-blue-600 hover:text-blue-800 transition-colors"
+                        className="flex items-center gap-2 text-primary hover:text-blue-800 transition-colors"
                         onClick={(e) => e.stopPropagation()}
                       >
                         <Globe className="w-4 h-4" />
@@ -474,7 +477,7 @@ export function TripPlacesList({
                     {rating.phone_number && (
                       <a 
                         href={`tel:${rating.phone_number}`}
-                        className="flex items-center gap-2 text-green-600 hover:text-green-800 transition-colors"
+                        className="flex items-center gap-2 text-secondary hover:text-green-800 transition-colors"
                         onClick={(e) => e.stopPropagation()}
                       >
                         <Phone className="w-4 h-4" />
@@ -496,8 +499,8 @@ export function TripPlacesList({
                                   key={i}
                                   className={`w-3 h-3 ${
                                     i < Math.floor((score as number) / 2)
-                                      ? 'fill-yellow-400 text-yellow-400'
-                                      : 'text-gray-300'
+                                      ? 'fill-yellow-400 text-secondary'
+                                      : 'text-outline-variant'
                                   }`}
                                 />
                               ))}
@@ -540,8 +543,8 @@ export function TripPlacesList({
                           {rating.place_type}
                         </Badge>
                         {rating.overall_rating && (
-                          <div className="flex items-center gap-1 bg-yellow-50 px-2 py-0.5 rounded-full">
-                            <Star className="w-3 h-3 fill-yellow-400 text-yellow-400" />
+                          <div className="flex items-center gap-1 bg-secondary/5 px-2 py-0.5 rounded-full">
+                            <Star className="w-3 h-3 fill-yellow-400 text-secondary" />
                             <span className="text-xs font-semibold text-yellow-700">{rating.overall_rating}/10</span>
                           </div>
                         )}
@@ -600,7 +603,7 @@ export function TripPlacesList({
                         href={rating.website} 
                         target="_blank" 
                         rel="noopener noreferrer"
-                        className="flex items-center gap-1 text-blue-600 hover:text-blue-800 transition-colors"
+                        className="flex items-center gap-1 text-primary hover:text-blue-800 transition-colors"
                         onClick={(e) => e.stopPropagation()}
                       >
                         <Globe className="w-3 h-3" />
@@ -610,7 +613,7 @@ export function TripPlacesList({
                     {rating.phone_number && (
                       <a 
                         href={`tel:${rating.phone_number}`}
-                        className="flex items-center gap-1 text-green-600 hover:text-green-800 transition-colors"
+                        className="flex items-center gap-1 text-secondary hover:text-green-800 transition-colors"
                         onClick={(e) => e.stopPropagation()}
                       >
                         <Phone className="w-3 h-3" />
@@ -632,8 +635,8 @@ export function TripPlacesList({
                                   key={i}
                                   className={`w-2 h-2 ${
                                     i < Math.floor((score as number) / 2)
-                                      ? 'fill-yellow-400 text-yellow-400'
-                                      : 'text-gray-300'
+                                      ? 'fill-yellow-400 text-secondary'
+                                      : 'text-outline-variant'
                                   }`}
                                 />
                               ))}

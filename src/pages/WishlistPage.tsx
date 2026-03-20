@@ -1,5 +1,7 @@
 import { useState } from 'react';
-import { Plus, Heart, RotateCcw, MapPin, ArrowUpDown, Filter } from 'lucide-react';
+const MIcon = ({ name, className = '', filled = false }: { name: string; className?: string; filled?: boolean }) => (
+  <span className={`material-symbols-outlined ${className}`} style={filled ? { fontVariationSettings: "'FILL' 1" } : undefined}>{name}</span>
+);
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { RestaurantCard } from '@/components/RestaurantCard';
@@ -112,7 +114,7 @@ export function WishlistPage({
                 size="sm"
                 className="absolute right-2 top-1 h-8 w-8 p-0 hover:bg-muted rounded-full"
               >
-                <Filter className="h-4 w-4 text-muted-foreground" />
+                <MIcon name="filter_list" className="text-sm text-muted-foreground" />
               </Button>
             </div>
 
@@ -127,7 +129,7 @@ export function WishlistPage({
                     size="sm"
                     className="h-10 px-3 text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg text-sm font-medium border border-transparent hover:border-border transition-all duration-200"
                   >
-                    <RotateCcw className="h-4 w-4 mr-2" />
+                    <MIcon name="refresh" className="text-sm mr-2" />
                     Refresh
                   </Button>
                 )}
@@ -139,7 +141,7 @@ export function WishlistPage({
                     className="h-10 w-10 p-0 text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg border border-transparent hover:border-border transition-all duration-200"
                     title="Map View"
                   >
-                    <MapPin className="h-4 w-4" />
+                    <MIcon name="location_on" className="text-sm" />
                   </Button>
                 )}
                 
@@ -186,9 +188,9 @@ export function WishlistPage({
               {/* Primary Action - Right Side */}
               <Button 
                 onClick={() => setIsAddDialogOpen(true)}
-                className="h-9 px-5 rounded-full bg-blue-600 hover:bg-blue-700 text-white font-semibold shadow-md hover:shadow-lg transition-all duration-200"
+                className="h-9 px-5 rounded-full bg-primary hover:bg-blue-700 text-white font-semibold shadow-md hover:shadow-lg transition-all duration-200"
               >
-                <Plus className="mr-2 h-4 w-4" />
+                <MIcon name="add" className="text-sm mr-2" />
                 Add Restaurant
               </Button>
             </div>
@@ -202,7 +204,7 @@ export function WishlistPage({
                   onClick={() => setActiveCity('all')}
                   className={`rounded-full px-4 py-1.5 font-medium transition-all duration-200 text-sm flex-shrink-0 ${
                     activeCity === 'all' 
-                      ? 'bg-blue-600 hover:bg-blue-700 text-white shadow-sm' 
+                      ? 'bg-primary hover:bg-blue-700 text-white shadow-sm' 
                       : 'border-border hover:border-primary hover:bg-primary/10'
                   }`}
                 >
@@ -245,7 +247,7 @@ export function WishlistPage({
                 size="sm"
                 className="absolute right-2 top-1 h-8 w-8 p-0 hover:bg-muted rounded-full"
               >
-                <Filter className="h-4 w-4 text-muted-foreground" />
+                <MIcon name="filter_list" className="text-sm text-muted-foreground" />
               </Button>
             </div>
 
@@ -253,9 +255,9 @@ export function WishlistPage({
             <div className="">
               <Button
                 onClick={() => setIsAddDialogOpen(true)}
-                className="w-full h-10 rounded-full bg-blue-600 hover:bg-blue-700 text-white font-semibold shadow-md hover:shadow-lg transition-all duration-200"
+                className="w-full h-10 rounded-full bg-primary hover:bg-blue-700 text-white font-semibold shadow-md hover:shadow-lg transition-all duration-200"
               >
-                <Plus className="mr-2 h-4 w-4" />
+                <MIcon name="add" className="text-sm mr-2" />
                 Add Restaurant
               </Button>
             </div>
@@ -269,7 +271,7 @@ export function WishlistPage({
                   size="sm"
                   className="h-9 px-3 text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg text-sm font-medium border border-transparent hover:border-border transition-all duration-200"
                 >
-                  <RotateCcw className="h-4 w-4 mr-2" />
+                  <MIcon name="refresh" className="text-sm mr-2" />
                   Refresh
                 </Button>
               )}
@@ -281,7 +283,7 @@ export function WishlistPage({
                   className="h-9 w-9 p-0 text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg border border-transparent hover:border-border transition-all duration-200"
                   title="Map View"
                 >
-                  <MapPin className="h-4 w-4" />
+                  <MIcon name="location_on" className="text-sm" />
                 </Button>
               )}
               
@@ -335,7 +337,7 @@ export function WishlistPage({
                     onClick={() => setActiveCity('all')}
                     className={`rounded-full px-3 py-1.5 font-medium transition-all duration-200 text-xs flex-shrink-0 ${
                       activeCity === 'all' 
-                        ? 'bg-blue-600 hover:bg-blue-700 text-white shadow-sm' 
+                        ? 'bg-primary hover:bg-blue-700 text-white shadow-sm' 
                         : 'border-border hover:border-primary hover:bg-primary/10'
                     }`}
                   >
@@ -373,7 +375,7 @@ export function WishlistPage({
             Add restaurants you want to visit in the future.
           </p>
           <Button onClick={() => setIsAddDialogOpen(true)}>
-            <Plus className="mr-2 h-4 w-4" />
+            <MIcon name="add" className="text-sm mr-2" />
             Add Your First Wishlist Item
           </Button>
         </div>
@@ -388,7 +390,7 @@ export function WishlistPage({
                   : "No restaurants in this city yet."}
               </p>
               <Button onClick={() => setIsAddDialogOpen(true)}>
-                <Plus className="mr-2 h-4 w-4" />
+                <MIcon name="add" className="text-sm mr-2" />
                 Add Restaurant
               </Button>
             </div>
@@ -413,10 +415,10 @@ export function WishlistPage({
                     <Button
                       size="icon"
                       variant="secondary"
-                      className="absolute top-3 right-3 h-8 w-8 bg-red-500 hover:bg-red-600 text-white"
+                      className="absolute top-3 right-3 h-8 w-8 bg-destructive/50 hover:bg-destructive text-white"
                       onClick={() => handleOpenDeleteDialog(restaurant.id)}
                     >
-                      <Heart className="h-4 w-4 fill-current" />
+                      <MIcon name="favorite" className="text-sm" filled={true} />
                     </Button>
                   )}
                 </div>

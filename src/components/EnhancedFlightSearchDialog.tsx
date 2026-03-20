@@ -513,7 +513,7 @@ export function EnhancedFlightSearchDialog({ isOpen, onClose, onSelect, location
                         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-2 h-2 bg-primary rounded-full"></div>
                       </div>
                       {flight.itineraries?.[0]?.segments?.length > 1 && (
-                        <div className="text-xs text-amber-600 mt-1 font-medium">
+                        <div className="text-xs text-secondary mt-1 font-medium">
                           {flight.itineraries[0].segments.length - 1} stop{flight.itineraries[0].segments.length > 2 ? 's' : ''}
                         </div>
                       )}
@@ -795,11 +795,11 @@ export function EnhancedFlightSearchDialog({ isOpen, onClose, onSelect, location
                               <div className="absolute bottom-full left-0 right-0 mb-2 bg-card border border-border rounded-xl shadow-premium z-50 max-h-60 overflow-y-auto">
                                 <div className="p-3 space-y-2">
                                   <div className="relative mb-3">
-                                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+                                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-on-surface-variant/70" />
                                     <input
                                       type="text"
                                       placeholder="Search airlines..."
-                                      className="w-full pl-10 pr-3 py-2 bg-[#0A0A0A] border border-[#2A2A2A] rounded-lg text-gray-100 placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                      className="w-full pl-10 pr-3 py-2 bg-[#0A0A0A] border border-[#2A2A2A] rounded-lg text-gray-100 placeholder:text-on-surface-variant focus:outline-none focus:ring-2 focus:ring-blue-500"
                                       onChange={(e) => {
                                         const searchTerm = e.target.value.toLowerCase();
                                         e.target.parentElement?.parentElement?.querySelectorAll('.airline-option').forEach((option: any) => {
@@ -826,11 +826,11 @@ export function EnhancedFlightSearchDialog({ isOpen, onClose, onSelect, location
                                             setSelectedAirlines(selectedAirlines.filter(code => code !== airline.code));
                                           }
                                         }}
-                                        className="rounded border-[#2A2A2A] bg-[#0A0A0A] text-blue-500 focus:ring-blue-500"
+                                        className="rounded border-[#2A2A2A] bg-[#0A0A0A] text-primary focus:ring-blue-500"
                                       />
                                       <div className="flex-1 flex items-center justify-between">
                                         <span className="airline-name text-sm text-gray-100">{airline.name}</span>
-                                        <span className="airline-code text-xs text-gray-400 font-mono">{airline.code}</span>
+                                        <span className="airline-code text-xs text-on-surface-variant/70 font-mono">{airline.code}</span>
                                       </div>
                                     </label>
                                   ))}
@@ -838,7 +838,7 @@ export function EnhancedFlightSearchDialog({ isOpen, onClose, onSelect, location
                                     <div className="border-t border-[#2A2A2A] pt-3 mt-3">
                                       <button
                                         onClick={() => setSelectedAirlines([])}
-                                        className="w-full text-sm text-red-400 hover:text-red-300 transition-colors"
+                                        className="w-full text-sm text-destructive/70 hover:text-red-300 transition-colors"
                                       >
                                         Clear All
                                       </button>
@@ -901,7 +901,7 @@ export function EnhancedFlightSearchDialog({ isOpen, onClose, onSelect, location
                                     className="w-full px-4 py-3 text-left hover:bg-[#2A2A2A] transition-colors flex items-center justify-between border-b border-[#2A2A2A]/50 last:border-b-0"
                                   >
                                     <span className="text-sm text-gray-100">{option.name}</span>
-                                    <span className="text-xs text-gray-400 font-mono bg-[#0A0A0A] px-2 py-1 rounded">{option.code}</span>
+                                    <span className="text-xs text-on-surface-variant/70 font-mono bg-[#0A0A0A] px-2 py-1 rounded">{option.code}</span>
                                   </button>
                                 ))}
                                 {getAirlineOptions()
@@ -909,7 +909,7 @@ export function EnhancedFlightSearchDialog({ isOpen, onClose, onSelect, location
                                     option.name.toLowerCase().includes(airline.toLowerCase()) ||
                                     option.code.toLowerCase().includes(airline.toLowerCase())
                                   ).length === 0 && (
-                                  <div className="px-4 py-3 text-sm text-gray-500">No airlines found</div>
+                                  <div className="px-4 py-3 text-sm text-on-surface-variant">No airlines found</div>
                                 )}
                               </div>
                             )}
@@ -957,7 +957,7 @@ export function EnhancedFlightSearchDialog({ isOpen, onClose, onSelect, location
                                   {departureDate ? format(departureDate, "MMM dd, yyyy") : "Select departure date"}
                                 </div>
                                 {!departureDate && (
-                                  <p className="text-xs text-gray-500 mt-1">Choose departure date</p>
+                                  <p className="text-xs text-on-surface-variant mt-1">Choose departure date</p>
                                 )}
                               </button>
                             </PopoverTrigger>

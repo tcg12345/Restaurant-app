@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Plus, Users, Check, X, Trash2 } from 'lucide-react';
+const MIcon = ({ name, className = '', filled = false }: { name: string; className?: string; filled?: boolean }) => (
+  <span className={`material-symbols-outlined ${className}`} style={filled ? { fontVariationSettings: "'FILL' 1" } : undefined}>{name}</span>
+);
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -446,7 +448,7 @@ export function ChatListPage() {
               onClick={() => navigate('/')}
               className="flex-shrink-0"
             >
-              <ArrowLeft className="h-4 w-4" />
+              <MIcon name="arrow_back" className="text-sm" />
             </Button>
             <h1 className="text-xl font-semibold">Messages</h1>
           </div>
@@ -465,7 +467,7 @@ export function ChatListPage() {
           >
             <DialogTrigger asChild>
               <Button size="sm">
-                <Plus className="h-4 w-4 mr-2" />
+                <MIcon name="add" className="text-sm mr-2" />
                 New Chat
               </Button>
             </DialogTrigger>
@@ -640,7 +642,7 @@ export function ChatListPage() {
                        <div className="flex items-center space-x-3">
                          {room.is_group ? (
                            <div className="h-12 w-12 rounded-full bg-muted flex items-center justify-center">
-                             <Users className="h-6 w-6 text-muted-foreground" />
+                             <MIcon name="group" className="text-lg text-muted-foreground" />
                            </div>
                          ) : (
                            <Avatar className="h-12 w-12">
@@ -673,7 +675,7 @@ export function ChatListPage() {
                                     setChatToDelete({ id: room.id, name: getChatDisplayName(room) });
                                   }}
                                 >
-                                  <Trash2 className="h-3 w-3" />
+                                  <MIcon name="delete" className="text-xs" />
                                 </Button>
                              </div>
                            </div>

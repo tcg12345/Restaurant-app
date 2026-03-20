@@ -1,6 +1,9 @@
 import React from 'react';
-import { Award, Star } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
+
+const MIcon = ({ name, className = '', filled = false }: { name: string; className?: string; filled?: boolean }) => (
+  <span className={`material-symbols-outlined ${className}`} style={filled ? { fontVariationSettings: "'FILL' 1" } : undefined}>{name}</span>
+);
 
 interface ExpertStatusIndicatorProps {
   isExpert: boolean;
@@ -31,9 +34,9 @@ export function ExpertStatusIndicator({
 
   return (
     <div className={`flex items-center gap-1 ${className}`}>
-      <Award className={`${sizeClasses[size]} text-amber-600`} />
+      <Award className={`${sizeClasses[size]} text-secondary`} />
       {showText && (
-        <span className={`${textSizeClasses[size]} font-medium text-amber-700 dark:text-amber-300`}>
+        <span className={`${textSizeClasses[size]} font-medium text-secondary dark:text-secondary/70`}>
           Expert
         </span>
       )}

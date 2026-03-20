@@ -3,7 +3,10 @@ import { useNavigate } from 'react-router-dom';
 import { useIsMobile } from '@/hooks/useIsMobile';
 import { useInstantImageCache, useOnDemandImageLoader } from '@/hooks/useInstantImageCache';
 import { format } from 'date-fns';
-import { MapPin, Clock, Tag, Edit2, Trash2, Eye, Bot, ExternalLink, Phone, Globe, Share2, X, Plus, ListPlus } from 'lucide-react';
+// Material Symbols helper
+const MIcon = ({ name, className = '', filled = false }: { name: string; className?: string; filled?: boolean }) => (
+  <span className={`material-symbols-outlined ${className}`} style={filled ? { fontVariationSettings: "'FILL' 1" } : undefined}>{name}</span>
+);
 import { Skeleton } from '@/components/ui/skeleton';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -274,7 +277,7 @@ export function RestaurantCard({
             
             {/* Minimal Carousel Indicators */}
             {hasMultiplePhotos && <div className="absolute bottom-3 left-1/2 transform -translate-x-1/2 flex items-center gap-1.5">
-                {photos.slice(0, 5).map((_, index) => <button key={index} className={`w-1.5 h-1.5 rounded-full transition-all duration-300 ${index === currentPhotoIndex ? 'bg-white scale-125 shadow-sm' : 'bg-white/60 hover:bg-white/80'}`} onClick={e => {
+                {photos.slice(0, 5).map((_, index) => <button key={index} className={`w-1.5 h-1.5 rounded-full transition-all duration-300 ${index === currentPhotoIndex ? 'bg-background scale-125 shadow-sm' : 'bg-background/60 hover:bg-background/80'}`} onClick={e => {
             e.stopPropagation();
             setCurrentPhotoIndex(index);
             loadImage(photos[index]);
@@ -301,12 +304,12 @@ export function RestaurantCard({
 
             {/* Edit button moved to left side */}
             {onEdit && <Button size="icon" variant="ghost" className="absolute top-3 left-3 h-7 w-7 rounded-full bg-black/20 backdrop-blur-md hover:bg-black/30 border-0 transition-all duration-200 hover:scale-105" onClick={e => handleButtonClick(e, () => onEdit(restaurant.id))}>
-                <Edit2 className="h-3.5 w-3.5 text-white" />
+                <MIcon name="edit" className="text-xs text-white" />
               </Button>}
 
             {/* Close button in top-right corner */}
             {onClose && <Button size="icon" variant="ghost" className="absolute top-3 right-3 h-7 w-7 rounded-full bg-black/20 backdrop-blur-md hover:bg-black/30 border-0 transition-all duration-200 hover:scale-105" onClick={e => handleButtonClick(e, () => onClose())}>
-                <X className="h-3.5 w-3.5 text-white" />
+                <MIcon name="close" className="text-xs text-white" />
               </Button>}
           </div>}
         
@@ -314,8 +317,8 @@ export function RestaurantCard({
         <div className="relative flex flex-col flex-1 p-3 sm:p-4 space-y-3 bg-card">
 
           {/* Close button for no-photos layout */}
-          {onClose && <Button size="icon" variant="ghost" className="absolute top-3 right-3 h-7 w-7 rounded-full bg-white/10 backdrop-blur-md hover:bg-white/20 border-0 transition-all duration-200 hover:scale-105 z-10" onClick={e => handleButtonClick(e, () => onClose())}>
-              <X className="h-3.5 w-3.5 text-white" />
+          {onClose && <Button size="icon" variant="ghost" className="absolute top-3 right-3 h-7 w-7 rounded-full bg-background/10 backdrop-blur-md hover:bg-background/20 border-0 transition-all duration-200 hover:scale-105 z-10" onClick={e => handleButtonClick(e, () => onClose())}>
+              <MIcon name="close" className="text-xs text-white" />
             </Button>}
 
           {/* Restaurant Name with Inline Rating */}
@@ -327,7 +330,7 @@ export function RestaurantCard({
               
               {/* Inline Star Rating - aligned to right */}
               {restaurant.rating !== undefined && !restaurant.isWishlist && <div className="flex items-center gap-1.5 flex-shrink-0 pr-0">
-                  <div className="text-amber-400 text-lg">★</div>
+                  <div className="text-secondary text-lg">★</div>
                   <span className="text-lg font-bold text-foreground">
                     {formatRating(restaurant.rating)}
                   </span>
@@ -344,7 +347,7 @@ export function RestaurantCard({
                 {restaurant.priceRange && <>
                     <span className="text-muted-foreground">•</span>
                      <div className="flex items-center gap-1">
-                       <span className="text-lg font-bold text-emerald-600 dark:text-emerald-400 tracking-tight">
+                       <span className="text-lg font-bold text-secondary dark:text-secondary tracking-tight">
                          {'$'.repeat(restaurant.priceRange)}
                        </span>
                     </div>
@@ -361,12 +364,12 @@ export function RestaurantCard({
           {/* Location & Hours - Tighter Spacing */}
           <div className="space-y-2">
             <div className="flex items-center gap-2.5 text-sm text-muted-foreground">
-              <MapPin className="h-3.5 w-3.5 flex-shrink-0 text-muted-foreground/60" />
+              <MIcon name="location_on" className="text-xs text-muted-foreground/60" />
               <LocationDisplay restaurant={restaurant} />
             </div>
 
             {restaurant.openingHours && <div className="flex items-center gap-2.5 text-sm text-muted-foreground">
-                <Clock className="h-3.5 w-3.5 flex-shrink-0 text-muted-foreground/60" />
+                <MIcon name="schedule" className="text-xs text-muted-foreground/60" />
                 <span className="truncate">{getCurrentDayHours(restaurant.openingHours)}</span>
               </div>}
           </div>
@@ -374,11 +377,11 @@ export function RestaurantCard({
           {/* Compact Status Tags */}
           {(restaurant.dateVisited || restaurant.isWishlist) && <div className="flex items-center gap-2 flex-wrap">
               {restaurant.dateVisited && <div className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-2.5 py-1 text-xs font-medium text-primary">
-                  <Clock className="h-2.5 w-2.5" />
+                  <MIcon name="schedule" className="text-[10px]" />
                   <span>{format(new Date(restaurant.dateVisited), 'MMM d')}</span>
                 </div>}
               
-              {restaurant.isWishlist && <div className="inline-flex items-center rounded-full bg-amber-50 dark:bg-amber-950/30 px-2.5 py-1 text-xs font-medium text-amber-700 dark:text-amber-300">
+              {restaurant.isWishlist && <div className="inline-flex items-center rounded-full bg-secondary/5 dark:bg-secondary/15 px-2.5 py-1 text-xs font-medium text-secondary dark:text-secondary/70">
                   Saved
                 </div>}
             </div>}
@@ -387,7 +390,7 @@ export function RestaurantCard({
           <div className="flex items-center justify-end mx-0 py-0">
             <div className="flex items-center gap-1">
               {onEdit && <Button size="icon" variant="ghost" className="h-8 w-8 rounded-full hover:bg-muted/50 transition-all duration-200 hover:scale-105 shadow-none" onClick={(e) => handleButtonClick(e, () => onEdit(restaurant.id))} data-testid={`button-edit-${restaurant.id}`}>
-                <Edit2 className="h-3.5 w-3.5 text-muted-foreground" />
+                <MIcon name="edit" className="text-xs text-muted-foreground" />
               </Button>}
               
               {showAddToList && availableLists.length > 0 && (
@@ -399,7 +402,7 @@ export function RestaurantCard({
                       className="h-8 w-8 rounded-full hover:bg-muted/50 transition-all duration-200 hover:scale-105 shadow-none"
                       onClick={(e) => e.stopPropagation()}
                     >
-                      <ListPlus className="h-3.5 w-3.5 text-muted-foreground" />
+                      <MIcon name="playlist_add" className="text-xs text-muted-foreground" />
                     </Button>
                   </PopoverTrigger>
                   <PopoverContent className="w-64 p-2" align="end" sideOffset={8}>
@@ -416,7 +419,7 @@ export function RestaurantCard({
                             onAddToList?.(list.id);
                           }}
                         >
-                          <ListPlus className="h-3 w-3 mr-2" />
+                          <MIcon name="playlist_add" className="text-[10px] mr-2" />
                           {list.name}
                         </Button>
                       ))}
@@ -426,11 +429,11 @@ export function RestaurantCard({
               )}
               
               <Button size="icon" variant="ghost" className="h-8 w-8 rounded-full hover:bg-muted/50 transition-all duration-200 hover:scale-105 shadow-none" onClick={(e) => handleButtonClick(e, () => setIsShareDialogOpen(true))}>
-                <Share2 className="h-3.5 w-3.5 text-muted-foreground" />
+                <MIcon name="share" className="text-xs text-muted-foreground" />
               </Button>
               
               {onDelete && <Button size="icon" variant="ghost" className="h-8 w-8 rounded-full hover:bg-destructive/10 text-muted-foreground hover:text-destructive transition-all duration-200 hover:scale-105 shadow-none" onClick={(e) => handleButtonClick(e, () => onDelete(restaurant.id))}>
-                  <Trash2 className="h-3.5 w-3.5" />
+                  <MIcon name="delete" className="text-xs" />
                 </Button>}
             </div>
           </div>

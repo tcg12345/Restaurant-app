@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { format, differenceInDays } from 'date-fns';
-import { ArrowLeft, Calendar, MapPin, Clock, Users, Globe, Star, Phone, ExternalLink, Utensils, Camera, ChevronDown, Eye, Hotel, Plane, Navigation, Share2 } from 'lucide-react';
+const MIcon = ({ name, className = '', filled = false }: { name: string; className?: string; filled?: boolean }) => (
+  <span className={`material-symbols-outlined ${className}`} style={filled ? { fontVariationSettings: "'FILL' 1" } : undefined}>{name}</span>
+);
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -249,14 +251,14 @@ export function ItineraryViewPage() {
     }, {} as Record<string, typeof events>);
   };
 
-  const getEventIcon = (type: string) => {
+  const getEventIconName = (type: string) => {
     switch (type) {
       case 'restaurant':
-        return Utensils;
+        return 'restaurant';
       case 'attraction':
-        return Camera;
+        return 'photo_camera';
       default:
-        return Clock;
+        return 'schedule';
     }
   };
 
@@ -330,7 +332,7 @@ export function ItineraryViewPage() {
                 onClick={() => navigate('/travel')}
                 className="hover:bg-accent/10"
               >
-                <ArrowLeft className="w-4 h-4 mr-2" />
+                <MIcon name="arrow_back" className="text-sm mr-2" />
                 Back
               </Button>
             )}
@@ -350,7 +352,7 @@ export function ItineraryViewPage() {
                 onClick={() => setIsShareDialogOpen(true)}
                 className="hover:bg-accent/10"
               >
-                <Share2 className="w-4 h-4 mr-2" />
+                <MIcon name="share" className="text-sm mr-2" />
                 Share
               </Button>
             )}
@@ -369,13 +371,13 @@ export function ItineraryViewPage() {
                     <h2 className="text-xl font-bold mb-2">{itinerary.title}</h2>
                     <div className="flex flex-col sm:flex-row gap-3 text-primary-foreground/90">
                       <div className="flex items-center gap-2">
-                        <Calendar className="w-4 h-4" />
+                        <MIcon name="calendar_month" className="text-sm" />
                         <span className="text-sm">
                           {format(itinerary.startDate, 'MMM do, yyyy')} - {format(itinerary.endDate, 'MMM do, yyyy')}
                         </span>
                       </div>
                       <div className="flex items-center gap-2">
-                        <Clock className="w-4 h-4" />
+                        <MIcon name="schedule" className="text-sm" />
                         <span className="text-sm">{duration} days</span>
                       </div>
                     </div>
@@ -385,13 +387,13 @@ export function ItineraryViewPage() {
                 {/* Destinations */}
                 <div className="flex flex-wrap gap-1.5">
                   {itinerary.locations.map((location) => (
-                    <Badge key={location.id} variant="secondary" className="bg-white/20 text-white border-white/30 hover:bg-white/30 text-xs">
-                      <MapPin className="w-3 h-3 mr-1" />
+                    <Badge key={location.id} variant="secondary" className="bg-background/20 text-white border-white/30 hover:bg-background/30 text-xs">
+                      <MIcon name="location_on" className="text-xs mr-1" />
                       {location.name}
                     </Badge>
                   ))}
                   {itinerary.isMultiCity && (
-                    <Badge variant="outline" className="bg-white/20 text-white border-white/30 text-xs">
+                    <Badge variant="outline" className="bg-background/20 text-white border-white/30 text-xs">
                       Multi-city
                     </Badge>
                   )}
@@ -437,11 +439,11 @@ export function ItineraryViewPage() {
                   >
                     <div className="flex items-center gap-2">
                       <div className="w-8 h-8 bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 rounded-lg flex items-center justify-center shadow-sm">
-                        <Hotel className="w-4 h-4 text-white drop-shadow-sm" />
+                        <MIcon name="hotel" className="text-sm text-white drop-shadow-sm" />
                       </div>
                       <span className="font-semibold text-foreground">Hotels ({itinerary.hotels.length})</span>
                     </div>
-                    <ChevronDown className={`w-4 h-4 text-muted-foreground transition-transform duration-200 ${
+                    <MIcon name="expand_more" className={`text-sm text-muted-foreground transition-transform duration-200 ${
                       collapsedHotels ? 'rotate-180' : ''
                     }`} />
                   </button>
@@ -510,7 +512,7 @@ export function ItineraryViewPage() {
                             <div className="flex items-start gap-3">
                               {/* Compact Hotel Icon */}
                               <div className={`w-12 h-12 bg-gradient-to-br ${gradients[index % gradients.length]} rounded-xl flex items-center justify-center flex-shrink-0 shadow-sm group-hover:scale-105 transition-transform duration-200`}>
-                                <Hotel className="w-6 h-6 text-white drop-shadow-sm" />
+                                <MIcon name="hotel" className="text-lg text-white drop-shadow-sm" />
                               </div>
                               
                               {/* Hotel Name & Address Column */}
@@ -540,13 +542,13 @@ export function ItineraryViewPage() {
                               <div className="flex flex-wrap gap-1.5">
                                 {hotel.location && (
                                   <div className="inline-flex items-center gap-1 bg-accent/20 text-accent px-2 py-1 rounded-full text-xs font-medium">
-                                    <MapPin className="w-3 h-3" />
+                                    <MIcon name="location_on" className="text-xs" />
                                     {hotel.location}
                                   </div>
                                 )}
                                 
                                 {!itinerary.wasCreatedWithLengthOfStay && (hotel.checkIn || hotel.checkOut) && (
-                                  <div className="inline-flex items-center bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 px-2 py-1 rounded-full text-xs font-medium">
+                                  <div className="inline-flex items-center bg-primary/10 dark:bg-blue-900/30 text-blue-700 dark:text-primary/50 px-2 py-1 rounded-full text-xs font-medium">
                                     {hotel.checkIn && hotel.checkOut 
                                       ? `${new Date(hotel.checkIn).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} - ${new Date(hotel.checkOut).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}`
                                       : hotel.checkIn 
@@ -571,7 +573,7 @@ export function ItineraryViewPage() {
                                     window.open(`https://www.google.com/maps/search/?api=1&query=${query}`, '_blank');
                                   }}
                                 >
-                                  <MapPin className="w-3 h-3 mr-1 text-blue-600" />
+                                  <MIcon name="location_on" className="text-xs mr-1 text-primary" />
                                   Map
                                 </Button>
                               )}
@@ -586,7 +588,7 @@ export function ItineraryViewPage() {
                                     window.open(`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(hotel.hotel.address)}`, '_blank');
                                   }}
                                 >
-                                  <Navigation className="w-3 h-3 mr-1 text-emerald-600" />
+                                  <MIcon name="directions" className="text-xs mr-1 text-secondary" />
                                   Directions
                                 </Button>
                               )}
@@ -601,7 +603,7 @@ export function ItineraryViewPage() {
                                     window.open(hotel.hotel.website, '_blank');
                                   }}
                                 >
-                                  <ExternalLink className="w-3 h-3 mr-1 text-purple-600" />
+                                  <MIcon name="open_in_new" className="text-xs mr-1 text-tertiary" />
                                   Website
                                 </Button>
                               ) : (
@@ -624,7 +626,7 @@ export function ItineraryViewPage() {
             {itinerary.flights.length > 0 && (
               <div className="space-y-3">
                 <div className="flex items-center gap-2 mb-3">
-                  <Plane className="w-5 h-5 text-purple-600" />
+                  <MIcon name="flight" className="text-base text-tertiary" />
                   <h3 className="text-lg font-semibold text-foreground">Flights</h3>
                   <Badge variant="secondary" className="ml-auto">{itinerary.flights.length}</Badge>
                 </div>
@@ -634,8 +636,8 @@ export function ItineraryViewPage() {
                     <Card key={flight.id} className="hover:shadow-md transition-shadow">
                       <CardContent className="p-4">
                         <div className="flex items-start gap-4">
-                          <div className="w-12 h-12 bg-purple-50 dark:bg-purple-900/20 rounded-xl flex items-center justify-center flex-shrink-0">
-                            <Plane className="w-6 h-6 text-purple-600" />
+                          <div className="w-12 h-12 bg-tertiary/5 dark:bg-purple-900/20 rounded-xl flex items-center justify-center flex-shrink-0">
+                            <MIcon name="flight" className="text-lg text-tertiary" />
                           </div>
                           
                           <div className="flex-1 min-w-0">
@@ -651,14 +653,14 @@ export function ItineraryViewPage() {
                                 </div>
                               </div>
                               {flight.price && (
-                                <Badge variant="outline" className="ml-2 text-purple-600 border-purple-200">
+                                <Badge variant="outline" className="ml-2 text-tertiary border-tertiary/20">
                                   {flight.price}
                                 </Badge>
                               )}
                             </div>
                             
-                            <div className="mb-3 p-2 bg-purple-50/50 dark:bg-purple-900/10 rounded-lg">
-                              <p className="text-sm text-purple-700 dark:text-purple-300 font-medium">
+                            <div className="mb-3 p-2 bg-tertiary/5/50 dark:bg-purple-900/10 rounded-lg">
+                              <p className="text-sm text-purple-700 dark:text-tertiary/70 font-medium">
                                 {flight.departure?.date} at {flight.departure?.time}
                               </p>
                             </div>
@@ -670,7 +672,7 @@ export function ItineraryViewPage() {
                                 className="w-full"
                                 onClick={() => window.open(flight.bookingUrl, '_blank')}
                               >
-                                <ExternalLink className="w-4 h-4 mr-1" />
+                                <MIcon name="open_in_new" className="text-sm mr-1" />
                                 View Booking
                               </Button>
                             )}
@@ -716,10 +718,10 @@ export function ItineraryViewPage() {
                         <div className="bg-primary/10 text-primary px-3 py-1 rounded-full text-sm font-medium">
                           {events.length}
                         </div>
-                        <ChevronDown 
-                          className={`w-5 h-5 text-muted-foreground transition-transform duration-200 ${
+                        <MIcon name="expand_more"
+                          className={`text-base text-muted-foreground transition-transform duration-200 ${
                             collapsedDays[date] ? 'rotate-180' : ''
-                          }`} 
+                          }`}
                         />
                       </div>
                     </div>
@@ -742,7 +744,7 @@ export function ItineraryViewPage() {
                       {events
                         .sort((a, b) => a.time.localeCompare(b.time))
                         .map((event, index) => {
-                          const EventIcon = getEventIcon(event.type);
+                          const eventIconName = getEventIconName(event.type);
                           return (
                             <div key={event.id} className="relative">
                               {/* Timeline Dot */}
@@ -761,7 +763,7 @@ export function ItineraryViewPage() {
                                     <div className="flex items-center gap-3 flex-1 min-w-0">
                                       <div className="flex-shrink-0">
                                         <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center">
-                                          <EventIcon className="w-5 h-5 text-primary" />
+                                          <MIcon name={eventIconName} className="text-base text-primary" />
                                         </div>
                                       </div>
                                       <h5 className="font-semibold text-foreground text-base leading-tight truncate">
@@ -772,10 +774,10 @@ export function ItineraryViewPage() {
                                       <div className="bg-accent/10 text-accent px-2 py-1 rounded text-xs font-medium">
                                         {event.time}
                                       </div>
-                                      <ChevronDown 
-                                        className={`w-4 h-4 text-muted-foreground transition-transform duration-200 ${
+                                      <MIcon name="expand_more"
+                                        className={`text-sm text-muted-foreground transition-transform duration-200 ${
                                           collapsedEvents[event.id] ? 'rotate-180' : ''
-                                        }`} 
+                                        }`}
                                       />
                                     </div>
                                   </div>
@@ -819,7 +821,7 @@ export function ItineraryViewPage() {
                                                   rel="noopener noreferrer"
                                                   className="flex items-center gap-2 text-sm text-primary hover:text-primary/80 underline break-all"
                                                 >
-                                                  <ExternalLink className="w-3 h-3 flex-shrink-0" />
+                                                  <MIcon name="open_in_new" className="text-xs flex-shrink-0" />
                                                   {link}
                                                 </a>
                                               ))}
@@ -834,7 +836,7 @@ export function ItineraryViewPage() {
                                       <div className="p-4 bg-success/5">
                                         <div className="flex items-center justify-between mb-3">
                                           <div className="flex items-center gap-2">
-                                            <Utensils className="w-4 h-4 text-success" />
+                                            <MIcon name="restaurant" className="text-sm text-success" />
                                             <span className="text-sm font-medium text-success">Restaurant Info</span>
                                           </div>
                                           <Button
@@ -862,7 +864,7 @@ export function ItineraryViewPage() {
                                             }}
                                             className="text-xs"
                                           >
-                                            <Eye className="w-3 h-3 mr-1" />
+                                            <MIcon name="visibility" className="text-xs mr-1" />
                                             View Details
                                           </Button>
                                         </div>
@@ -870,7 +872,7 @@ export function ItineraryViewPage() {
                                         <div className="space-y-3">
                                           {event.restaurantData.address && (
                                             <div className="flex items-start gap-3">
-                                              <MapPin className="w-4 h-4 text-muted-foreground mt-0.5 flex-shrink-0" />
+                                              <MIcon name="location_on" className="text-sm text-muted-foreground mt-0.5 flex-shrink-0" />
                                               <span className="text-sm text-foreground">{event.restaurantData.address}</span>
                                             </div>
                                           )}
@@ -881,7 +883,7 @@ export function ItineraryViewPage() {
                                                 href={`tel:${event.restaurantData.phone}`}
                                                 className="flex items-center gap-2 text-sm text-primary hover:text-primary/80 transition-colors"
                                               >
-                                                <Phone className="w-4 h-4" />
+                                                <MIcon name="phone" className="text-sm" />
                                                 {event.restaurantData.phone}
                                               </a>
                                             )}
@@ -893,7 +895,7 @@ export function ItineraryViewPage() {
                                                 rel="noopener noreferrer"
                                                 className="flex items-center gap-2 text-sm text-primary hover:text-primary/80 transition-colors"
                                               >
-                                                <ExternalLink className="w-4 h-4" />
+                                                <MIcon name="open_in_new" className="text-sm" />
                                                 Website
                                               </a>
                                             )}
@@ -906,14 +908,14 @@ export function ItineraryViewPage() {
                                     {event.attractionData && (
                                       <div className="p-4 bg-primary/5">
                                         <div className="flex items-center gap-2 mb-3">
-                                          <Camera className="w-4 h-4 text-primary" />
+                                          <MIcon name="photo_camera" className="text-sm text-primary" />
                                           <span className="text-sm font-medium text-primary">Attraction Info</span>
                                         </div>
                                         
                                         <div className="space-y-3">
                                           {event.attractionData.address && (
                                             <div className="flex items-start gap-3">
-                                              <MapPin className="w-4 h-4 text-muted-foreground mt-0.5 flex-shrink-0" />
+                                              <MIcon name="location_on" className="text-sm text-muted-foreground mt-0.5 flex-shrink-0" />
                                               <span className="text-sm text-foreground">{event.attractionData.address}</span>
                                             </div>
                                           )}
@@ -921,14 +923,14 @@ export function ItineraryViewPage() {
                                           <div className="flex flex-col sm:flex-row gap-3">
                                             {event.attractionData.category && (
                                               <div className="flex items-center gap-2 text-sm text-foreground">
-                                                <Users className="w-4 h-4 text-muted-foreground" />
+                                                <MIcon name="group" className="text-sm text-muted-foreground" />
                                                 {event.attractionData.category}
                                               </div>
                                             )}
                                             
                                             {event.attractionData.rating && (
                                               <div className="flex items-center gap-2 text-sm text-foreground">
-                                                <Star className="w-4 h-4 text-warning fill-current" />
+                                                <MIcon name="grade" className="text-sm text-warning" filled />
                                                 {event.attractionData.rating}/10
                                               </div>
                                             )}
@@ -941,7 +943,7 @@ export function ItineraryViewPage() {
                                               rel="noopener noreferrer"
                                               className="flex items-center gap-2 text-sm text-primary hover:text-primary/80 transition-colors"
                                             >
-                                              <ExternalLink className="w-4 h-4" />
+                                              <MIcon name="open_in_new" className="text-sm" />
                                               Website
                                             </a>
                                           )}
@@ -969,7 +971,7 @@ export function ItineraryViewPage() {
             onClick={() => setIsMapOpen(true)}
             className="h-8 px-3 rounded-full shadow-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-all hover:scale-105 text-xs"
           >
-            <MapPin className="w-3 h-3 mr-1" />
+            <MIcon name="location_on" className="text-xs mr-1" />
             View Map
           </Button>
         </div>

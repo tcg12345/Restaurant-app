@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Search, MapPin, Filter, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+
+const MIcon = ({ name, className = '', filled = false }: { name: string; className?: string; filled?: boolean }) => (
+  <span className={`material-symbols-outlined ${className}`} style={filled ? { fontVariationSettings: "'FILL' 1" } : undefined}>{name}</span>
+);
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
@@ -169,7 +172,7 @@ export function MobileUnifiedSearchPage() {
       <div className="p-4 space-y-3">
         {/* Search Input */}
         <div className="relative">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <MIcon name="search" className="absolute left-3 top-1/2 transform -translate-y-1/2 text-sm text-muted-foreground" />
           <Input
             placeholder={EXAMPLE_QUERIES[currentExample]}
             value={searchQuery}
@@ -182,7 +185,7 @@ export function MobileUnifiedSearchPage() {
         {/* Location and Filters Row */}
         <div className="flex gap-2">
           <div className="flex-1 relative">
-            <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <MIcon name="location_on" className="absolute left-3 top-1/2 transform -translate-y-1/2 text-sm text-muted-foreground" />
             <Input
               placeholder="Location"
               value={locationQuery}
@@ -195,7 +198,7 @@ export function MobileUnifiedSearchPage() {
           <Dialog open={isFilterOpen} onOpenChange={setIsFilterOpen}>
             <DialogTrigger asChild>
               <Button variant="outline" size="sm" className="h-10 px-3 relative">
-                <Filter className="h-4 w-4" />
+                <MIcon name="filter_list" className="text-sm" />
                 {hasActiveFilters && (
                   <div className="absolute -top-1 -right-1 h-2 w-2 bg-primary rounded-full" />
                 )}
@@ -372,12 +375,12 @@ export function MobileUnifiedSearchPage() {
                               <div className="flex items-center gap-2">
                                 {suggestion.rating && (
                                   <div className="flex items-center gap-1">
-                                    <span className="text-yellow-500">★</span>
+                                    <span className="text-secondary">★</span>
                                     <span className="text-sm font-medium">{suggestion.rating}</span>
                                   </div>
                                 )}
                                 {suggestion.price_level && (
-                                  <span className="text-sm text-green-600">
+                                  <span className="text-sm text-secondary">
                                     {'$'.repeat(suggestion.price_level)}
                                   </span>
                                 )}

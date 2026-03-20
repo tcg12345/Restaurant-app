@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
-import { Camera, Edit2, Users, MapPin, Crown, Star, Heart, TrendingUp, Activity, ChevronRight, Bookmark, Route, MessageCircle, Share2, MapPinIcon } from 'lucide-react';
+const MIcon = ({ name, className = '', filled = false }: { name: string; className?: string; filled?: boolean }) => (
+  <span className={`material-symbols-outlined ${className}`} style={filled ? { fontVariationSettings: "'FILL' 1" } : undefined}>{name}</span>
+);
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -139,7 +141,7 @@ export function MobileProfilePage() {
               </AvatarFallback>
             </Avatar>
             <Button size="sm" variant="outline" className="absolute -bottom-1 -right-1 h-7 w-7 rounded-full border border-border/30" onClick={() => navigate('/profile/edit-photo')}>
-              <Camera className="h-3 w-3" />
+              <MIcon name="photo_camera" className="text-xs" />
             </Button>
           </div>
 
@@ -149,7 +151,7 @@ export function MobileProfilePage() {
               <h1 className="text-2xl font-bold">{profile.name || profile.username}</h1>
               {isExpert && <ExpertBadge size="md" />}
               <Button size="sm" variant="ghost" className="h-6 w-6 p-0 hover:bg-muted" onClick={() => navigate('/profile/edit')}>
-                <Edit2 className="h-4 w-4 stroke-[1.5]" />
+                <MIcon name="edit" className="text-sm" />
               </Button>
             </div>
             
@@ -158,7 +160,7 @@ export function MobileProfilePage() {
             {profile.bio && <p className="text-sm text-muted-foreground max-w-sm mx-auto leading-relaxed">{profile.bio}</p>}
             
             {profile.home_city && <div className="flex items-center justify-center gap-1 text-sm text-muted-foreground">
-                <MapPin className="h-4 w-4 stroke-[1.5]" />
+                <MIcon name="location_on" className="text-sm" />
                 <span>{profile.home_city}</span>
               </div>}
 
@@ -193,13 +195,13 @@ export function MobileProfilePage() {
           {/* Rated Restaurants */}
           <Button onClick={() => navigate('/rated')} variant="ghost" className="w-full h-auto p-4 justify-start bg-background hover:bg-muted/50 rounded-lg border border-border/30">
             <div className="flex items-center gap-4 w-full">
-              <Star className="h-5 w-5 stroke-[1.5] text-muted-foreground" />
+              <MIcon name="grade" className="text-base text-muted-foreground" />
               <div className="flex-1 text-left">
                 <p className="font-medium text-foreground">Rated Restaurants</p>
               </div>
               <div className="flex items-center gap-3">
                 <span className="font-bold text-foreground">{stats.rated_count}</span>
-                <ChevronRight className="h-4 w-4 stroke-[1.5] text-muted-foreground" />
+                <MIcon name="chevron_right" className="text-sm text-muted-foreground" />
               </div>
             </div>
           </Button>
@@ -207,13 +209,13 @@ export function MobileProfilePage() {
           {/* Want to Try */}
           <Button onClick={() => navigate('/wishlist')} variant="ghost" className="w-full h-auto p-4 justify-start bg-background hover:bg-muted/50 rounded-lg border border-border/30">
             <div className="flex items-center gap-4 w-full">
-              <Bookmark className="h-5 w-5 stroke-[1.5] text-muted-foreground" />
+              <MIcon name="bookmark" className="text-base text-muted-foreground" />
               <div className="flex-1 text-left">
                 <p className="font-medium text-foreground">Want to Try</p>
               </div>
               <div className="flex items-center gap-3">
                 <span className="font-bold text-foreground">{stats.wishlist_count}</span>
-                <ChevronRight className="h-4 w-4 stroke-[1.5] text-muted-foreground" />
+                <MIcon name="chevron_right" className="text-sm text-muted-foreground" />
               </div>
             </div>
           </Button>
@@ -221,13 +223,13 @@ export function MobileProfilePage() {
           {/* Itineraries */}
           <Button onClick={() => navigate('/travel?view=saved')} variant="ghost" className="w-full h-auto p-4 justify-start bg-background hover:bg-muted/50 rounded-lg border border-border/30">
             <div className="flex items-center gap-4 w-full">
-              <Route className="h-5 w-5 stroke-[1.5] text-muted-foreground" />
+              <MIcon name="route" className="text-base text-muted-foreground" />
               <div className="flex-1 text-left">
                 <p className="font-medium text-foreground">Itineraries</p>
               </div>
               <div className="flex items-center gap-3">
                 <span className="font-bold text-foreground">{itineraries.length}</span>
-                <ChevronRight className="h-4 w-4 stroke-[1.5] text-muted-foreground" />
+                <MIcon name="chevron_right" className="text-sm text-muted-foreground" />
               </div>
             </div>
           </Button>
@@ -238,14 +240,14 @@ export function MobileProfilePage() {
           {/* Friends */}
           <Button onClick={() => navigate('/mobile/friends')} variant="ghost" className="w-full h-auto p-4 justify-start bg-primary/5 hover:bg-primary/10 rounded-xl border-0">
             <div className="flex items-center gap-4 w-full">
-              <Users className="h-5 w-5 stroke-[1.5] text-primary" />
+              <MIcon name="group" className="text-base text-primary" />
               <div className="flex-1 text-left">
                 <p className="font-medium text-foreground">Friends</p>
                 <p className="text-sm text-muted-foreground">View and manage your friends</p>
               </div>
               <div className="flex items-center gap-3">
                 <span className="font-bold text-foreground">{stats.following_count}</span>
-                <ChevronRight className="h-4 w-4 stroke-[1.5] text-muted-foreground" />
+                <MIcon name="chevron_right" className="text-sm text-muted-foreground" />
               </div>
             </div>
           </Button>
@@ -254,12 +256,12 @@ export function MobileProfilePage() {
           {itineraries.length > 0 && (
             <Button onClick={() => navigate('/itinerary-privacy')} variant="ghost" className="w-full h-auto p-4 justify-start bg-primary/5 hover:bg-primary/10 rounded-xl border-0">
               <div className="flex items-center gap-4 w-full">
-                <Route className="h-5 w-5 stroke-[1.5] text-primary" />
+                <MIcon name="route" className="text-base text-primary" />
                 <div className="flex-1 text-left">
                   <p className="font-medium text-foreground">Trip Privacy</p>
                   <p className="text-sm text-muted-foreground">Manage itinerary sharing settings</p>
                 </div>
-                <ChevronRight className="h-4 w-4 stroke-[1.5] text-muted-foreground" />
+                <MIcon name="chevron_right" className="text-sm text-muted-foreground" />
               </div>
             </Button>
           )}
@@ -269,7 +271,7 @@ export function MobileProfilePage() {
       {/* Recent Activity */}
       <div className="px-2 space-y-4 mt-8">
         <h3 className="text-lg font-semibold flex items-center gap-2">
-          <Activity className="h-5 w-5 stroke-[1.5]" />
+          <MIcon name="monitoring" className="text-base" />
           Recent Activity
         </h3>
         
@@ -305,7 +307,7 @@ export function MobileProfilePage() {
                   
                   {/* Details Row */}
                   <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                    <MapPinIcon className="h-4 w-4 stroke-[1.5]" />
+                    <MIcon name="location_on" className="text-sm" />
                     <span className="truncate">{activity.address}</span>
                     <span className="text-xs">•</span>
                     <span>1 visit</span>
@@ -315,16 +317,16 @@ export function MobileProfilePage() {
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
                       <Button variant="ghost" size="sm" className="h-7 w-7 p-0 hover:bg-muted">
-                        <Heart className="h-4 w-4 stroke-[1.5] text-muted-foreground" />
+                        <MIcon name="favorite" className="text-sm text-muted-foreground" />
                       </Button>
                       <Button variant="ghost" size="sm" className="h-7 w-7 p-0 hover:bg-muted">
-                        <MessageCircle className="h-4 w-4 stroke-[1.5] text-muted-foreground" />
+                        <MIcon name="chat" className="text-sm text-muted-foreground" />
                       </Button>
                       <Button variant="ghost" size="sm" className="h-7 w-7 p-0 hover:bg-muted" onClick={e => {
                         e.stopPropagation();
                         navigate(`/share/restaurant/${activity.id}`);
                       }}>
-                        <Share2 className="h-4 w-4 stroke-[1.5] text-muted-foreground" />
+                        <MIcon name="share" className="text-sm text-muted-foreground" />
                       </Button>
                     </div>
                     
@@ -338,7 +340,7 @@ export function MobileProfilePage() {
           </div>
         ) : (
           <div className="py-8 text-center">
-            <Activity className="h-8 w-8 text-muted-foreground mx-auto mb-2" />
+            <MIcon name="monitoring" className="text-3xl text-muted-foreground mx-auto mb-2" />
             <p className="text-muted-foreground text-sm">
               No activity yet. Start rating restaurants!
             </p>

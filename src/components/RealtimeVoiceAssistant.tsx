@@ -1,10 +1,15 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Mic, MicOff, Volume2, VolumeX, Bot, Sparkles, Phone } from 'lucide-react';
+
+
 import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { toast } from 'sonner';
+
+const MIcon = ({ name, className = '', filled = false }: { name: string; className?: string; filled?: boolean }) => (
+  <span className={`material-symbols-outlined ${className}`} style={filled ? { fontVariationSettings: "'FILL' 1" } : undefined}>{name}</span>
+);
 
 // Audio utilities
 export class AudioRecorder {
@@ -379,7 +384,7 @@ export function RealtimeVoiceAssistant({ onClose }: RealtimeVoiceAssistantProps)
           <CardTitle className="flex items-center gap-2">
             <Bot className="h-5 w-5 text-primary" />
             Voice Assistant
-            <Sparkles className="h-4 w-4 text-yellow-500" />
+            <Sparkles className="h-4 w-4 text-secondary" />
             {isAISpeaking && (
               <Badge variant="default" className="animate-pulse">
                 Speaking...
@@ -462,7 +467,7 @@ export function RealtimeVoiceAssistant({ onClose }: RealtimeVoiceAssistantProps)
                 variant={isRecording ? "default" : "outline"}
                 size="lg"
                 onClick={isRecording ? stopRecording : startRecording}
-                className={`rounded-full w-16 h-16 ${isRecording ? 'bg-red-500 hover:bg-red-600' : ''}`}
+                className={`rounded-full w-16 h-16 ${isRecording ? 'bg-destructive/50 hover:bg-destructive' : ''}`}
               >
                 {isRecording ? <MicOff className="h-6 w-6" /> : <Mic className="h-6 w-6" />}
               </Button>
@@ -471,7 +476,7 @@ export function RealtimeVoiceAssistant({ onClose }: RealtimeVoiceAssistantProps)
                 variant="outline"
                 size="lg"
                 onClick={toggleMute}
-                className={`rounded-full w-12 h-12 ${isMuted ? 'bg-orange-500 hover:bg-orange-600 text-white' : ''}`}
+                className={`rounded-full w-12 h-12 ${isMuted ? 'bg-secondary/50 hover:bg-orange-600 text-white' : ''}`}
               >
                 {isMuted ? <VolumeX className="h-5 w-5" /> : <Volume2 className="h-5 w-5" />}
               </Button>
@@ -479,7 +484,7 @@ export function RealtimeVoiceAssistant({ onClose }: RealtimeVoiceAssistantProps)
               <Button
                 variant="outline"
                 onClick={disconnect}
-                className="text-red-600 hover:text-red-700"
+                className="text-destructive hover:text-red-700"
               >
                 Disconnect
               </Button>
@@ -489,7 +494,7 @@ export function RealtimeVoiceAssistant({ onClose }: RealtimeVoiceAssistantProps)
               <p className="text-xs text-muted-foreground">
                 {isRecording ? (
                   <span className="flex items-center justify-center gap-1">
-                    <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
+                    <div className="w-2 h-2 bg-destructive/50 rounded-full animate-pulse"></div>
                     Recording... Speak now
                   </span>
                 ) : (

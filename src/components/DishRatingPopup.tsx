@@ -1,9 +1,12 @@
 import { useState, useEffect } from 'react';
-import { Star, Award } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { Slider } from '@/components/ui/slider';
 import { LazyImage } from '@/components/LazyImage';
+
+const MIcon = ({ name, className = '', filled = false }: { name: string; className?: string; filled?: boolean }) => (
+  <span className={`material-symbols-outlined ${className}`} style={filled ? { fontVariationSettings: "'FILL' 1" } : undefined}>{name}</span>
+);
 
 interface DishRating {
   dishName: string;
@@ -91,7 +94,7 @@ export function DishRatingPopup({
                       className="w-16 h-16 rounded-md object-cover"
                     />
                     {dish.isHighlight && (
-                      <Award className="absolute -top-1 -right-1 h-5 w-5 text-amber-500 fill-amber-500" />
+                      <Award className="absolute -top-1 -right-1 h-5 w-5 text-secondary fill-amber-500" />
                     )}
                   </div>
                   

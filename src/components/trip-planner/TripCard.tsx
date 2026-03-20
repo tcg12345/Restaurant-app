@@ -51,11 +51,11 @@ export function TripCard({ trip }: TripCardProps) {
     const endDate = new Date(trip.end_date);
     
     if (isBefore(now, startDate)) {
-      return { status: 'upcoming', label: 'Upcoming', color: 'bg-blue-500' };
+      return { status: 'upcoming', label: 'Upcoming', color: 'bg-primary/50' };
     } else if (isWithinInterval(now, { start: startDate, end: endDate })) {
-      return { status: 'active', label: 'Active', color: 'bg-green-500' };
+      return { status: 'active', label: 'Active', color: 'bg-secondary/50' };
     } else if (isAfter(now, endDate)) {
-      return { status: 'completed', label: 'Completed', color: 'bg-gray-500' };
+      return { status: 'completed', label: 'Completed', color: 'bg-surface-container-low0' };
     }
     return null;
   };
@@ -90,7 +90,7 @@ export function TripCard({ trip }: TripCardProps) {
                 <Button 
                   variant="ghost" 
                   size="sm"
-                  className="h-8 w-8 p-0 bg-white/80 backdrop-blur-sm hover:bg-white"
+                  className="h-8 w-8 p-0 bg-background/80 backdrop-blur-sm hover:bg-background"
                   onClick={(e) => e.stopPropagation()}
                 >
                   <MoreVertical className="h-4 w-4" />
@@ -155,7 +155,7 @@ export function TripCard({ trip }: TripCardProps) {
             <div className="text-center p-3 bg-muted/30 rounded-lg">
               <div className="text-xl font-bold text-primary flex items-center justify-center gap-1">
                 {avgRating > 0 ? avgRating.toFixed(1) : '—'}
-                {avgRating > 0 && <Star className="w-3 h-3 fill-yellow-400 text-yellow-400" />}
+                {avgRating > 0 && <Star className="w-3 h-3 fill-yellow-400 text-secondary" />}
               </div>
               <div className="text-xs text-muted-foreground">Rating</div>
             </div>

@@ -4,8 +4,11 @@ import 'mapbox-gl/dist/mapbox-gl.css';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { MapPin, Star, Phone, Globe, ExternalLink } from 'lucide-react';
 import { useMapboxToken } from '@/hooks/useMapboxToken';
+
+const MIcon = ({ name, className = '', filled = false }: { name: string; className?: string; filled?: boolean }) => (
+  <span className={`material-symbols-outlined ${className}`} style={filled ? { fontVariationSettings: "'FILL' 1" } : undefined}>{name}</span>
+);
 
 interface Restaurant {
   id: string;
@@ -84,11 +87,11 @@ export function RestaurantMapView({ restaurants, selectedRestaurant, onRestauran
           new mapboxgl.Popup({ offset: 25 }).setHTML(
             `<div class="p-2">
               <h3 class="font-semibold">${restaurant.name}</h3>
-              <p class="text-sm text-gray-600">${restaurant.cuisine}</p>
+              <p class="text-sm text-on-surface-variant">${restaurant.cuisine}</p>
               <div class="flex items-center gap-1 mt-1">
-                <span class="text-yellow-500">⭐</span>
+                <span class="text-secondary">⭐</span>
                 <span class="text-sm">${restaurant.rating}</span>
-                <span class="text-sm text-green-600 ml-2">${getPriceDisplay(restaurant.priceRange)}</span>
+                <span class="text-sm text-secondary ml-2">${getPriceDisplay(restaurant.priceRange)}</span>
               </div>
             </div>`
           )
@@ -132,7 +135,7 @@ export function RestaurantMapView({ restaurants, selectedRestaurant, onRestauran
             {tokenLoading ? (
               <div className="h-full w-full rounded-lg bg-muted flex items-center justify-center">
                 <div className="text-center space-y-4">
-                  <MapPin className="h-16 w-16 mx-auto text-muted-foreground animate-pulse" />
+                  <MIcon name="location_on" className="text-5xl mx-auto text-muted-foreground animate-pulse" />
                   <div>
                     <h3 className="text-lg font-semibold">Loading Map...</h3>
                     <p className="text-muted-foreground">Setting up Mapbox integration</p>
@@ -142,7 +145,7 @@ export function RestaurantMapView({ restaurants, selectedRestaurant, onRestauran
             ) : !token ? (
               <div className="h-full w-full rounded-lg bg-muted flex items-center justify-center">
                 <div className="text-center space-y-4">
-                  <MapPin className="h-16 w-16 mx-auto text-muted-foreground" />
+                  <MIcon name="location_on" className="text-5xl mx-auto text-muted-foreground" />
                   <div>
                     <h3 className="text-lg font-semibold">Map Unavailable</h3>
                     <p className="text-muted-foreground">Mapbox token not configured</p>
@@ -168,7 +171,7 @@ export function RestaurantMapView({ restaurants, selectedRestaurant, onRestauran
                 {selectedRestaurant.name}
               </CardTitle>
               <CardDescription className="flex items-center gap-1">
-                <MapPin className="h-3 w-3" />
+                <MIcon name="location_on" className="text-xs" />
                 {selectedRestaurant.address}
               </CardDescription>
             </CardHeader>
@@ -176,7 +179,7 @@ export function RestaurantMapView({ restaurants, selectedRestaurant, onRestauran
               {/* Rating and Status */}
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-1">
-                  <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+                  <MIcon name="grade" className="text-sm text-secondary" filled />
                   <span className="font-semibold">{selectedRestaurant.rating}</span>
                   {selectedRestaurant.reviewCount && (
                     <span className="text-xs text-muted-foreground">
@@ -189,7 +192,7 @@ export function RestaurantMapView({ restaurants, selectedRestaurant, onRestauran
                   <Badge variant={selectedRestaurant.isOpen ? "default" : "secondary"}>
                     {selectedRestaurant.isOpen ? "Open" : "Closed"}
                   </Badge>
-                  <span className="text-lg font-bold text-green-600">
+                  <span className="text-lg font-bold text-secondary">
                     {getPriceDisplay(selectedRestaurant.priceRange)}
                   </span>
                 </div>
@@ -206,7 +209,7 @@ export function RestaurantMapView({ restaurants, selectedRestaurant, onRestauran
               <div className="space-y-2">
                 {selectedRestaurant.phoneNumber && (
                   <Button variant="outline" size="sm" className="w-full justify-start">
-                    <Phone className="h-3 w-3 mr-2" />
+                    <MIcon name="phone" className="text-xs mr-2" />
                     {selectedRestaurant.phoneNumber}
                   </Button>
                 )}
@@ -218,7 +221,7 @@ export function RestaurantMapView({ restaurants, selectedRestaurant, onRestauran
                     className="w-full justify-start"
                     onClick={() => window.open(selectedRestaurant.website, '_blank')}
                   >
-                    <Globe className="h-3 w-3 mr-2" />
+                    <MIcon name="language" className="text-xs mr-2" />
                     Visit Website
                   </Button>
                 )}
@@ -229,7 +232,7 @@ export function RestaurantMapView({ restaurants, selectedRestaurant, onRestauran
                   className="w-full justify-start"
                   onClick={() => window.open(selectedRestaurant.googleMapsUrl || `https://www.google.com/maps/search/${encodeURIComponent(selectedRestaurant.name + ' ' + selectedRestaurant.address)}`, '_blank')}
                 >
-                  <ExternalLink className="h-3 w-3 mr-2" />
+                  <MIcon name="open_in_new" className="text-xs mr-2" />
                   View in Google Maps
                 </Button>
               </div>
@@ -239,7 +242,7 @@ export function RestaurantMapView({ restaurants, selectedRestaurant, onRestauran
           <Card>
             <CardContent className="py-16 text-center">
               <div className="space-y-4">
-                <MapPin className="h-12 w-12 mx-auto text-muted-foreground" />
+                <MIcon name="location_on" className="text-4xl mx-auto text-muted-foreground" />
                 <div>
                   <h3 className="text-lg font-semibold">Select a Restaurant</h3>
                   <p className="text-muted-foreground">
@@ -270,7 +273,7 @@ export function RestaurantMapView({ restaurants, selectedRestaurant, onRestauran
                 <div className="space-y-1">
                   <div className="font-medium line-clamp-1">{restaurant.name}</div>
                   <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                    <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
+                    <MIcon name="grade" className="text-xs text-secondary" filled />
                     {restaurant.rating}
                     <span className="ml-1">{getPriceDisplay(restaurant.priceRange)}</span>
                   </div>

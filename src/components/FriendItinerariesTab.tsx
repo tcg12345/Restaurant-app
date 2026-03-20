@@ -4,8 +4,11 @@ import { useAuth } from '@/contexts/AuthContext';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { MapPin, Calendar, Plane, Hotel, Eye, Users } from 'lucide-react';
 import { format } from 'date-fns';
+
+const MIcon = ({ name, className = '', filled = false }: { name: string; className?: string; filled?: boolean }) => (
+  <span className={`material-symbols-outlined ${className}`} style={filled ? { fontVariationSettings: "'FILL' 1" } : undefined}>{name}</span>
+);
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 
@@ -159,7 +162,7 @@ export function FriendItinerariesTab({ friendId, friendName }: FriendItineraries
           <CardContent className="pt-0">
             <div className="flex items-center gap-6 text-sm">
               <div className="flex items-center gap-2">
-                <MapPin className="w-4 h-4 text-blue-500" />
+                <MapPin className="w-4 h-4 text-primary" />
                 <span className="font-medium">{getLocationCount(itinerary.locations)}</span>
                 <span className="text-muted-foreground">
                   location{getLocationCount(itinerary.locations) !== 1 ? 's' : ''}
@@ -168,7 +171,7 @@ export function FriendItinerariesTab({ friendId, friendName }: FriendItineraries
               
               {getHotelCount(itinerary.hotels) > 0 && (
                 <div className="flex items-center gap-2">
-                  <Hotel className="w-4 h-4 text-green-500" />
+                  <Hotel className="w-4 h-4 text-secondary" />
                   <span className="font-medium">{getHotelCount(itinerary.hotels)}</span>
                   <span className="text-muted-foreground">
                     hotel{getHotelCount(itinerary.hotels) !== 1 ? 's' : ''}
@@ -178,7 +181,7 @@ export function FriendItinerariesTab({ friendId, friendName }: FriendItineraries
 
               {getFlightCount(itinerary.flights) > 0 && (
                 <div className="flex items-center gap-2">
-                  <Plane className="w-4 h-4 text-purple-500" />
+                  <Plane className="w-4 h-4 text-tertiary" />
                   <span className="font-medium">{getFlightCount(itinerary.flights)}</span>
                   <span className="text-muted-foreground">
                     flight{getFlightCount(itinerary.flights) !== 1 ? 's' : ''}

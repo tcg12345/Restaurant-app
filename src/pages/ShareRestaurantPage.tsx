@@ -6,7 +6,9 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { toast } from 'sonner';
-import { ArrowLeft, Copy, Share2, Link2, MapPin, Star } from 'lucide-react';
+const MIcon = ({ name, className = '', filled = false }: { name: string; className?: string; filled?: boolean }) => (
+  <span className={`material-symbols-outlined ${className}`} style={filled ? { fontVariationSettings: "'FILL' 1" } : undefined}>{name}</span>
+);
 
 interface Restaurant {
   id: string;
@@ -133,7 +135,7 @@ export default function ShareRestaurantPage() {
       <header className="sticky top-0 z-10 bg-background/80 backdrop-blur border-b border-border">
         <div className="max-w-screen-sm mx-auto px-4 h-14 flex items-center gap-3">
           <Button variant="ghost" size="sm" onClick={handleBack} className="-ml-2">
-            <ArrowLeft className="h-4 w-4" />
+            <MIcon name="arrow_back" className="text-sm" />
           </Button>
           <h1 className="text-lg font-semibold">Share</h1>
         </div>
@@ -146,7 +148,7 @@ export default function ShareRestaurantPage() {
               <span>{restaurant?.name || 'Restaurant'}</span>
               {restaurant?.rating ? (
                 <span className="inline-flex items-center gap-1 text-sm text-muted-foreground">
-                  <Star className="h-4 w-4 text-primary" /> {restaurant.rating.toFixed(1)}
+                  <MIcon name="grade" className="text-sm text-primary" /> {restaurant.rating.toFixed(1)}
                 </span>
               ) : null}
             </CardTitle>
@@ -154,7 +156,7 @@ export default function ShareRestaurantPage() {
           <CardContent className="space-y-2">
             {restaurant?.address ? (
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                <MapPin className="h-4 w-4" />
+                <MIcon name="location_on" className="text-sm" />
                 <span className="truncate">{restaurant.address}</span>
               </div>
             ) : null}
@@ -172,17 +174,17 @@ export default function ShareRestaurantPage() {
             <div className="flex items-center gap-2">
               <div className="flex-1 truncate text-sm px-3 py-2 rounded-md border border-border bg-muted/30">
                 <span className="truncate inline-block align-middle">
-                  <Link2 className="h-3.5 w-3.5 inline mr-2 text-muted-foreground" />
+                  <MIcon name="link" className="text-sm inline mr-2 text-muted-foreground" />
                   {shareUrl}
                 </span>
               </div>
               <Button variant="secondary" onClick={handleCopy}>
-                <Copy className="h-4 w-4" />
+                <MIcon name="content_copy" className="text-sm" />
               </Button>
             </div>
 
             <Button className="w-full" onClick={handleWebShare}>
-              <Share2 className="h-4 w-4 mr-2" /> Share
+              <MIcon name="share" className="text-sm mr-2" /> Share
             </Button>
           </CardContent>
         </Card>

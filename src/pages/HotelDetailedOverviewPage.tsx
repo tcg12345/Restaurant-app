@@ -140,7 +140,7 @@ export function HotelDetailedOverviewPage() {
                 <div className="flex items-center gap-4">
                   {hotel.rating && (
                     <div className="flex items-center gap-1">
-                      <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                      <Star className="w-4 h-4 fill-yellow-400 text-secondary" />
                       <span className="font-semibold">{hotel.rating.toFixed(1)}</span>
                     </div>
                   )}

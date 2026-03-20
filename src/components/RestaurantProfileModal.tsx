@@ -9,8 +9,11 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { StarRating } from "@/components/StarRating";
-import { Star, MapPin, Phone, Globe, Navigation, Clock, Heart, MessageSquare, Camera, Filter, ExternalLink } from "lucide-react";
 import { toast } from "sonner";
+
+const MIcon = ({ name, className = '', filled = false }: { name: string; className?: string; filled?: boolean }) => (
+  <span className={`material-symbols-outlined ${className}`} style={filled ? { fontVariationSettings: "'FILL' 1" } : undefined}>{name}</span>
+);
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useRestaurants } from "@/contexts/RestaurantContext";
@@ -366,7 +369,7 @@ export function RestaurantProfileModal({
                 <div className="flex items-center gap-4">
                   <DialogTitle className="text-2xl font-bold">{place.name}</DialogTitle>
                   {place.opening_hours?.open_now !== undefined && <Badge variant={place.opening_hours.open_now ? "default" : "destructive"} className="text-sm">
-                      <Clock className="h-3 w-3 mr-1" />
+                      <MIcon name="schedule" className="text-xs mr-1" />
                       {place.opening_hours.open_now ? "Open Now" : "Closed"}
                     </Badge>}
                 </div>
@@ -387,7 +390,7 @@ export function RestaurantProfileModal({
                   {place.rating && <div className="text-center">
                       <div className="text-2xl font-bold text-primary">{place.rating}</div>
                       <div className="flex justify-center mb-1">
-                        {[1, 2, 3, 4, 5].map(star => <Star key={star} className={`h-4 w-4 ${star <= Math.round(place.rating!) ? 'text-yellow-500 fill-current' : 'text-gray-300'}`} />)}
+                        {[1, 2, 3, 4, 5].map(star => <MIcon name="grade" key={star} className={`text-sm ${star <= Math.round(place.rating!) ? 'text-secondary fill-current' : 'text-outline-variant'}`} />)}
                       </div>
                       <div className="text-xs text-muted-foreground">
                         {place.user_ratings_total} reviews
@@ -406,7 +409,7 @@ export function RestaurantProfileModal({
                   
                   {place.yelpData && <div className="text-center">
                       <Badge variant="outline" className="text-sm">
-                        <Star className="h-3 w-3 mr-1" />
+                        <MIcon name="grade" className="text-xs mr-1" />
                         Yelp
                       </Badge>
                       <div className="text-xs text-muted-foreground mt-1">Available</div>
@@ -417,25 +420,25 @@ export function RestaurantProfileModal({
                 <div className="lg:col-span-2">
                   <div className="grid grid-cols-2 gap-3">
                     <Button onClick={handleCallRestaurant} disabled={!place.formatted_phone_number} className="w-full">
-                      <Phone className="h-4 w-4 mr-2" />
+                      <MIcon name="phone" className="text-sm mr-2" />
                       Call
                     </Button>
                     <Button variant="outline" onClick={handleGetDirections} className="w-full">
-                      <Navigation className="h-4 w-4 mr-2" />
+                      <MIcon name="directions" className="text-sm mr-2" />
                       Directions
                     </Button>
                     <Button variant="outline" onClick={handleVisitWebsite} disabled={!place.website} className="w-full">
-                      <Globe className="h-4 w-4 mr-2" />
+                      <MIcon name="language" className="text-sm mr-2" />
                       Website
                     </Button>
                     <Button variant="outline" onClick={handleAddToWishlist} disabled={isAddingToWishlist || !user} className="w-full">
-                      <Heart className="h-4 w-4 mr-2" />
+                      <MIcon name="favorite" className="text-sm mr-2" />
                       Wishlist
                     </Button>
                   </div>
                   
                   {place.yelpData && <Button variant="secondary" onClick={() => window.open(place.yelpData!.url, '_blank')} className="w-full mt-3">
-                      <Star className="h-4 w-4 mr-2" />
+                      <MIcon name="grade" className="text-sm mr-2" />
                       View on Yelp
                     </Button>}
                 </div>
@@ -462,7 +465,7 @@ export function RestaurantProfileModal({
                             <div className="lg:col-span-2 space-y-6">
                               <div className="flex items-center gap-3 mb-6">
                                 <div className="p-2 rounded-full bg-primary/10">
-                                  <MapPin className="h-5 w-5 text-primary" />
+                                  <MIcon name="location_on" className="text-base text-primary" />
                                 </div>
                                 <h3 className="text-xl font-bold text-foreground">Contact & Location</h3>
                               </div>
@@ -473,7 +476,7 @@ export function RestaurantProfileModal({
                                   <div className="absolute inset-0 bg-gradient-to-r from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                                   <div className="relative flex items-start gap-4">
                                     <div className="mt-1 p-3 rounded-lg bg-primary/10 group-hover:bg-primary/15 transition-colors duration-300">
-                                      <MapPin className="h-5 w-5 text-primary" />
+                                      <MIcon name="location_on" className="text-base text-primary" />
                                     </div>
                                     <div className="flex-1 min-w-0">
                                       <h4 className="text-sm font-semibold text-primary mb-2">Address</h4>
@@ -487,11 +490,11 @@ export function RestaurantProfileModal({
                                   {place.formatted_phone_number && <div className="group relative overflow-hidden rounded-xl border bg-gradient-to-br from-card to-card/95 p-5 shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer" onClick={() => window.open(`tel:${place.formatted_phone_number}`)}>
                                       <div className="absolute inset-0 bg-gradient-to-br from-blue-50/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                                       <div className="relative flex items-center gap-3">
-                                        <div className="p-2.5 rounded-lg bg-blue-100 group-hover:bg-blue-200 transition-colors duration-300">
-                                          <Phone className="h-4 w-4 text-blue-600" />
+                                        <div className="p-2.5 rounded-lg bg-primary/10 group-hover:bg-blue-200 transition-colors duration-300">
+                                          <MIcon name="phone" className="text-sm text-primary" />
                                         </div>
                                         <div className="flex-1 min-w-0">
-                                          <h4 className="text-xs font-medium text-blue-600 uppercase tracking-wider mb-1">Phone</h4>
+                                          <h4 className="text-xs font-medium text-primary uppercase tracking-wider mb-1">Phone</h4>
                                           <p className="text-sm font-semibold text-foreground">{place.formatted_phone_number}</p>
                                         </div>
                                       </div>
@@ -500,11 +503,11 @@ export function RestaurantProfileModal({
                                   {place.website && <div className="group relative overflow-hidden rounded-xl border bg-gradient-to-br from-card to-card/95 p-5 shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer" onClick={() => window.open(place.website, '_blank', 'noopener noreferrer')}>
                                       <div className="absolute inset-0 bg-gradient-to-br from-purple-50/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                                       <div className="relative flex items-center gap-3">
-                                        <div className="p-2.5 rounded-lg bg-purple-100 group-hover:bg-purple-200 transition-colors duration-300">
-                                          <Globe className="h-4 w-4 text-purple-600" />
+                                        <div className="p-2.5 rounded-lg bg-tertiary/10 group-hover:bg-purple-200 transition-colors duration-300">
+                                          <MIcon name="language" className="text-sm text-tertiary" />
                                         </div>
                                         <div className="flex-1 min-w-0">
-                                          <h4 className="text-xs font-medium text-purple-600 uppercase tracking-wider mb-1">Website</h4>
+                                          <h4 className="text-xs font-medium text-tertiary uppercase tracking-wider mb-1">Website</h4>
                                           <p className="text-sm font-semibold text-primary transition-colors duration-200 truncate">
                                             {place.website.replace(/^https?:\/\//, '')}
                                           </p>
@@ -519,19 +522,19 @@ export function RestaurantProfileModal({
                             <div className="space-y-6">
                               <div className="flex items-center gap-3 mb-6">
                                 <div className="p-2 rounded-full bg-accent/10">
-                                  <Star className="h-5 w-5 text-accent" />
+                                  <MIcon name="grade" className="text-base text-accent" />
                                 </div>
                                 <h3 className="text-xl font-bold text-foreground">Quick Stats</h3>
                               </div>
 
                               {/* Stats Cards */}
                               <div className="flex gap-3">
-                                {place.rating && <div className="flex-1 relative overflow-hidden rounded-xl bg-gradient-to-br from-yellow-200 via-yellow-100 to-orange-200 p-4 shadow-md border border-yellow-200/60">
+                                {place.rating && <div className="flex-1 relative overflow-hidden rounded-xl bg-gradient-to-br from-yellow-200 via-yellow-100 to-orange-200 p-4 shadow-md border border-secondary/20/60">
                                     <div className="absolute top-0 right-0 w-12 h-12 bg-yellow-300/20 rounded-full -mr-6 -mt-6"></div>
                                     <div className="relative">
                                       <div className="flex items-center gap-2 mb-2">
                                         <div className="p-1.5 rounded-md bg-yellow-200/80">
-                                          <Star className="h-3.5 w-3.5 text-yellow-700" />
+                                          <MIcon name="grade" className="text-xs text-yellow-700" />
                                         </div>
                                         <span className="text-xs font-bold text-yellow-800 uppercase tracking-wider">Rating</span>
                                       </div>
@@ -543,19 +546,19 @@ export function RestaurantProfileModal({
                                     </div>
                                   </div>}
 
-                                {place.price_level && <div className="flex-1 relative overflow-hidden rounded-xl bg-gradient-to-br from-green-200 via-green-100 to-emerald-200 p-4 shadow-md border border-green-200/60">
+                                {place.price_level && <div className="flex-1 relative overflow-hidden rounded-xl bg-gradient-to-br from-green-200 via-green-100 to-emerald-200 p-4 shadow-md border border-secondary/20/60">
                                     <div className="absolute bottom-0 left-0 w-10 h-10 bg-green-300/20 rounded-full -ml-5 -mb-5"></div>
                                     <div className="relative">
                                       <div className="flex items-center gap-2 mb-2">
                                         <div className="p-1.5 rounded-md bg-green-200/80">
-                                          <svg className="h-3.5 w-3.5 text-green-700" fill="currentColor" viewBox="0 0 20 20">
+                                          <svg className="h-3.5 w-3.5 text-secondary" fill="currentColor" viewBox="0 0 20 20">
                                             <path d="M4 4a2 2 0 00-2 2v1h16V6a2 2 0 00-2-2H4zM18 9H2v5a2 2 0 002 2h12a2 2 0 002-2V9zM4 13a1 1 0 011-1h1a1 1 0 110 2H5a1 1 0 01-1-1zm5-1a1 1 0 100 2h1a1 1 0 100-2H9z" />
                                           </svg>
                                         </div>
                                         <span className="text-xs font-bold text-green-800 uppercase tracking-wider">Price</span>
                                       </div>
                                       <div className="text-2xl font-black text-green-900 mb-1">{getPriceDisplay(place.price_level)}</div>
-                                      <p className="text-xs font-medium text-green-700">Price level</p>
+                                      <p className="text-xs font-medium text-secondary">Price level</p>
                                     </div>
                                   </div>}
                               </div>
@@ -567,7 +570,7 @@ export function RestaurantProfileModal({
                                   <div className="flex items-center justify-between">
                                     <div className="flex items-center gap-2">
                                       <div className="p-1.5 rounded-md bg-muted">
-                                        <Clock className="h-3.5 w-3.5 text-muted-foreground" />
+                                        <MIcon name="schedule" className="text-xs text-muted-foreground" />
                                       </div>
                                       <span className="text-xs font-bold text-foreground uppercase tracking-wider">STATUS</span>
                                     </div>
@@ -576,31 +579,31 @@ export function RestaurantProfileModal({
                                       </Badge>}
                                   </div>
                                   <div className="flex flex-wrap gap-1.5 mt-2">
-                                    {place.types.includes('meal_delivery') && <Badge variant="outline" className="text-xs font-medium px-2 py-0.5 rounded-full bg-blue-50 text-blue-700 border-blue-200">
+                                    {place.types.includes('meal_delivery') && <Badge variant="outline" className="text-xs font-medium px-2 py-0.5 rounded-full bg-primary/5 text-blue-700 border-primary/20">
                                         🚚 Delivery
                                       </Badge>}
 
-                                    {place.types.includes('meal_takeaway') && <Badge variant="outline" className="text-xs font-medium px-2 py-0.5 rounded-full bg-orange-50 text-orange-700 border-orange-200">
+                                    {place.types.includes('meal_takeaway') && <Badge variant="outline" className="text-xs font-medium px-2 py-0.5 rounded-full bg-secondary/5 text-orange-700 border-secondary/20">
                                         🥡 Takeaway
                                       </Badge>}
 
-                                    {place.types.includes('dine_in') && <Badge variant="outline" className="text-xs font-medium px-2 py-0.5 rounded-full bg-purple-50 text-purple-700 border-purple-200">
+                                    {place.types.includes('dine_in') && <Badge variant="outline" className="text-xs font-medium px-2 py-0.5 rounded-full bg-tertiary/5 text-purple-700 border-tertiary/20">
                                         🍽️ Dine-in
                                       </Badge>}
 
-                                    {(place.types.includes('wheelchair_accessible_entrance') || place.types.includes('wheelchair_accessible')) && <Badge variant="outline" className="text-xs font-medium px-2 py-0.5 rounded-full bg-teal-50 text-teal-700 border-teal-200">
+                                    {(place.types.includes('wheelchair_accessible_entrance') || place.types.includes('wheelchair_accessible')) && <Badge variant="outline" className="text-xs font-medium px-2 py-0.5 rounded-full bg-primary/5 text-teal-700 border-teal-200">
                                         ♿ Accessible
                                       </Badge>}
 
-                                    {place.types.includes('wifi') && <Badge variant="outline" className="text-xs font-medium px-2 py-0.5 rounded-full bg-indigo-50 text-indigo-700 border-indigo-200">
+                                    {place.types.includes('wifi') && <Badge variant="outline" className="text-xs font-medium px-2 py-0.5 rounded-full bg-primary/5 text-indigo-700 border-indigo-200">
                                         📶 WiFi
                                       </Badge>}
 
-                                    {place.types.includes('accepts_credit_cards') && <Badge variant="outline" className="text-xs font-medium px-2 py-0.5 rounded-full bg-green-50 text-green-700 border-green-200">
+                                    {place.types.includes('accepts_credit_cards') && <Badge variant="outline" className="text-xs font-medium px-2 py-0.5 rounded-full bg-secondary/5 text-secondary border-secondary/20">
                                         💳 Cards Accepted
                                       </Badge>}
 
-                                    {place.types.includes('outdoor_seating') && <Badge variant="outline" className="text-xs font-medium px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border-emerald-200">
+                                    {place.types.includes('outdoor_seating') && <Badge variant="outline" className="text-xs font-medium px-2 py-0.5 rounded-full bg-secondary/5 text-emerald-700 border-secondary/20">
                                         🌤️ Outdoor Seating
                                       </Badge>}
 
@@ -621,7 +624,7 @@ export function RestaurantProfileModal({
                   {place.opening_hours?.weekday_text && <Card>
                       <CardHeader>
                         <CardTitle className="flex items-center gap-2">
-                          <Clock className="h-5 w-5" />
+                          <MIcon name="schedule" className="text-base" />
                           Opening Hours
                         </CardTitle>
                       </CardHeader>
@@ -740,7 +743,7 @@ export function RestaurantProfileModal({
                               <div className="flex-1 min-w-0">
                                 <span className="font-medium text-sm truncate block">{review.author_name}</span>
                                 <div className="flex items-center gap-1 mt-1">
-                                  {[1, 2, 3, 4, 5].map(star => <Star key={star} className={`h-3 w-3 ${star <= review.rating ? 'text-yellow-500 fill-current' : 'text-gray-300'}`} />)}
+                                  {[1, 2, 3, 4, 5].map(star => <Star key={star} className={`h-3 w-3 ${star <= review.rating ? 'text-secondary fill-current' : 'text-outline-variant'}`} />)}
                                   <span className="text-xs text-muted-foreground ml-1">
                                     {new Date(review.time * 1000).toLocaleDateString()}
                                   </span>

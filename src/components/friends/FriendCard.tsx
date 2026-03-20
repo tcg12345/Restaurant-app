@@ -1,5 +1,4 @@
 import { useState, useEffect, useRef, memo } from 'react';
-import { Star, MapPin, ChefHat, Eye, MessageCircle, User, MoreVertical } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -10,6 +9,10 @@ import { useFriendProfiles } from '@/contexts/FriendProfilesContext';
 import { supabase } from '@/integrations/supabase/client';
 import { useUserRole } from '@/hooks/useUserRole';
 import { ExpertBadge } from '@/components/ExpertBadge';
+
+const MIcon = ({ name, className = '', filled = false }: { name: string; className?: string; filled?: boolean }) => (
+  <span className={`material-symbols-outlined ${className}`} style={filled ? { fontVariationSettings: "'FILL' 1" } : undefined}>{name}</span>
+);
 
 interface FriendCardProps {
   friend: {
@@ -74,7 +77,7 @@ function FriendCardComponent({ friend, onViewProfile, onChat, onRemove, classNam
   }, [friend.id, counts.rated, counts.wishlist, getFriendProfile]);
 
   return (
-    <Card ref={cardRef} 
+    <Card ref={cardRef}
       className={cn(
         "group relative overflow-hidden transition-all duration-300 hover:shadow-lg hover:scale-[1.02] border-l-4 border-l-primary/20 hover:border-l-primary",
         "bg-gradient-to-br from-background to-muted/30",
@@ -93,7 +96,7 @@ function FriendCardComponent({ friend, onViewProfile, onChat, onRemove, classNam
                   {friend.username?.charAt(0).toUpperCase()}
                 </AvatarFallback>
               </Avatar>
-              <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-background"></div>
+              <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-secondary/50 rounded-full border-2 border-background"></div>
             </div>
             <div>
               <div className="flex items-center gap-2 mb-1">
@@ -105,8 +108,8 @@ function FriendCardComponent({ friend, onViewProfile, onChat, onRemove, classNam
               {friend.name && (
                 <p className="text-sm text-muted-foreground">{friend.name}</p>
               )}
-              <Badge 
-                variant={friend.is_public ? "default" : "secondary"} 
+              <Badge
+                variant={friend.is_public ? "default" : "secondary"}
                 className="mt-1 text-xs"
               >
                 {friend.is_public ? 'Public' : 'Private'}
@@ -116,31 +119,31 @@ function FriendCardComponent({ friend, onViewProfile, onChat, onRemove, classNam
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button 
-                variant="ghost" 
-                size="sm" 
+              <Button
+                variant="ghost"
+                size="sm"
                 className={cn(
                   "h-8 w-8 p-0 opacity-0 group-hover:opacity-100 transition-opacity",
                   isHovered && "opacity-100"
                 )}
               >
-                <MoreVertical className="h-4 w-4" />
+                <MIcon name="more_vert" className="text-sm" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuItem onClick={() => onViewProfile(friend)}>
-                <User className="mr-2 h-4 w-4" />
+                <MIcon name="person" className="mr-2 text-sm" />
                 View Profile
               </DropdownMenuItem>
               <DropdownMenuItem onClick={() => onChat(friend)}>
-                <MessageCircle className="mr-2 h-4 w-4" />
+                <MIcon name="chat" className="mr-2 text-sm" />
                 Start Chat
               </DropdownMenuItem>
-              <DropdownMenuItem 
+              <DropdownMenuItem
                 onClick={() => onRemove(friend.id)}
                 className="text-destructive focus:text-destructive"
               >
-                <User className="mr-2 h-4 w-4" />
+                <MIcon name="person" className="mr-2 text-sm" />
                 Remove Friend
               </DropdownMenuItem>
             </DropdownMenuContent>
@@ -151,21 +154,21 @@ function FriendCardComponent({ friend, onViewProfile, onChat, onRemove, classNam
         <div className="grid grid-cols-3 gap-4 mb-4">
           <div className="text-center">
             <div className="flex items-center justify-center mb-1">
-              <ChefHat className="h-4 w-4 text-primary mr-1" />
+              <MIcon name="restaurant" className="text-sm text-primary mr-1" />
               <span className="font-semibold text-lg">{counts.rated}</span>
             </div>
             <p className="text-xs text-muted-foreground">Rated</p>
           </div>
           <div className="text-center">
             <div className="flex items-center justify-center mb-1">
-              <Eye className="h-4 w-4 text-secondary mr-1" />
+              <MIcon name="visibility" className="text-sm text-secondary mr-1" />
               <span className="font-semibold text-lg">{counts.wishlist}</span>
             </div>
             <p className="text-xs text-muted-foreground">Wishlist</p>
           </div>
           <div className="text-center">
             <div className="flex items-center justify-center mb-1">
-              <Star className="h-4 w-4 text-yellow-500 mr-1" />
+              <MIcon name="grade" className="text-sm text-secondary mr-1" />
               <span className="font-semibold text-lg">{friend.score || 0}</span>
             </div>
             <p className="text-xs text-muted-foreground">Score</p>
@@ -174,22 +177,22 @@ function FriendCardComponent({ friend, onViewProfile, onChat, onRemove, classNam
 
         {/* Action Buttons */}
         <div className="grid grid-cols-2 gap-2">
-          <Button 
-            variant="outline" 
-            size="sm" 
+          <Button
+            variant="outline"
+            size="sm"
             onClick={() => onViewProfile(friend)}
             className="hover:bg-primary hover:text-primary-foreground transition-colors"
           >
-            <User className="h-4 w-4 mr-2" />
+            <MIcon name="person" className="text-sm mr-2" />
             Profile
           </Button>
-          <Button 
-            variant="outline" 
-            size="sm" 
+          <Button
+            variant="outline"
+            size="sm"
             onClick={() => onChat(friend)}
             className="hover:bg-secondary hover:text-secondary-foreground transition-colors"
           >
-            <MessageCircle className="h-4 w-4 mr-2" />
+            <MIcon name="chat" className="text-sm mr-2" />
             Chat
           </Button>
         </div>

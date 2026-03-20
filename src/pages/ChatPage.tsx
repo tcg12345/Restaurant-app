@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, Send, Users, MoreVertical, Image } from 'lucide-react';
+const MIcon = ({ name, className = '', filled = false }: { name: string; className?: string; filled?: boolean }) => (
+  <span className={`material-symbols-outlined ${className}`} style={filled ? { fontVariationSettings: "'FILL' 1" } : undefined}>{name}</span>
+);
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -326,7 +328,7 @@ export function ChatPage() {
               onClick={() => navigate('/chat-list')}
               className="flex-shrink-0"
             >
-              <ArrowLeft className="h-4 w-4" />
+              <MIcon name="arrow_back" className="text-sm" />
             </Button>
             
             {otherParticipant && (
@@ -358,12 +360,12 @@ export function ChatPage() {
               }}
               className="hover:bg-primary/10"
             >
-              <Users className="h-4 w-4" />
+              <MIcon name="group" className="text-sm" />
             </Button>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" size="sm" className="hover:bg-primary/10">
-                  <MoreVertical className="h-4 w-4" />
+                  <MIcon name="more_vert" className="text-sm" />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
@@ -457,7 +459,7 @@ export function ChatPage() {
       <div className="flex-shrink-0 border-t p-4">
         <div className="flex items-center gap-2">
           <Button variant="ghost" size="sm">
-            <Image className="h-4 w-4" />
+            <MIcon name="image" className="text-sm" />
           </Button>
           <div className="flex-1 flex items-center gap-2">
             <Input
@@ -473,7 +475,7 @@ export function ChatPage() {
               disabled={!newMessage.trim() || isSending}
               size="sm"
             >
-              <Send className="h-4 w-4" />
+              <MIcon name="send" className="text-sm" />
             </Button>
           </div>
         </div>

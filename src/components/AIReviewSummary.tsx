@@ -3,16 +3,10 @@ import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
-import { 
-  Star, 
-  TrendingUp, 
-  AlertTriangle, 
-  Utensils, 
-  Users, 
-  Banknote,
-  Heart,
-  Sparkles
-} from 'lucide-react';
+
+const MIcon = ({ name, className = '', filled = false }: { name: string; className?: string; filled?: boolean }) => (
+  <span className={`material-symbols-outlined ${className}`} style={filled ? { fontVariationSettings: "'FILL' 1" } : undefined}>{name}</span>
+);
 
 interface ReviewSummaryData {
   summary: string;
@@ -71,9 +65,9 @@ export function AIReviewSummary({ restaurantName, placeId, className }: AIReview
 
   const getSentimentColor = (sentiment: string) => {
     switch (sentiment) {
-      case 'positive': return 'text-green-600 bg-green-50';
-      case 'negative': return 'text-red-600 bg-red-50';
-      case 'mixed': return 'text-yellow-600 bg-yellow-50';
+      case 'positive': return 'text-secondary bg-secondary/5';
+      case 'negative': return 'text-destructive bg-destructive/5';
+      case 'mixed': return 'text-secondary bg-secondary/5';
       default: return 'text-muted-foreground bg-muted/50';
     }
   };
@@ -93,7 +87,7 @@ export function AIReviewSummary({ restaurantName, placeId, className }: AIReview
       <Card className={className}>
         <CardHeader>
           <div className="flex items-center gap-2">
-            <Sparkles className="h-5 w-5 text-primary" />
+            <MIcon name="auto_awesome" className="text-base text-primary" />
             <CardTitle className="text-lg">AI Review Insights</CardTitle>
           </div>
         </CardHeader>
@@ -127,7 +121,7 @@ export function AIReviewSummary({ restaurantName, placeId, className }: AIReview
       <CardHeader>
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <Sparkles className="h-5 w-5 text-primary" />
+            <MIcon name="auto_awesome" className="text-base text-primary" />
             <CardTitle className="text-lg">AI Review Insights</CardTitle>
           </div>
           <Badge className={getSentimentColor(reviewData.sentiment)}>
@@ -147,28 +141,28 @@ export function AIReviewSummary({ restaurantName, placeId, className }: AIReview
           <div className="grid grid-cols-2 gap-3">
             {reviewData.foodQuality && (
               <div className="flex items-center gap-2 text-sm">
-                <Utensils className="h-4 w-4 text-orange-500" />
+                <MIcon name="restaurant" className="text-sm text-secondary" />
                 <span>Food:</span>
                 <span>{getQualityIcon(reviewData.foodQuality)} {reviewData.foodQuality}</span>
               </div>
             )}
             {reviewData.serviceQuality && (
               <div className="flex items-center gap-2 text-sm">
-                <Users className="h-4 w-4 text-blue-500" />
+                <MIcon name="group" className="text-sm text-primary" />
                 <span>Service:</span>
                 <span>{getQualityIcon(reviewData.serviceQuality)} {reviewData.serviceQuality}</span>
               </div>
             )}
             {reviewData.atmosphere && (
               <div className="flex items-center gap-2 text-sm">
-                <Heart className="h-4 w-4 text-pink-500" />
+                <MIcon name="favorite" className="text-sm text-secondary" />
                 <span>Atmosphere:</span>
                 <span>{getQualityIcon(reviewData.atmosphere)} {reviewData.atmosphere}</span>
               </div>
             )}
             {reviewData.valueForMoney && (
               <div className="flex items-center gap-2 text-sm">
-                <Banknote className="h-4 w-4 text-green-500" />
+                <MIcon name="attach_money" className="text-sm text-secondary" />
                 <span>Value:</span>
                 <span>{getQualityIcon(reviewData.valueForMoney)} {reviewData.valueForMoney}</span>
               </div>
@@ -180,12 +174,12 @@ export function AIReviewSummary({ restaurantName, placeId, className }: AIReview
         {reviewData.highlights.length > 0 && (
           <div>
             <h4 className="text-sm font-semibold mb-2 flex items-center gap-1">
-              <TrendingUp className="h-4 w-4 text-green-500" />
+              <MIcon name="trending_up" className="text-sm text-secondary" />
               What people love:
             </h4>
             <div className="flex flex-wrap gap-1">
               {reviewData.highlights.map((highlight, index) => (
-                <Badge key={index} variant="outline" className="text-xs bg-green-50 text-green-700 border-green-200">
+                <Badge key={index} variant="outline" className="text-xs bg-secondary/5 text-secondary border-secondary/20">
                   {highlight}
                 </Badge>
               ))}
@@ -197,12 +191,12 @@ export function AIReviewSummary({ restaurantName, placeId, className }: AIReview
         {reviewData.concerns.length > 0 && (
           <div>
             <h4 className="text-sm font-semibold mb-2 flex items-center gap-1">
-              <AlertTriangle className="h-4 w-4 text-amber-500" />
+              <MIcon name="warning" className="text-sm text-secondary" />
               Things to note:
             </h4>
             <div className="flex flex-wrap gap-1">
               {reviewData.concerns.map((concern, index) => (
-                <Badge key={index} variant="outline" className="text-xs bg-amber-50 text-amber-700 border-amber-200">
+                <Badge key={index} variant="outline" className="text-xs bg-secondary/5 text-secondary border-secondary/20">
                   {concern}
                 </Badge>
               ))}

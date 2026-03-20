@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { MapPin, Calendar, Star, Users, Eye, Trash2, MoreVertical } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+
+const MIcon = ({ name, className = '', filled = false }: { name: string; className?: string; filled?: boolean }) => (
+  <span className={`material-symbols-outlined ${className}`} style={filled ? { fontVariationSettings: "'FILL' 1" } : undefined}>{name}</span>
+);
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Trip } from '@/hooks/useTrips';
@@ -62,14 +65,14 @@ export function TripOverviewCard({ trip, onDeleteTrip }: TripOverviewCardProps) 
             <div className="flex-1">
               <CardTitle className="text-lg line-clamp-1">{trip.title}</CardTitle>
               <CardDescription className="flex items-center gap-1 mt-1">
-                <MapPin className="w-4 h-4" />
+                <MIcon name="location_on" className="text-sm" />
                 {trip.destination}
               </CardDescription>
             </div>
             <div className="flex items-center gap-2">
               {trip.is_public && (
                 <Badge variant="secondary" className="text-xs">
-                  <Users className="w-3 h-3 mr-1" />
+                  <MIcon name="group" className="text-xs mr-1" />
                   Public
                 </Badge>
               )}
@@ -82,7 +85,7 @@ export function TripOverviewCard({ trip, onDeleteTrip }: TripOverviewCardProps) 
                       onClick={(e) => e.stopPropagation()}
                       className="h-8 w-8 p-0"
                     >
-                      <MoreVertical className="h-4 w-4" />
+                      <MIcon name="more_vert" className="text-sm" />
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
@@ -93,7 +96,7 @@ export function TripOverviewCard({ trip, onDeleteTrip }: TripOverviewCardProps) 
                         setShowDeleteDialog(true);
                       }}
                     >
-                      <Trash2 className="w-4 h-4 mr-2" />
+                      <MIcon name="delete" className="text-sm mr-2" />
                       Delete Trip
                     </DropdownMenuItem>
                   </DropdownMenuContent>
@@ -107,7 +110,7 @@ export function TripOverviewCard({ trip, onDeleteTrip }: TripOverviewCardProps) 
           {/* Trip Dates */}
           {(trip.start_date || trip.end_date) && (
             <div className="flex items-center gap-1 text-sm text-muted-foreground">
-              <Calendar className="w-4 h-4" />
+              <MIcon name="calendar_month" className="text-sm" />
               {trip.start_date && format(new Date(trip.start_date), 'MMM dd')}
               {trip.start_date && trip.end_date && ' - '}
               {trip.end_date && format(new Date(trip.end_date), 'MMM dd, yyyy')}
@@ -123,7 +126,7 @@ export function TripOverviewCard({ trip, onDeleteTrip }: TripOverviewCardProps) 
             <div className="text-center p-3 bg-muted/30 rounded-lg">
               <div className="text-2xl font-bold text-primary flex items-center justify-center gap-1">
                 {avgRating > 0 ? avgRating.toFixed(1) : '—'}
-                {avgRating > 0 && <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />}
+                {avgRating > 0 && <MIcon name="grade" className="text-sm fill-yellow-400 text-secondary" filled />}
               </div>
               <div className="text-xs text-muted-foreground">Avg Rating</div>
             </div>
@@ -150,7 +153,7 @@ export function TripOverviewCard({ trip, onDeleteTrip }: TripOverviewCardProps) 
 
           {/* View Button */}
           <Button onClick={(e) => { e.stopPropagation(); handleViewTrip(); }} className="w-full" size="sm">
-            <Eye className="w-4 h-4 mr-2" />
+            <MIcon name="visibility" className="text-sm mr-2" />
             View Trip Details
           </Button>
         </CardContent>

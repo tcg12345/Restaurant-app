@@ -1,6 +1,8 @@
 import React from 'react';
 import { Badge } from '@/components/ui/badge';
-import { Star, Users } from 'lucide-react';
+const MIcon = ({ name, className = '', filled = false }: { name: string; className?: string; filled?: boolean }) => (
+  <span className={`material-symbols-outlined ${className}`} style={filled ? { fontVariationSettings: "'FILL' 1" } : undefined}>{name}</span>
+);
 
 interface FriendRatingDisplayProps {
   friendRating?: number;

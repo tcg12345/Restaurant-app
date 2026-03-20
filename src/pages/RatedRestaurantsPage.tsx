@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { Plus, Check, ChevronDown, X, Sliders, MapPin, Filter, Trash2, ArrowUpDown, ListPlus, Search } from 'lucide-react';
+import { Check, Sliders, Trash2, ArrowUpDown, ListPlus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { RestaurantCard } from '@/components/RestaurantCard';
@@ -56,6 +56,10 @@ if (typeof document !== 'undefined') {
     document.head.appendChild(styleElement);
   }
 }
+
+const MIcon = ({ name, className = '', filled = false }: { name: string; className?: string; filled?: boolean }) => (
+  <span className={`material-symbols-outlined ${className}`} style={filled ? { fontVariationSettings: "'FILL' 1" } : undefined}>{name}</span>
+);
 
 interface RatedRestaurantsPageProps {
   restaurants: Restaurant[];
@@ -597,7 +601,7 @@ const preloadImages = async () => {
 
             {/* Search Bar */}
             <div className="relative">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <MIcon name="search" className="absolute left-4 top-1/2 -translate-y-1/2 text-sm text-muted-foreground" />
               <Input
                 placeholder="Search restaurants, cuisines, locations..."
                 value={searchTerm}
@@ -610,7 +614,7 @@ const preloadImages = async () => {
                 onClick={() => setShowMobileFilters(true)}
                 className="absolute right-2 top-1/2 -translate-y-1/2 h-8 w-8 p-0 hover:bg-muted/50 rounded-full"
               >
-                <Filter className="h-4 w-4 text-muted-foreground" />
+                <MIcon name="filter_list" className="text-sm text-muted-foreground" />
               </Button>
             </div>
 
@@ -653,7 +657,7 @@ const preloadImages = async () => {
                   >
                     {list.name}
                     {isDeleteMode && !list.is_default && (
-                      <X className="h-3 w-3 ml-1 text-destructive inline" />
+                      <MIcon name="close" className="text-xs ml-1 text-destructive inline" />
                     )}
                   </button>
                 ))}
@@ -695,7 +699,7 @@ const preloadImages = async () => {
                   size="sm"
                   className="h-9 px-3 text-muted-foreground hover:text-foreground hover:bg-muted/50 rounded-full text-sm font-medium transition-all duration-200"
                 >
-                  <Plus className="h-4 w-4 mr-2" />
+                  <MIcon name="add" className="text-sm mr-2" />
                   List
                 </Button>
                 {onNavigateToMap && (
@@ -706,7 +710,7 @@ const preloadImages = async () => {
                     className="h-9 w-9 p-0 text-muted-foreground hover:text-foreground hover:bg-muted/50 rounded-full transition-all duration-200"
                     title="Map View"
                   >
-                    <MapPin className="h-4 w-4" />
+                    <MIcon name="location_on" className="text-sm" />
                   </Button>
                 )}
 
@@ -754,7 +758,7 @@ const preloadImages = async () => {
                   onClick={() => setIsAddDialogOpen(true)}
                   className="h-9 px-5 rounded-full bg-primary hover:bg-primary/90 text-white font-semibold shadow-md hover:shadow-lg transition-all duration-200"
                 >
-                  <Plus className="mr-2 h-4 w-4" />
+                  <MIcon name="add" className="mr-2 text-sm" />
                   Add Restaurant
                 </Button>
               </div>
@@ -775,7 +779,7 @@ const preloadImages = async () => {
 
             {/* Search Bar */}
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <MIcon name="search" className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground" />
               <Input
                 placeholder="Search restaurants, cuisines..."
                 value={searchTerm}
@@ -788,7 +792,7 @@ const preloadImages = async () => {
                 onClick={() => setShowMobileFilters(true)}
                 className="absolute right-2 top-1/2 -translate-y-1/2 h-8 w-8 p-0 hover:bg-muted/50 rounded-full"
               >
-                <Filter className="h-4 w-4 text-muted-foreground" />
+                <MIcon name="filter_list" className="text-sm text-muted-foreground" />
               </Button>
             </div>
 
@@ -797,7 +801,7 @@ const preloadImages = async () => {
               onClick={() => setIsAddDialogOpen(true)}
               className="w-full h-10 rounded-full bg-primary hover:bg-primary/90 text-white font-semibold shadow-md hover:shadow-lg transition-all duration-200"
             >
-              <Plus className="mr-2 h-4 w-4" />
+              <MIcon name="add" className="mr-2 text-sm" />
               Add Restaurant
             </Button>
 
@@ -818,7 +822,7 @@ const preloadImages = async () => {
                 size="sm"
                 className="h-9 px-3 text-muted-foreground hover:text-foreground hover:bg-muted/50 rounded-full text-sm font-medium transition-all duration-200"
               >
-                <Plus className="h-4 w-4 mr-2" />
+                <MIcon name="add" className="text-sm mr-2" />
                 List
               </Button>
               {onNavigateToMap && (
@@ -829,7 +833,7 @@ const preloadImages = async () => {
                   className="h-9 w-9 p-0 text-muted-foreground hover:text-foreground hover:bg-muted/50 rounded-full transition-all duration-200"
                   title="Map View"
                 >
-                  <MapPin className="h-4 w-4" />
+                  <MIcon name="location_on" className="text-sm" />
                 </Button>
               )}
 
@@ -912,7 +916,7 @@ const preloadImages = async () => {
                 >
                   {list.name}
                   {isDeleteMode && !list.is_default && (
-                    <X className="h-3 w-3 ml-1 text-destructive inline" />
+                    <MIcon name="close" className="text-xs ml-1 text-destructive inline" />
                   )}
                 </button>
               ))}
@@ -954,7 +958,7 @@ const preloadImages = async () => {
                 onClick={clearFilters} 
                 className="rounded-xl bg-destructive/10 border-destructive/50 text-destructive hover:bg-destructive/20"
               >
-                <X className="mr-2 h-4 w-4" />
+                <MIcon name="close" className="mr-2 text-sm" />
                 Clear All Filters
               </Button>
             )}
@@ -975,7 +979,7 @@ const preloadImages = async () => {
                           : `${filterCuisines.length} Selected`
                       }
                     </span>
-                    <ChevronDown className="ml-2 h-4 w-4 flex-shrink-0" />
+                    <MIcon name="expand_more" className="ml-2 text-sm flex-shrink-0" />
                   </Button>
                 </PopoverTrigger>
                 <PopoverContent className="w-72 p-0">
@@ -1016,7 +1020,7 @@ const preloadImages = async () => {
                           : `${filterPrices.length} Selected`
                       }
                     </span>
-                    <ChevronDown className="ml-2 h-4 w-4 flex-shrink-0" />
+                    <MIcon name="expand_more" className="ml-2 text-sm flex-shrink-0" />
                   </Button>
                 </PopoverTrigger>
                 <PopoverContent className="w-64 p-0">
@@ -1057,7 +1061,7 @@ const preloadImages = async () => {
                           : `${filterMichelins.length} Selected`
                       }
                     </span>
-                    <ChevronDown className="ml-2 h-4 w-4 flex-shrink-0" />
+                    <MIcon name="expand_more" className="ml-2 text-sm flex-shrink-0" />
                   </Button>
                 </PopoverTrigger>
                 <PopoverContent className="w-64 p-0">
@@ -1182,7 +1186,7 @@ const preloadImages = async () => {
               onClick={() => setIsAddDialogOpen(true)}
               className="rounded-full px-6 py-2 bg-primary hover:bg-primary/90 text-white font-semibold shadow-md hover:shadow-lg transition-all duration-200"
             >
-              <Plus className="mr-2 h-4 w-4" />
+              <MIcon name="add" className="mr-2 text-sm" />
               Add Restaurant
             </Button>
             <Button
@@ -1210,7 +1214,7 @@ const preloadImages = async () => {
               onClick={() => setIsAddDialogOpen(true)}
               className="rounded-full px-6 py-2 bg-primary hover:bg-primary/90 text-white font-semibold shadow-md hover:shadow-lg transition-all duration-200"
             >
-              <Plus className="mr-2 h-4 w-4" />
+              <MIcon name="add" className="mr-2 text-sm" />
               {displayRestaurants.length === 0 ? 'Add First Restaurant' : 'Add Restaurant'}
             </Button>
             {displayRestaurants.length > 0 && (

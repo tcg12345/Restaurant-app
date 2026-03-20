@@ -25,28 +25,28 @@ export function TripDetailStats({ ratings }: TripDetailStatsProps) {
       value: totalPlaces,
       subtext: `${ratedPlaces} rated`,
       icon: MapPin,
-      color: 'text-blue-600 bg-blue-50'
+      color: 'text-primary bg-primary/5'
     },
     {
       label: 'Avg Rating',
       value: avgRating > 0 ? avgRating.toFixed(1) : '—',
       subtext: `${highRatedPlaces} excellent`,
       icon: Star,
-      color: 'text-yellow-600 bg-yellow-50'
+      color: 'text-secondary bg-secondary/5'
     },
     {
       label: 'Restaurants',
       value: restaurantCount,
       subtext: totalPlaces > 0 ? `${Math.round((restaurantCount / totalPlaces) * 100)}%` : '0%',
       icon: Users,
-      color: 'text-green-600 bg-green-50'
+      color: 'text-secondary bg-secondary/5'
     },
     {
       label: 'Attractions',
       value: attractionCount,
       subtext: totalPlaces > 0 ? `${Math.round((attractionCount / totalPlaces) * 100)}%` : '0%',
       icon: TrendingUp,
-      color: 'text-purple-600 bg-purple-50'
+      color: 'text-tertiary bg-tertiary/5'
     }
   ];
 

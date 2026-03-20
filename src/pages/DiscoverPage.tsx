@@ -6,9 +6,12 @@ import { useDiscover } from '@/contexts/DiscoverContext';
 import { DiscoverSearchForm, type SearchType } from '@/components/DiscoverSearchForm';
 import { DiscoverResultsGrid } from '@/components/DiscoverResultsGrid';
 import { RatingBottomSheet } from '@/components/RatingBottomSheet';
-import { Search, TrendingUp, Award, MapPin } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import type { Restaurant } from '@/types/restaurant';
+
+const MIcon = ({ name, className = '', filled = false }: { name: string; className?: string; filled?: boolean }) => (
+  <span className={`material-symbols-outlined ${className}`} style={filled ? { fontVariationSettings: "'FILL' 1" } : undefined}>{name}</span>
+);
 
 interface RestaurantResult {
   id: string;
@@ -237,35 +240,35 @@ export function DiscoverPage() {
         {/* Quick Stats */}
         {hasSearched && restaurants.length > 0 && (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <Card className="bg-gradient-to-br from-green-50 to-green-100 dark:from-green-900/20 dark:to-green-800/20 border-green-200">
+            <Card className="bg-gradient-to-br from-green-50 to-green-100 dark:from-green-900/20 dark:to-green-800/20 border-secondary/20">
               <CardContent className="p-4 flex items-center gap-3">
-                <TrendingUp className="h-8 w-8 text-green-600" />
+                <MIcon name="trending_up" className="text-2xl text-secondary" />
                 <div>
-                  <p className="text-sm text-green-600 font-medium">Average Rating</p>
-                  <p className="text-2xl font-bold text-green-700">
+                  <p className="text-sm text-secondary font-medium">Average Rating</p>
+                  <p className="text-2xl font-bold text-secondary">
                     {(restaurants.reduce((sum, r) => sum + r.rating, 0) / restaurants.length).toFixed(1)}
                   </p>
                 </div>
               </CardContent>
             </Card>
 
-            <Card className="bg-gradient-to-br from-amber-50 to-amber-100 dark:from-amber-900/20 dark:to-amber-800/20 border-amber-200">
+            <Card className="bg-gradient-to-br from-amber-50 to-amber-100 dark:from-amber-900/20 dark:to-amber-800/20 border-secondary/20">
               <CardContent className="p-4 flex items-center gap-3">
-                <Award className="h-8 w-8 text-amber-600" />
+                <MIcon name="verified" className="text-2xl text-secondary" filled />
                 <div>
-                  <p className="text-sm text-amber-600 font-medium">Michelin Starred</p>
-                  <p className="text-2xl font-bold text-amber-700">
+                  <p className="text-sm text-secondary font-medium">Michelin Starred</p>
+                  <p className="text-2xl font-bold text-secondary">
                     {restaurants.filter(r => r.michelinStars).length}
                   </p>
                 </div>
               </CardContent>
             </Card>
 
-            <Card className="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20 border-blue-200">
+            <Card className="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20 border-primary/20">
               <CardContent className="p-4 flex items-center gap-3">
-                <MapPin className="h-8 w-8 text-blue-600" />
+                <MIcon name="location_on" className="text-2xl text-primary" />
                 <div>
-                  <p className="text-sm text-blue-600 font-medium">Unique Locations</p>
+                  <p className="text-sm text-primary font-medium">Unique Locations</p>
                   <p className="text-2xl font-bold text-blue-700">
                     {new Set(restaurants.map(r => r.location?.city || 'Unknown')).size}
                   </p>

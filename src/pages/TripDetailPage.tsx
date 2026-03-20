@@ -87,11 +87,11 @@ export default function TripDetailPage() {
     const endDate = new Date(trip.end_date);
     
     if (isBefore(now, startDate)) {
-      return { status: 'upcoming', label: 'Upcoming', color: 'bg-blue-500' };
+      return { status: 'upcoming', label: 'Upcoming', color: 'bg-primary/50' };
     } else if (isWithinInterval(now, { start: startDate, end: endDate })) {
-      return { status: 'active', label: 'Active', color: 'bg-green-500' };
+      return { status: 'active', label: 'Active', color: 'bg-secondary/50' };
     } else if (isAfter(now, endDate)) {
-      return { status: 'completed', label: 'Completed', color: 'bg-gray-500' };
+      return { status: 'completed', label: 'Completed', color: 'bg-surface-container-low0' };
     }
     return null;
   };

@@ -1,4 +1,8 @@
-import { DollarSign } from 'lucide-react';
+
+
+const MIcon = ({ name, className = '', filled = false }: { name: string; className?: string; filled?: boolean }) => (
+  <span className={`material-symbols-outlined ${className}`} style={filled ? { fontVariationSettings: "'FILL' 1" } : undefined}>{name}</span>
+);
 
 interface PriceRangeProps {
   priceRange?: number;
@@ -39,8 +43,8 @@ export function PriceRange({
             <DollarSign
               className={`${sizeClasses[size]} transition-colors duration-150 stroke-2 ${
                 isFilled
-                  ? 'fill-green-500 text-green-600'
-                  : 'fill-gray-200 text-gray-400 hover:fill-green-300 hover:text-green-500'
+                  ? 'fill-green-500 text-secondary'
+                  : 'fill-gray-200 text-on-surface-variant/70 hover:fill-green-300 hover:text-secondary'
               }`}
             />
           </button>

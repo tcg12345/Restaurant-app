@@ -11,8 +11,11 @@ import {
 } from '@/components/ui/tooltip';
 import { ExpertBadge } from '@/components/ExpertBadge';
 import { ProfilePreview } from '@/types/feed';
-import { ChevronRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
+
+const MIcon = ({ name, className = '', filled = false }: { name: string; className?: string; filled?: boolean }) => (
+  <span className={`material-symbols-outlined ${className}`} style={filled ? { fontVariationSettings: "'FILL' 1" } : undefined}>{name}</span>
+);
 
 interface EnhancedProfileCarouselProps {
   profiles: ProfilePreview[];
@@ -59,7 +62,7 @@ export function EnhancedProfileCarousel({
           className="text-primary hover:text-primary/80 font-medium"
         >
           View All
-          <ChevronRight className="h-4 w-4 ml-1" />
+          <MIcon name="chevron_right" className="text-sm ml-1" />
         </Button>
       </div>
       
@@ -124,7 +127,7 @@ export function EnhancedProfileCarousel({
 
                       {/* Online status indicator */}
                       {profile.recentActivityCount > 0 && (
-                        <div className="absolute bottom-0 right-0 h-4 w-4 bg-green-500 rounded-full ring-2 ring-background" />
+                        <div className="absolute bottom-0 right-0 h-4 w-4 bg-secondary/50 rounded-full ring-2 ring-background" />
                       )}
                     </div>
                     

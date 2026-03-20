@@ -4,8 +4,11 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Search, Sparkles, MapPin, Filter, Loader2, Plane } from 'lucide-react';
 import { AmadeusCitySearch } from '@/components/AmadeusCitySearch';
+
+const MIcon = ({ name, className = '', filled = false }: { name: string; className?: string; filled?: boolean }) => (
+  <span className={`material-symbols-outlined ${className}`} style={filled ? { fontVariationSettings: "'FILL' 1" } : undefined}>{name}</span>
+);
 import { LocationPermission } from '@/components/LocationPermission';
 import { useLocation } from '@/hooks/useLocation';
 import type { AmadeusCity } from '@/hooks/useAmadeusApi';
@@ -102,7 +105,7 @@ export function DiscoverSearchForm({
   return <Card className="border-primary/20 bg-gradient-to-br from-background via-background to-primary/5">
       <CardHeader>
         <CardTitle className="flex items-center gap-2 text-xl">
-          <Sparkles className="h-5 w-5 text-primary animate-pulse" />
+          <MIcon name="auto_awesome" className="text-base text-primary animate-pulse" />
           AI-Powered Restaurant Discovery
         </CardTitle>
         <CardDescription className="text-base">
@@ -126,7 +129,7 @@ export function DiscoverSearchForm({
           <div className="space-y-2">
             <label className="text-sm font-medium text-muted-foreground flex items-center gap-2">
               Location
-              <Plane className="h-3 w-3 text-amber-500" />
+              <MIcon name="flight" className="text-xs text-secondary" />
             </label>
             <div className="space-y-2">
               <AmadeusCitySearch
@@ -151,16 +154,16 @@ export function DiscoverSearchForm({
         <div className="flex items-center gap-3">
           <Button onClick={onSearch} disabled={isLoading || !searchQuery.trim()} className="h-12 px-8 bg-primary hover:bg-primary/90 flex-1 lg:flex-none">
             {isLoading ? <>
-                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                <MIcon name="progress_activity" className="text-sm mr-2 animate-spin" />
                 Searching...
               </> : <>
-                <Search className="h-4 w-4 mr-2" />
+                <MIcon name="search" className="text-sm mr-2" />
                 Discover Restaurants
               </>}
           </Button>
           
           <Button variant="outline" onClick={() => setShowFilters(!showFilters)} className="h-12 px-4">
-            <Filter className="h-4 w-4" />
+            <MIcon name="filter_list" className="text-sm" />
           </Button>
         </div>
 
@@ -180,7 +183,7 @@ export function DiscoverSearchForm({
         <div className="space-y-3">
           <p className="text-sm font-medium text-muted-foreground flex items-center gap-2">
             Popular destinations:
-            <Plane className="h-3 w-3 text-amber-500" />
+            <MIcon name="flight" className="text-xs text-secondary" />
           </p>
           <div className="flex flex-wrap gap-2">
             {['New York, United States', 'Paris, France', 'London, United Kingdom', 'Tokyo, Japan', 'Rome, Italy', 'Barcelona, Spain'].map(location => <Badge key={location} variant="outline" className="cursor-pointer hover:bg-accent transition-colors px-3 py-1 text-xs" onClick={() => setLocationQuery(location)}>

@@ -599,7 +599,7 @@ export function ExportItineraryDialog({ isOpen, onClose, itinerary }: ExportItin
                               }`}>
                                 {selectedFormat === option.value && (
                                   <div className="w-full h-full flex items-center justify-center">
-                                    <div className="w-2 h-2 bg-white rounded-full" />
+                                    <div className="w-2 h-2 bg-background rounded-full" />
                                   </div>
                                 )}
                               </div>
@@ -731,7 +731,7 @@ export function ExportItineraryDialog({ isOpen, onClose, itinerary }: ExportItin
                         }`}>
                           {selectedFormat === option.value && (
                             <div className="w-full h-full flex items-center justify-center">
-                              <div className="w-2 h-2 bg-white rounded-full" />
+                              <div className="w-2 h-2 bg-background rounded-full" />
                             </div>
                           )}
                         </div>

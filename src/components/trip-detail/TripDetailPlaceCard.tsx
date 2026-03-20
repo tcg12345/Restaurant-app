@@ -1,6 +1,9 @@
 import { useState } from 'react';
-import { Star, MapPin, Calendar, MoreVertical, Eye, Edit, ExternalLink, Phone } from 'lucide-react';
 import { MichelinStarIcon } from '@/components/MichelinStarIcon';
+
+const MIcon = ({ name, className = '', filled = false }: { name: string; className?: string; filled?: boolean }) => (
+  <span className={`material-symbols-outlined ${className}`} style={filled ? { fontVariationSettings: "'FILL' 1" } : undefined}>{name}</span>
+);
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -54,11 +57,13 @@ export function TripDetailPlaceCard({
     return (
       <div className="flex items-center gap-1">
         {Array.from({ length: 5 }, (_, i) => (
-          <Star
+          <MIcon
             key={i}
-            className={`w-3 h-3 ${
-              i < rating ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300'
+            name="grade"
+            className={`text-xs ${
+              i < rating ? 'text-secondary' : 'text-outline-variant'
             }`}
+            filled={i < rating}
           />
         ))}
         <span className="text-xs font-medium ml-1">{rating.toFixed(1)}</span>
@@ -75,9 +80,9 @@ export function TripDetailPlaceCard({
     if (!michelinStars || michelinStars === 0) return null;
     return (
       <div className="flex items-center gap-1">
-        <span className="text-xs font-medium text-yellow-600">Michelin</span>
+        <span className="text-xs font-medium text-secondary">Michelin</span>
         {Array.from({ length: michelinStars }, (_, i) => (
-          <MichelinStarIcon key={i} className="w-4 h-4 text-yellow-500 fill-current" />
+          <MichelinStarIcon key={i} className="w-4 h-4 text-secondary fill-current" />
         ))}
       </div>
     );
@@ -133,7 +138,7 @@ export function TripDetailPlaceCard({
                     </span>
                   )}
                   {place.price_range && (
-                    <span className="text-xs font-bold text-green-600 bg-green-50 px-2 py-1 rounded-full">
+                    <span className="text-xs font-bold text-secondary bg-secondary/5 px-2 py-1 rounded-full">
                       {getPriceDisplay(place.price_range)}
                     </span>
                   )}
@@ -156,27 +161,27 @@ export function TripDetailPlaceCard({
                 className="h-6 w-6 p-0 opacity-0 group-hover:opacity-100 transition-opacity"
                 onClick={(e) => e.stopPropagation()}
               >
-                <MoreVertical className="h-3 w-3" />
+                <MIcon name="more_vert" className="text-xs" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuItem onClick={(e) => { e.stopPropagation(); onDetails(place.id); }}>
-                <Eye className="w-4 h-4 mr-2" />
+                <MIcon name="visibility" className="text-sm mr-2" />
                 View Details
               </DropdownMenuItem>
               <DropdownMenuItem onClick={(e) => { e.stopPropagation(); onEdit(place.id); }}>
-                <Edit className="w-4 h-4 mr-2" />
+                <MIcon name="edit" className="text-sm mr-2" />
                 Edit Rating
               </DropdownMenuItem>
               {place.website && (
                 <DropdownMenuItem onClick={(e) => { e.stopPropagation(); window.open(place.website, '_blank'); }}>
-                  <ExternalLink className="w-4 h-4 mr-2" />
+                  <MIcon name="open_in_new" className="text-sm mr-2" />
                   Visit Website
                 </DropdownMenuItem>
               )}
               {place.phone_number && (
                 <DropdownMenuItem onClick={(e) => { e.stopPropagation(); window.open(`tel:${place.phone_number}`, '_self'); }}>
-                  <Phone className="w-4 h-4 mr-2" />
+                  <MIcon name="phone" className="text-sm mr-2" />
                   Call
                 </DropdownMenuItem>
               )}
@@ -188,13 +193,13 @@ export function TripDetailPlaceCard({
         <div className="space-y-1 text-xs text-muted-foreground mt-2">
           {place.address && (
             <div className="flex items-center gap-1">
-              <MapPin className="w-3 h-3 flex-shrink-0" />
+              <MIcon name="location_on" className="text-xs flex-shrink-0" />
               <p className="line-clamp-1">{place.address}</p>
             </div>
           )}
           {place.date_visited && (
             <div className="flex items-center gap-1">
-              <Calendar className="w-3 h-3 flex-shrink-0" />
+              <MIcon name="calendar_month" className="text-xs flex-shrink-0" />
               <p>Visited: {new Date(place.date_visited).toLocaleDateString()}</p>
             </div>
           )}

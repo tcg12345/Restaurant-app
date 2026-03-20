@@ -6,7 +6,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Calendar } from '@/components/ui/calendar';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
-import { ArrowLeft, Plane, Clock, MapPin, Calendar as CalendarIcon, DollarSign, Users } from 'lucide-react';
+const MIcon = ({ name, className = '', filled = false }: { name: string; className?: string; filled?: boolean }) => (
+  <span className={`material-symbols-outlined ${className}`} style={filled ? { fontVariationSettings: "'FILL' 1" } : undefined}>{name}</span>
+);
 import { supabase } from '@/integrations/supabase/client';
 import { format } from 'date-fns';
 
@@ -323,7 +325,7 @@ export default function FlightSearchResultsPage() {
                             <Badge variant={index % 3 === 0 ? 'default' : 'secondary'}>
                               ${(250 + index * 25).toFixed(0)}
                             </Badge>
-                            {index % 3 === 0 && <span className="text-xs text-green-600">Best Price</span>}
+                            {index % 3 === 0 && <span className="text-xs text-secondary">Best Price</span>}
                           </div>
                         </div>
                       ))}

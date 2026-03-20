@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { ArrowLeft, Plus, Search, Star, Download } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { RestaurantList, useRestaurantLists } from '@/hooks/useRestaurantLists';
 import { RestaurantCard } from '@/components/RestaurantCard';

@@ -1,7 +1,10 @@
 import { Restaurant } from '@/types/restaurant';
 import { Card } from '@/components/ui/card';
-import { MapPin, Calendar, Edit } from 'lucide-react';
 import { useSortable } from '@dnd-kit/sortable';
+
+const MIcon = ({ name, className = '', filled = false }: { name: string; className?: string; filled?: boolean }) => (
+  <span className={`material-symbols-outlined ${className}`} style={filled ? { fontVariationSettings: "'FILL' 1" } : undefined}>{name}</span>
+);
 import { CSS } from '@dnd-kit/utilities';
 import { format } from 'date-fns';
 import { MichelinStars } from '@/components/MichelinStars';
@@ -64,7 +67,7 @@ export function RatedRestaurantCard({
 
   const getRankColor = (rank: number) => {
     if (rank === 1) return 'bg-gradient-to-r from-yellow-400 to-yellow-500 text-yellow-900';
-    if (rank === 2) return 'bg-gradient-to-r from-gray-300 to-gray-400 text-gray-900';
+    if (rank === 2) return 'bg-gradient-to-r from-gray-300 to-gray-400 text-primary';
     if (rank === 3) return 'bg-gradient-to-r from-amber-600 to-amber-700 text-amber-100';
     return 'bg-gradient-to-r from-primary to-primary/80 text-primary-foreground';
   };
@@ -129,7 +132,7 @@ export function RatedRestaurantCard({
             {restaurant.priceRange && (
               <>
                 <span>•</span>
-                <span className="text-sm font-bold text-emerald-600 dark:text-emerald-400 tracking-tight">
+                <span className="text-sm font-bold text-secondary dark:text-secondary tracking-tight">
                   {'$'.repeat(restaurant.priceRange)}
                 </span>
               </>
@@ -144,14 +147,14 @@ export function RatedRestaurantCard({
             
             <span>•</span>
             <span className="flex items-center gap-1 truncate">
-              <MapPin className="w-3 h-3 flex-shrink-0" />
+              <MIcon name="location_on" className="text-xs flex-shrink-0" />
               {restaurant.city}
             </span>
           </div>
 
           {restaurant.dateVisited && (
             <div className="flex items-center gap-1 text-xs text-muted-foreground">
-              <Calendar className="w-3 h-3" />
+              <MIcon name="calendar_today" className="text-xs" />
               <span>Visited {format(new Date(restaurant.dateVisited), 'MMM d, yyyy')}</span>
             </div>
           )}
@@ -167,7 +170,7 @@ export function RatedRestaurantCard({
             className="p-2 rounded-lg hover:bg-muted/50 transition-colors flex-shrink-0 text-muted-foreground hover:text-foreground"
             data-testid={`button-edit-${restaurant.id}`}
           >
-            <Edit className="w-4 h-4" />
+            <MIcon name="edit" className="text-sm" />
           </button>
         )}
 

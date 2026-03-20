@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
-import { Star, MapPin, Calendar, Globe, Phone, Clock, DollarSign, Edit, X, Navigation, Trash2 } from 'lucide-react';
 import { MichelinStarIcon } from '@/components/MichelinStarIcon';
+
+const MIcon = ({ name, className = '', filled = false }: { name: string; className?: string; filled?: boolean }) => (
+  <span className={`material-symbols-outlined ${className}`} style={filled ? { fontVariationSettings: "'FILL' 1" } : undefined}>{name}</span>
+);
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -70,11 +73,11 @@ export function PlaceDetailsModal({ place, isOpen, onClose, onEdit, onDelete }: 
   const renderMichelinStars = (michelinStars?: number) => {
     if (!michelinStars || michelinStars === 0) return null;
     return (
-      <div className="flex items-center gap-2 p-3 bg-yellow-50 rounded-lg border border-yellow-200">
+      <div className="flex items-center gap-2 p-3 bg-secondary/5 rounded-lg border border-secondary/20">
         <span className="text-sm font-semibold text-yellow-800">Michelin Guide</span>
         <div className="flex items-center gap-1">
           {Array.from({ length: michelinStars }, (_, i) => (
-            <MichelinStarIcon key={i} className="w-5 h-5 text-yellow-600 fill-current" />
+            <MichelinStarIcon key={i} className="w-5 h-5 text-secondary fill-current" />
           ))}
         </div>
       </div>
@@ -94,11 +97,11 @@ export function PlaceDetailsModal({ place, isOpen, onClose, onEdit, onDelete }: 
     return (
       <div className="flex items-center gap-1">
         {fullStars > 0 && [...Array(fullStars)].map((_, i) => (
-          <Star key={i} className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+          <MIcon name="grade" className="text-sm fill-yellow-400 text-secondary" />
         ))}
-        {halfStar && <Star className="w-4 h-4 fill-yellow-400/50 text-yellow-400" />}
+        {halfStar && <MIcon name="grade" className="text-sm fill-yellow-400/50 text-secondary" />}
         {emptyStars > 0 && [...Array(emptyStars)].map((_, i) => (
-          <Star key={i + fullStars + (halfStar ? 1 : 0)} className="w-4 h-4 text-gray-300" />
+          <MIcon name="grade" key={i + fullStars + (halfStar ? 1 : 0)} className="text-sm text-outline-variant" />
         ))}
         <span className="ml-2 text-sm font-medium">{clampedRating.toFixed(1)}/5</span>
       </div>
@@ -137,7 +140,7 @@ export function PlaceDetailsModal({ place, isOpen, onClose, onEdit, onDelete }: 
                     {place.place_type}
                   </Badge>
                   {place.price_range && (
-                    <Badge variant="outline" className="text-green-600 border-green-600">
+                    <Badge variant="outline" className="text-secondary border-green-600">
                       {getPriceDisplay(place.price_range)}
                     </Badge>
                   )}
@@ -147,7 +150,7 @@ export function PlaceDetailsModal({ place, isOpen, onClose, onEdit, onDelete }: 
             <div className="flex items-center gap-2">
               {onEdit && (
                 <Button variant="outline" size="sm" onClick={onEdit}>
-                  <Edit className="w-4 h-4 mr-2" />
+                  <MIcon name="edit" className="text-sm mr-2" />
                   Edit
                 </Button>
               )}
@@ -161,7 +164,7 @@ export function PlaceDetailsModal({ place, isOpen, onClose, onEdit, onDelete }: 
                   }}
                   className="border-destructive/20 bg-destructive/5 hover:bg-destructive/10 text-destructive hover:text-destructive"
                 >
-                  <Trash2 className="w-4 h-4 mr-2" />
+                  <MIcon name="delete" className="text-sm mr-2" />
                   Delete
                 </Button>
               )}
@@ -208,7 +211,7 @@ export function PlaceDetailsModal({ place, isOpen, onClose, onEdit, onDelete }: 
             <Card>
               <CardContent className="p-4">
                 <h3 className="font-semibold mb-3 flex items-center gap-2">
-                  <Star className="w-5 h-5 text-yellow-500" />
+                  <MIcon name="grade" className="text-base text-secondary" />
                   Overall Rating
                 </h3>
                 {renderStarRating(place.overall_rating)}
@@ -227,12 +230,13 @@ export function PlaceDetailsModal({ place, isOpen, onClose, onEdit, onDelete }: 
                       <span className="text-sm font-medium">{category}</span>
                       <div className="flex items-center gap-1">
                         {[...Array(5)].map((_, i) => (
-                          <Star
+                          <MIcon
+                            name="grade"
                             key={i}
-                            className={`w-3 h-3 ${
+                            className={`text-xs ${
                               i < Math.floor(score as number)
-                                ? 'fill-yellow-400 text-yellow-400'
-                                : 'text-gray-300'
+                                ? 'fill-yellow-400 text-secondary'
+                                : 'text-outline-variant'
                             }`}
                           />
                         ))}
@@ -254,14 +258,14 @@ export function PlaceDetailsModal({ place, isOpen, onClose, onEdit, onDelete }: 
               
               {place.address && (
                 <div className="flex items-start gap-3">
-                  <MapPin className="w-4 h-4 text-muted-foreground mt-0.5 flex-shrink-0" />
+                  <MIcon name="location_on" className="text-sm text-muted-foreground mt-0.5 flex-shrink-0" />
                   <span className="text-sm">{place.address}</span>
                 </div>
               )}
 
               {place.date_visited && (
                 <div className="flex items-center gap-3">
-                  <Calendar className="w-4 h-4 text-muted-foreground flex-shrink-0" />
+                  <MIcon name="calendar_month" className="text-sm text-muted-foreground flex-shrink-0" />
                   <span className="text-sm">
                     Visited on {format(new Date(place.date_visited), 'MMMM d, yyyy')}
                   </span>
@@ -270,7 +274,7 @@ export function PlaceDetailsModal({ place, isOpen, onClose, onEdit, onDelete }: 
 
               {place.price_range && (
                 <div className="flex items-center gap-3">
-                  <DollarSign className="w-4 h-4 text-muted-foreground flex-shrink-0" />
+                  <MIcon name="attach_money" className="text-sm text-muted-foreground flex-shrink-0" />
                   <span className="text-sm">
                     Price Range: {getPriceDisplay(place.price_range)}
                   </span>
@@ -283,14 +287,14 @@ export function PlaceDetailsModal({ place, isOpen, onClose, onEdit, onDelete }: 
                     variant="outline"
                     size="sm"
                     asChild
-                    className="w-full justify-start gap-3 h-10 border-blue-200 bg-blue-50 hover:bg-blue-100 hover:border-blue-300 text-blue-700 hover:text-blue-800"
+                    className="w-full justify-start gap-3 h-10 border-primary/20 bg-primary/5 hover:bg-primary/10 hover:border-primary/30 text-blue-700 hover:text-blue-800"
                   >
                     <a
                       href={place.website}
                       target="_blank"
                       rel="noopener noreferrer"
                     >
-                      <Globe className="w-4 h-4" />
+                      <MIcon name="language" className="text-sm" />
                       Visit Website
                     </a>
                   </Button>
@@ -303,12 +307,12 @@ export function PlaceDetailsModal({ place, isOpen, onClose, onEdit, onDelete }: 
                     variant="outline"
                     size="sm"
                     asChild
-                    className="w-full justify-start gap-3 h-10 border-orange-200 bg-orange-50 hover:bg-orange-100 hover:border-orange-300 text-orange-700 hover:text-orange-800"
+                    className="w-full justify-start gap-3 h-10 border-secondary/20 bg-secondary/5 hover:bg-secondary/10 hover:border-orange-300 text-orange-700 hover:text-orange-800"
                   >
                     <a
                       href={`tel:${place.phone_number}`}
                     >
-                      <Phone className="w-4 h-4" />
+                      <MIcon name="phone" className="text-sm" />
                       Call {place.phone_number}
                     </a>
                   </Button>
@@ -321,14 +325,14 @@ export function PlaceDetailsModal({ place, isOpen, onClose, onEdit, onDelete }: 
                   variant="outline"
                   size="sm"
                   asChild
-                  className="w-full justify-start gap-3 h-10 border-green-200 bg-green-50 hover:bg-green-100 hover:border-green-300 text-green-700 hover:text-green-800"
+                  className="w-full justify-start gap-3 h-10 border-secondary/20 bg-secondary/5 hover:bg-secondary/10 hover:border-secondary/30 text-secondary hover:text-green-800"
                 >
                   <a
                     href={getDirectionsUrl()}
                     target="_blank"
                     rel="noopener noreferrer"
                   >
-                    <Navigation className="w-4 h-4" />
+                    <MIcon name="directions" className="text-sm" />
                     Get Directions
                   </a>
                 </Button>

@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
-import { Star, MapPin, Calendar, Clock, Loader2, Check, X } from 'lucide-react';
+const MIcon = ({ name, className = '', filled = false }: { name: string; className?: string; filled?: boolean }) => (
+  <span className={`material-symbols-outlined ${className}`} style={filled ? { fontVariationSettings: "'FILL' 1" } : undefined}>{name}</span>
+);
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -323,14 +325,14 @@ export function ItineraryImportPreviewDialog({
                             {place.type}
                           </Badge>
                           {place.isSelected ? (
-                            <Check className="w-4 h-4 text-green-600" />
+                            <MIcon name="check" className="text-sm text-secondary" />
                           ) : (
-                            <X className="w-4 h-4 text-muted-foreground" />
+                            <MIcon name="close" className="text-sm text-muted-foreground" />
                           )}
                         </div>
                         {(place.restaurantData?.address || place.attractionData?.address) && (
                           <CardDescription className="flex items-center gap-2 mt-1">
-                            <MapPin className="w-4 h-4" />
+                            <MIcon name="location_on" className="text-sm" />
                             {place.restaurantData?.address || place.attractionData?.address}
                           </CardDescription>
                         )}
@@ -395,7 +397,7 @@ export function ItineraryImportPreviewDialog({
             >
               {isImporting ? (
                 <>
-                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  <MIcon name="progress_activity" className="text-sm mr-2 animate-spin" />
                   Importing...
                 </>
               ) : (

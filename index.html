@@ -1,44 +1,39 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="light scroll-smooth">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
-    <title>Grubby • Research and Review</title>
+    <title>The Culinary Editorial</title>
     <link rel="icon" href="/lovable-uploads/72105a14-071b-4a8c-a0c5-981aa2ca4064.png" type="image/png">
-    <meta name="description" content="Premium Restaurant Discovery & Review Platform" />
-    <meta name="author" content="Grubby" />
+    <meta name="description" content="The Culinary Editorial - Premium Restaurant Discovery & Review Platform" />
+    <meta name="author" content="The Culinary Editorial" />
 
-    <!-- Premium Google Fonts -->
+    <!-- Google Fonts: Manrope (headlines) + Inter (body/labels) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Material Symbols Outlined -->
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
 
     <!-- Preconnect to Supabase Edge Functions for image proxy -->
     <link rel="preconnect" href="https://ocpmhsquwsdaauflbygf.functions.supabase.co" crossorigin>
 
-    <meta property="og:title" content="Grubby • Premium Restaurant Discovery" />
-    <meta property="og:description" content="Discover and review premium restaurants with AI-powered insights" />
+    <meta property="og:title" content="The Culinary Editorial" />
+    <meta property="og:description" content="Discover and review premium restaurants with curated editorial insights" />
     <meta property="og:type" content="website" />
-    <meta property="og:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
 
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:site" content="@lovable_dev" />
-    <meta name="twitter:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
     <script>
-      // Prevent flash of incorrect theme
+      // Default to light mode for editorial aesthetic
       (function() {
         const stored = localStorage.getItem('theme');
-        const theme = stored || 'dark'; // Default to dark mode
+        const theme = stored || 'light';
+        document.documentElement.classList.remove('dark', 'light');
         document.documentElement.classList.add(theme);
       })();
     </script>
     <script>
       // Single Page Apps for GitHub Pages
-      // https://github.com/rafgraph/spa-github-pages
-      // This script checks to see if a redirect is present in the query string,
-      // converts it back into the correct URL and adds it to the browser's history
-      // using window.history.replaceState(...), which won't cause the browser to
-      // attempt to load the new URL.
       (function(l) {
         if (l.search[1] === '/' ) {
           var decoded = l.search.slice(1).split('&').map(function(s) {

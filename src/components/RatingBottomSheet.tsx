@@ -3,7 +3,9 @@ import { Button } from '@/components/ui/button';
 import { BottomSheet, BottomSheetContent, BottomSheetHeader } from '@/components/ui/bottom-sheet';
 import { StarRating } from '@/components/StarRating';
 import { Restaurant } from '@/types/restaurant';
-import { X } from 'lucide-react';
+const MIcon = ({ name, className = '', filled = false }: { name: string; className?: string; filled?: boolean }) => (
+  <span className={`material-symbols-outlined ${className}`} style={filled ? { fontVariationSettings: "'FILL' 1" } : undefined}>{name}</span>
+);
 
 interface RatingBottomSheetProps {
   isOpen: boolean;

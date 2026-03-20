@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import { User, Star, MapPin, TrendingUp, Eye } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -8,6 +7,10 @@ import { Card, CardContent } from '@/components/ui/card';
 import { useFriendProfiles } from '@/contexts/FriendProfilesContext';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
+
+const MIcon = ({ name, className = '', filled = false }: { name: string; className?: string; filled?: boolean }) => (
+  <span className={`material-symbols-outlined ${className}`} style={filled ? { fontVariationSettings: "'FILL' 1" } : undefined}>{name}</span>
+);
 
 interface FriendProfilePopupProps {
   friend: any;
@@ -19,10 +22,10 @@ interface FriendProfilePopupProps {
 export function FriendProfilePopup({ friend, isOpen, onClose, onViewProfile }: FriendProfilePopupProps) {
   const navigate = useNavigate();
   const { getFriendProfile, refreshProfile } = useFriendProfiles();
-  
+
   // Get cached profile data instantly
   const cachedProfile = friend ? getFriendProfile(friend.id) : null;
-  
+
   const [stats, setStats] = useState({
     ratedCount: cachedProfile?.rated_count || 0,
     wishlistCount: cachedProfile?.wishlist_count || 0,
@@ -97,7 +100,7 @@ export function FriendProfilePopup({ friend, isOpen, onClose, onViewProfile }: F
                   {friend.is_public ? 'Public' : 'Private'}
                 </Badge>
                 <Badge variant="outline" className="text-xs">
-                  <Star className="h-3 w-3 mr-1" />
+                  <MIcon name="grade" className="text-xs mr-1" />
                   Score: {friend.score}
                 </Badge>
               </div>
@@ -116,14 +119,14 @@ export function FriendProfilePopup({ friend, isOpen, onClose, onViewProfile }: F
                 <div className="grid grid-cols-2 gap-4">
                   <div className="text-center">
                     <div className="flex items-center justify-center mb-2">
-                      <Star className="h-5 w-5 text-primary mr-1" />
+                      <MIcon name="grade" className="text-base text-primary mr-1" />
                     </div>
                     <div className="text-2xl font-bold">{stats.ratedCount}</div>
                     <div className="text-xs text-muted-foreground">Rated</div>
                   </div>
                   <div className="text-center">
                     <div className="flex items-center justify-center mb-2">
-                      <Eye className="h-5 w-5 text-primary mr-1" />
+                      <MIcon name="visibility" className="text-base text-primary mr-1" />
                     </div>
                     <div className="text-2xl font-bold">{stats.wishlistCount}</div>
                     <div className="text-xs text-muted-foreground">Wishlist</div>
@@ -138,7 +141,7 @@ export function FriendProfilePopup({ friend, isOpen, onClose, onViewProfile }: F
                   <div className="flex items-center justify-between">
                     <span className="text-sm text-muted-foreground">Average Rating</span>
                     <div className="flex items-center gap-1">
-                      <Star className="h-4 w-4 text-yellow-400 fill-yellow-400" />
+                      <MIcon name="grade" className="text-sm text-secondary" />
                       <span className="font-medium">{stats.averageRating.toFixed(1)}</span>
                     </div>
                   </div>
@@ -161,7 +164,7 @@ export function FriendProfilePopup({ friend, isOpen, onClose, onViewProfile }: F
             Close
           </Button>
           <Button onClick={handleViewFullProfile} className="flex-1">
-            <User className="h-4 w-4 mr-2" />
+            <MIcon name="person" className="text-sm mr-2" />
             View Full Profile
           </Button>
         </div>

@@ -3,7 +3,9 @@ import { useSearchParams } from 'react-router-dom';
 import { ItineraryBuilder, Itinerary } from '@/components/ItineraryBuilder';
 import { TripPlanner } from '@/components/TripPlanner';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Calendar, MapPin } from 'lucide-react';
+const MIcon = ({ name, className = '', filled = false }: { name: string; className?: string; filled?: boolean }) => (
+  <span className={`material-symbols-outlined ${className}`} style={filled ? { fontVariationSettings: "'FILL' 1" } : undefined}>{name}</span>
+);
 
 export default function TravelPage() {
   const [searchParams] = useSearchParams();
@@ -54,14 +56,14 @@ export default function TravelPage() {
                 value="itinerary" 
                 className="flex items-center gap-2 px-4 lg:px-8 py-3 lg:py-4 rounded-2xl font-bold text-sm lg:text-base transition-all duration-500 data-[state=active]:bg-gradient-premium data-[state=active]:text-primary-foreground data-[state=active]:shadow-premium-glow data-[state=active]:scale-105"
               >
-                <Calendar className="w-4 h-4 lg:w-5 lg:h-5" />
+                <MIcon name="calendar_month" className="text-sm lg:text-base" />
                 <span>Plan Trip</span>
               </TabsTrigger>
               <TabsTrigger 
                 value="trip-planner" 
                 className="flex items-center gap-2 px-4 lg:px-8 py-3 lg:py-4 rounded-2xl font-bold text-sm lg:text-base transition-all duration-500 data-[state=active]:bg-gradient-premium data-[state=active]:text-primary-foreground data-[state=active]:shadow-premium-glow data-[state=active]:scale-105"
               >
-                <MapPin className="w-4 h-4 lg:w-5 lg:h-5" />
+                <MIcon name="location_on" className="text-sm lg:text-base" />
                 <span>My Trips</span>
               </TabsTrigger>
             </TabsList>

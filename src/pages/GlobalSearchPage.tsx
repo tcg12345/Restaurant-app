@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Search, MapPin, Star, Heart, Phone, Globe, Navigation, Clock, Plane } from 'lucide-react';
+import { Plane } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -13,6 +13,10 @@ import { GlobalSearchMap } from '@/components/GlobalSearchMap';
 import { PersonalizedRecommendations } from '@/components/PersonalizedRecommendations';
 import { RestaurantProfileModal } from '@/components/RestaurantProfileModal';
 import { AmadeusCitySearch } from '@/components/AmadeusCitySearch';
+
+const MIcon = ({ name, className = '', filled = false }: { name: string; className?: string; filled?: boolean }) => (
+  <span className={`material-symbols-outlined ${className}`} style={filled ? { fontVariationSettings: "'FILL' 1" } : undefined}>{name}</span>
+);
 
 interface GooglePlaceResult {
   place_id: string;
@@ -233,7 +237,7 @@ export default function GlobalSearchPage() {
                    'Restaurant or cuisine'}
                 </label>
               <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
+                <MIcon name="search" className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground text-sm" />
                 <Input
                   placeholder={searchType === 'name' ? 'e.g., "The Cottage", "Joe\'s Pizza"' :
                              searchType === 'cuisine' ? 'e.g., "Italian", "Chinese", "Mexican"' :
@@ -249,7 +253,7 @@ export default function GlobalSearchPage() {
             <div className="space-y-2">
               <label className="text-sm font-medium text-muted-foreground flex items-center gap-2">
                 Location (optional)
-                <Plane className="h-3 w-3 text-amber-500" />
+                <Plane className="h-3 w-3 text-secondary" />
               </label>
               <AmadeusCitySearch
                 value={locationQuery}
@@ -285,7 +289,7 @@ export default function GlobalSearchPage() {
                     <h3 className="font-semibold text-lg mb-2">{place.name}</h3>
                     
                     <div className="flex items-center gap-2 mb-2">
-                      <MapPin className="h-4 w-4 text-muted-foreground" />
+                      <MIcon name="location_on" className="text-sm text-muted-foreground" />
                       <span className="text-sm text-muted-foreground line-clamp-1">
                         {place.formatted_address}
                       </span>
@@ -293,7 +297,7 @@ export default function GlobalSearchPage() {
 
                     {place.rating && (
                       <div className="flex items-center gap-2 mb-2">
-                        <Star className="h-4 w-4 text-yellow-500 fill-current" />
+                        <MIcon name="grade" className="text-sm text-secondary" filled />
                         <span className="font-medium">{place.rating}</span>
                         {place.user_ratings_total && (
                           <span className="text-sm text-muted-foreground">

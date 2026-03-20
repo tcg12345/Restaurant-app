@@ -1,8 +1,11 @@
 import React from 'react';
-import { Star, Users } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { CommunityStats } from '@/hooks/useRestaurantReviews';
 import { CommunityRatingSkeleton } from '@/components/skeletons/CommunityRatingSkeleton';
+
+const MIcon = ({ name, className = '', filled = false }: { name: string; className?: string; filled?: boolean }) => (
+  <span className={`material-symbols-outlined ${className}`} style={filled ? { fontVariationSettings: "'FILL' 1" } : undefined}>{name}</span>
+);
 
 interface CommunityRatingProps {
   stats: CommunityStats | null;
@@ -22,7 +25,7 @@ export function CommunityRating({ stats, isLoading }: CommunityRatingProps) {
     return (
       <div className="py-6 px-4">
         <div className="text-center text-muted-foreground">
-          <Users className="h-8 w-8 mx-auto mb-2 opacity-50" />
+          <MIcon name="group" className="text-2xl mx-auto mb-2 opacity-50" />
           <p className="text-sm">No community reviews yet</p>
           <p className="text-xs">Be the first to share your experience!</p>
         </div>
@@ -31,9 +34,9 @@ export function CommunityRating({ stats, isLoading }: CommunityRatingProps) {
   }
 
   const getRatingColor = (rating: number) => {
-    if (rating >= 8) return 'text-green-600 dark:text-green-400';
-    if (rating >= 6) return 'text-yellow-600 dark:text-yellow-400';
-    return 'text-red-600 dark:text-red-400';
+    if (rating >= 8) return 'text-secondary dark:text-secondary';
+    if (rating >= 6) return 'text-secondary dark:text-secondary';
+    return 'text-destructive dark:text-destructive/70';
   };
 
   const getDistributionWidth = (count: number) => {
@@ -48,7 +51,7 @@ export function CommunityRating({ stats, isLoading }: CommunityRatingProps) {
         <div className="flex items-center justify-between">
           <h3 className="text-base font-semibold text-foreground">Community Rating</h3>
           <Badge variant="outline" className="text-xs">
-            <Users className="h-3 w-3 mr-1" />
+            <MIcon name="group" className="text-xs mr-1" />
             {stats.totalReviews} review{stats.totalReviews !== 1 ? 's' : ''}
           </Badge>
         </div>
@@ -60,7 +63,7 @@ export function CommunityRating({ stats, isLoading }: CommunityRatingProps) {
               {stats.averageRating.toFixed(1)}
             </div>
             <div className="flex items-center mt-0.5">
-              <Star className="h-3 w-3 fill-current text-yellow-500" />
+              <MIcon name="grade" className="text-xs text-secondary" filled />
               <span className="text-xs text-muted-foreground ml-1">
                 out of 10
               </span>

@@ -16,34 +16,11 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
 import { Slider } from '@/components/ui/slider';
 
-import { 
-  Search, 
-  MapPin, 
-  Star, 
-  Clock, 
-  DollarSign, 
-  Filter, 
-  X,
-  Map,
-  Grid3X3,
-  Phone,
-  Globe,
-  ExternalLink,
-  ChevronDown,
-  ChevronUp,
-  Heart,
-  Eye,
-  Bot,
-  Sparkles,
-  Mic,
-  MicOff,
-  Wand2,
-  TrendingUp,
-  Award,
-  ShoppingBag,
-  Truck
-} from 'lucide-react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+
+const MIcon = ({ name, className = '', filled = false }: { name: string; className?: string; filled?: boolean }) => (
+  <span className={`material-symbols-outlined ${className}`} style={filled ? { fontVariationSettings: "'FILL' 1" } : undefined}>{name}</span>
+);
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { RestaurantMapView } from '@/components/RestaurantMapView';
 import { RestaurantDetailsModal } from '@/components/RestaurantDetailsModal';
@@ -566,7 +543,7 @@ export default function RestaurantSearchPage() {
     if (!hasSearched) {
       return (
         <div className="text-center py-12">
-          <Search className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
+          <MIcon name="search" className="text-4xl mx-auto mb-4 text-muted-foreground" />
           <h3 className="text-lg font-semibold mb-2">Start Your Restaurant Search</h3>
           <p className="text-muted-foreground">
             Enter what you're craving and let our AI find the perfect restaurants for you
@@ -578,7 +555,7 @@ export default function RestaurantSearchPage() {
     if (filteredRestaurants.length === 0) {
       return (
         <div className="text-center py-12">
-          <MapPin className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
+          <MIcon name="location_on" className="text-4xl mx-auto mb-4 text-muted-foreground" />
           <h3 className="text-lg font-semibold mb-2">No restaurants found</h3>
           <p className="text-muted-foreground mb-4">
             Try adjusting your search terms or filters
@@ -635,14 +612,14 @@ export default function RestaurantSearchPage() {
                     onClick={() => handleSaveToWishlist(restaurant)}
                     className="shrink-0 ml-2"
                   >
-                    <Heart className="h-4 w-4" />
+                    <MIcon name="favorite" className="text-sm" />
                   </Button>
                 </div>
 
                 <div className="flex items-start justify-between">
                   <div className="flex flex-col gap-2">
                     <div className="flex items-center cursor-pointer" onClick={() => handleGoogleSearch(restaurant)}>
-                      <Star className="h-5 w-5 fill-yellow-400 text-yellow-400" />
+                      <MIcon name="grade" className="text-base text-secondary" filled />
                       <span className="ml-1 text-base font-medium hover:underline">{restaurant.rating}</span>
                       {restaurant.reviewCount && (
                         <span 
@@ -654,7 +631,7 @@ export default function RestaurantSearchPage() {
                       )}
                     </div>
                     <div className="flex">
-                      <span className="text-lg font-bold text-green-600">
+                      <span className="text-lg font-bold text-secondary">
                         {restaurant.yelpData?.price || getPriceDisplay(restaurant.priceRange)}
                       </span>
                     </div>
@@ -664,19 +641,19 @@ export default function RestaurantSearchPage() {
                 {/* Yelp Badge and Services */}
                 <div className="flex flex-wrap gap-1">
                   {restaurant.yelpData && (
-                    <Badge variant="secondary" className="text-xs bg-red-100 text-red-800 border-red-200">
+                    <Badge variant="secondary" className="text-xs bg-destructive/10 text-red-800 border-destructive/20">
                       Yelp ✓
                     </Badge>
                   )}
                   {restaurant.yelpData?.transactions?.includes('delivery') && (
                     <Badge variant="outline" className="text-xs flex items-center gap-1">
-                      <Truck className="h-3 w-3" />
+                      <MIcon name="local_shipping" className="text-xs" />
                       Delivery
                     </Badge>
                   )}
                   {restaurant.yelpData?.transactions?.includes('pickup') && (
                     <Badge variant="outline" className="text-xs flex items-center gap-1">
-                      <ShoppingBag className="h-3 w-3" />
+                      <MIcon name="shopping_bag" className="text-xs" />
                       Pickup
                     </Badge>
                   )}
@@ -684,14 +661,14 @@ export default function RestaurantSearchPage() {
                 </div>
                 {restaurant.currentDayHours && (
                   <div className="flex items-center gap-1 text-sm text-muted-foreground">
-                    <Clock className="h-3 w-3" />
+                    <MIcon name="schedule" className="text-xs" />
                     <span>Today: {restaurant.currentDayHours}</span>
                   </div>
                 )}
 
                 {restaurant.website && (
                   <div className="flex items-center gap-1 text-sm text-muted-foreground">
-                    <Globe className="h-3 w-3" />
+                    <MIcon name="language" className="text-xs" />
                     <a 
                       href={restaurant.website}
                       target="_blank"
@@ -704,7 +681,7 @@ export default function RestaurantSearchPage() {
                 )}
 
                 <div className="flex items-start gap-1">
-                  <MapPin className="h-4 w-4 mt-0.5 text-muted-foreground shrink-0" />
+                  <MIcon name="location_on" className="text-sm mt-0.5 text-muted-foreground shrink-0" />
                   <span className="text-sm text-muted-foreground line-clamp-2">
                     {restaurant.address}
                   </span>
@@ -723,7 +700,7 @@ export default function RestaurantSearchPage() {
                     onClick={() => handleViewDetails(restaurant)}
                     className="flex-1"
                   >
-                    <Eye className="h-4 w-4 mr-1" />
+                    <MIcon name="visibility" className="text-sm mr-1" />
                     Details
                   </Button>
                   
@@ -733,7 +710,7 @@ export default function RestaurantSearchPage() {
                       size="sm"
                       onClick={() => window.open(`tel:${restaurant.phoneNumber}`, '_self')}
                     >
-                      <Phone className="h-4 w-4" />
+                      <MIcon name="phone" className="text-sm" />
                     </Button>
                   )}
                   
@@ -743,7 +720,7 @@ export default function RestaurantSearchPage() {
                       size="sm"
                       onClick={() => window.open(restaurant.website, '_blank')}
                     >
-                      <Globe className="h-4 w-4" />
+                      <MIcon name="language" className="text-sm" />
                     </Button>
                     )}
                     
@@ -753,7 +730,7 @@ export default function RestaurantSearchPage() {
                         size="sm"
                         onClick={() => window.open(restaurant.yelpData.url, '_blank')}
                       >
-                        <Star className="h-4 w-4" />
+                        <MIcon name="grade" className="text-sm" />
                       </Button>
                     )}
                 </div>
@@ -798,7 +775,7 @@ export default function RestaurantSearchPage() {
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <Search className="h-5 w-5" />
+              <MIcon name="search" className="text-base" />
               Smart Restaurant Search
             </CardTitle>
             <CardDescription>

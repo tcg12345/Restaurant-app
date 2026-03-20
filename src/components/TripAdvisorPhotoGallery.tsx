@@ -1,8 +1,11 @@
 import { useState, useEffect } from 'react';
-import { Camera, ExternalLink, Loader2 } from 'lucide-react';
 import { useTripAdvisorApi } from '@/hooks/useTripAdvisorApi';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+
+const MIcon = ({ name, className = '', filled = false }: { name: string; className?: string; filled?: boolean }) => (
+  <span className={`material-symbols-outlined ${className}`} style={filled ? { fontVariationSettings: "'FILL' 1" } : undefined}>{name}</span>
+);
 
 interface TripAdvisorPhotoGalleryProps {
   placeName: string;
@@ -69,7 +72,7 @@ export function TripAdvisorPhotoGallery({
     return (
       <div className="flex items-center justify-center py-4">
         <div className="flex items-center gap-2 text-sm text-muted-foreground">
-          <Loader2 className="w-4 h-4 animate-spin" />
+          <MIcon name="progress_activity" className="text-sm animate-spin" />
           Loading photos from TripAdvisor...
         </div>
       </div>
@@ -89,7 +92,7 @@ export function TripAdvisorPhotoGallery({
         {showTitle && (
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <Camera className="w-4 h-4 text-blue-600" />
+              <MIcon name="photo_camera" className="text-sm text-primary" />
               <h4 className="font-semibold">Photos from TripAdvisor</h4>
             </div>
             {locationId && (
@@ -99,7 +102,7 @@ export function TripAdvisorPhotoGallery({
                 onClick={() => window.open(`https://www.tripadvisor.com/LocationPhotoDirectLink-g${locationId}`, '_blank')}
                 className="text-xs"
               >
-                <ExternalLink className="w-3 h-3 mr-1" />
+                <MIcon name="open_in_new" className="text-xs mr-1" />
                 View all
               </Button>
             )}

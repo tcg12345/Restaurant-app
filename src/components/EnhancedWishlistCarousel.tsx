@@ -3,12 +3,15 @@ import { useNavigate } from 'react-router-dom';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Bookmark, MapPin, Heart, Trash2, ChevronRight, GripVertical, Star } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
 import { MichelinStars } from '@/components/MichelinStars';
+
+const MIcon = ({ name, className = '', filled = false }: { name: string; className?: string; filled?: boolean }) => (
+  <span className={`material-symbols-outlined ${className}`} style={filled ? { fontVariationSettings: "'FILL' 1" } : undefined}>{name}</span>
+);
 
 interface WishlistRestaurant {
   id: string;
@@ -135,7 +138,7 @@ export function EnhancedWishlistCarousel() {
       <div className="px-4 py-6 border-b border-border/50 bg-gradient-to-b from-muted/20 to-transparent">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-sm font-bold text-muted-foreground uppercase tracking-wide flex items-center gap-2">
-            <Heart className="h-4 w-4" />
+            <MIcon name="favorite" className="text-sm" />
             Your Wishlist
           </h2>
         </div>
@@ -158,7 +161,7 @@ export function EnhancedWishlistCarousel() {
       <div className="flex items-center justify-between mb-4">
         <div>
           <h2 className="text-sm font-bold text-muted-foreground uppercase tracking-wide flex items-center gap-2">
-            <Heart className="h-4 w-4 fill-red-500 text-red-500" />
+            <MIcon name="favorite" className="text-sm text-destructive" filled />
             Your Wishlist
           </h2>
           <p className="text-xs text-muted-foreground/70 mt-0.5">
@@ -172,7 +175,7 @@ export function EnhancedWishlistCarousel() {
           className="text-primary hover:text-primary/80 font-medium"
         >
           View All
-          <ChevronRight className="h-4 w-4 ml-1" />
+          <MIcon name="chevron_right" className="text-sm ml-1" />
         </Button>
       </div>
       
@@ -197,7 +200,7 @@ export function EnhancedWishlistCarousel() {
                 "transition-opacity duration-200",
                 showDelete ? "opacity-100" : "opacity-0"
               )}>
-                <Trash2 className="h-6 w-6 text-white" />
+                <MIcon name="delete" className="text-lg text-white" />
               </div>
 
               {/* Card */}
@@ -227,7 +230,7 @@ export function EnhancedWishlistCarousel() {
                     />
                   ) : (
                     <div className="absolute inset-0 flex items-center justify-center">
-                      <MapPin className="h-12 w-12 text-muted-foreground/30" />
+                      <MIcon name="location_on" className="text-4xl text-muted-foreground/30" />
                     </div>
                   )}
                   
@@ -240,19 +243,19 @@ export function EnhancedWishlistCarousel() {
                     size="icon"
                     className={cn(
                       "absolute top-3 right-3 h-9 w-9 rounded-full",
-                      "bg-background/80 backdrop-blur-sm hover:bg-red-500 hover:text-white",
+                      "bg-background/80 backdrop-blur-sm hover:bg-destructive/50 hover:text-white",
                       "transition-all duration-300",
                       "group/remove",
                       isHovered ? "opacity-100 scale-100" : "opacity-0 scale-90"
                     )}
                     onClick={(e) => handleRemove(e, place.place_id, place.name)}
                   >
-                    <Trash2 className="h-4 w-4" />
+                    <MIcon name="delete" className="text-sm" />
                   </Button>
 
                   {/* Wishlist heart */}
                   <div className="absolute top-3 left-3 flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-background/90 backdrop-blur-sm shadow-lg">
-                    <Heart className="h-4 w-4 text-red-500 fill-red-500" />
+                    <MIcon name="favorite" className="text-sm text-destructive" filled />
                   </div>
                 </div>
 
@@ -265,7 +268,7 @@ export function EnhancedWishlistCarousel() {
                     </h3>
                     {(place.city || place.country) && (
                       <div className="flex items-center gap-1.5 mt-1.5 text-muted-foreground">
-                        <MapPin className="h-3.5 w-3.5 flex-shrink-0" />
+                        <MIcon name="location_on" className="text-xs flex-shrink-0" />
                         <span className="text-sm line-clamp-1">
                           {place.city && place.country 
                             ? `${place.city}, ${place.country}` 

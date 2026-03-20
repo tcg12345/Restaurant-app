@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { MapPin, Star, Heart, ExternalLink, Navigation, DollarSign } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
+
+const MIcon = ({ name, className = '', filled = false }: { name: string; className?: string; filled?: boolean }) => (
+  <span className={`material-symbols-outlined ${className}`} style={filled ? { fontVariationSettings: "'FILL' 1" } : undefined}>{name}</span>
+);
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { MichelinStars } from '@/components/MichelinStars';
@@ -64,7 +67,7 @@ export function EnhancedRestaurantCard({
   const getPriceDisplay = (level?: number) => {
     if (!level) return null;
     return Array.from({ length: Math.min(level, 4) }).map((_, i) => (
-      <DollarSign key={i} className="h-3 w-3" />
+      <MIcon key={i} name="attach_money" className="text-xs" />
     ));
   };
 
@@ -102,7 +105,7 @@ export function EnhancedRestaurantCard({
           </>
         ) : (
           <div className="absolute inset-0 flex items-center justify-center">
-            <MapPin className="h-12 w-12 text-muted-foreground/30" />
+            <MIcon name="location_on" className="text-5xl text-muted-foreground/30" />
           </div>
         )}
         
@@ -126,11 +129,13 @@ export function EnhancedRestaurantCard({
             )}
             onClick={handleFavoriteClick}
           >
-            <Heart 
+            <MIcon
+              name="favorite"
               className={cn(
-                "h-4 w-4 transition-all",
-                isFavorite ? "fill-red-500 text-red-500" : "text-foreground"
+                "text-sm transition-all",
+                isFavorite ? "text-destructive" : "text-foreground"
               )}
+              filled={isFavorite}
             />
           </Button>
         )}
@@ -138,7 +143,7 @@ export function EnhancedRestaurantCard({
         {/* Rating badge */}
         {rating && (
           <div className="absolute top-3 left-3 flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-background/90 backdrop-blur-sm shadow-lg">
-            <Star className="h-4 w-4 text-yellow-500 fill-yellow-500" />
+            <MIcon name="grade" className="text-sm text-secondary" filled />
             <span className="text-sm font-bold">{rating.toFixed(1)}</span>
           </div>
         )}
@@ -159,7 +164,7 @@ export function EnhancedRestaurantCard({
             {name}
           </h3>
           <div className="flex items-center gap-1.5 mt-1.5 text-muted-foreground">
-            <MapPin className="h-3.5 w-3.5 flex-shrink-0" />
+            <MIcon name="location_on" className="text-sm flex-shrink-0" />
             <span className="text-sm line-clamp-1">{locationText}</span>
           </div>
         </div>
@@ -194,7 +199,7 @@ export function EnhancedRestaurantCard({
             size="sm"
           >
             View Details
-            <ExternalLink className="h-3.5 w-3.5 ml-2" />
+            <MIcon name="open_in_new" className="text-sm ml-2" />
           </Button>
         )}
       </CardContent>

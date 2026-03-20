@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { Users, Star, Heart, MapPin, Clock, ChevronLeft, ChevronRight } from 'lucide-react';
+const MIcon = ({ name, className = '', filled = false }: { name: string; className?: string; filled?: boolean }) => (
+  <span className={`material-symbols-outlined ${className}`} style={filled ? { fontVariationSettings: "'FILL' 1" } : undefined}>{name}</span>
+);
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -674,7 +676,7 @@ export function MobileFriendsActivityPage() {
         {/* Header */}
         <div className="space-y-2">
           <div className="flex items-center gap-2">
-            <Users className="h-8 w-8 text-primary" />
+            <MIcon name="group" className="text-2xl text-primary" />
             <h1 className="text-3xl font-bold">Friends' Activity</h1>
           </div>
           <p className="text-muted-foreground text-lg">
@@ -687,7 +689,7 @@ export function MobileFriendsActivityPage() {
           <Card>
             <CardContent className="p-3">
               <div className="text-center">
-                <Star className="h-4 w-4 text-yellow-500 mx-auto mb-1" />
+                <MIcon name="grade" className="text-sm text-secondary mx-auto mb-1" />
                 <p className="text-xs text-muted-foreground">Rated</p>
                 <p className="text-lg font-bold">
                   {filterCounts.rated}
@@ -699,7 +701,7 @@ export function MobileFriendsActivityPage() {
           <Card>
             <CardContent className="p-3">
               <div className="text-center">
-                <Heart className="h-4 w-4 text-red-500 mx-auto mb-1" />
+                <MIcon name="favorite" className="text-sm text-destructive mx-auto mb-1" />
                 <p className="text-xs text-muted-foreground">Wishlist</p>
                 <p className="text-lg font-bold">
                   {filterCounts.wishlist}
@@ -711,7 +713,7 @@ export function MobileFriendsActivityPage() {
           <Card>
             <CardContent className="p-3">
               <div className="text-center">
-                <MapPin className="h-4 w-4 text-blue-500 mx-auto mb-1" />
+                <MIcon name="location_on" className="text-sm text-primary mx-auto mb-1" />
                 <p className="text-xs text-muted-foreground">Cities</p>
                 <p className="text-lg font-bold">
                   {Object.keys(filterCounts.cities).length}
@@ -723,7 +725,7 @@ export function MobileFriendsActivityPage() {
           <Card>
             <CardContent className="p-3">
               <div className="text-center">
-                <Clock className="h-4 w-4 text-green-500 mx-auto mb-1" />
+                <MIcon name="schedule" className="text-sm text-secondary mx-auto mb-1" />
                 <p className="text-xs text-muted-foreground">Total</p>
                 <p className="text-lg font-bold">
                   {filterCounts.total}
@@ -758,7 +760,7 @@ export function MobileFriendsActivityPage() {
         <div className="space-y-4">
           {filteredRestaurants.length === 0 ? (
             <div className="text-center py-12">
-              <Users className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+              <MIcon name="group" className="text-5xl text-muted-foreground mx-auto mb-4" />
               <h3 className="text-lg font-semibold mb-2">No restaurants found</h3>
               <p className="text-muted-foreground">
                 {searchQuery || selectedCuisines.length > 0 || selectedCities.length > 0 || selectedFriends.length > 0
@@ -807,7 +809,7 @@ export function MobileFriendsActivityPage() {
                           <div className="flex items-center gap-2">
                             {restaurant.is_wishlist ? (
                               <Badge variant="secondary" className="text-xs">
-                                <Heart className="h-3 w-3 mr-1" />
+                                <MIcon name="favorite" className="text-xs mr-1" />
                                 Wishlist
                               </Badge>
                             ) : (
@@ -872,7 +874,7 @@ export function MobileFriendsActivityPage() {
                     size="sm"
                     className="flex items-center gap-1 px-3 py-2 text-xs"
                   >
-                    <ChevronLeft className="h-3 w-3" />
+                    <MIcon name="chevron_left" className="text-xs" />
                     <span className="hidden xs:inline">Previous</span>
                     <span className="xs:hidden">Prev</span>
                   </Button>
@@ -890,7 +892,7 @@ export function MobileFriendsActivityPage() {
                   >
                     <span className="hidden xs:inline">Next</span>
                     <span className="xs:hidden">Next</span>
-                    <ChevronRight className="h-3 w-3" />
+                    <MIcon name="chevron_right" className="text-xs" />
                   </Button>
                 </div>
               )}

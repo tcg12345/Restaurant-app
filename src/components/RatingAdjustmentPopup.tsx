@@ -2,8 +2,11 @@ import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { X, Star, ArrowRight, CheckCircle, AlertCircle } from 'lucide-react';
 import { Restaurant } from '@/types/restaurant';
+
+const MIcon = ({ name, className = '', filled = false }: { name: string; className?: string; filled?: boolean }) => (
+  <span className={`material-symbols-outlined ${className}`} style={filled ? { fontVariationSettings: "'FILL' 1" } : undefined}>{name}</span>
+);
 
 interface RatingAdjustment {
   restaurant: Restaurant;
@@ -169,7 +172,7 @@ export function RatingAdjustmentPopup({
           <div className="flex items-center justify-center gap-4">
             <div className="flex items-center gap-2">
               <span className="text-sm text-muted-foreground">From</span>
-              <span className="px-3 py-1 bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 text-sm font-bold rounded-lg">
+              <span className="px-3 py-1 bg-destructive/10 dark:bg-red-900/30 text-destructive dark:text-destructive/70 text-sm font-bold rounded-lg">
                 #{currentAdjustment.oldPosition}
               </span>
             </div>
@@ -189,19 +192,19 @@ export function RatingAdjustmentPopup({
           </div>
 
           {/* Rating Guidance */}
-          <div className="bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 border border-green-200/50 dark:border-green-800/50 rounded-xl p-4">
+          <div className="bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 border border-secondary/20/50 dark:border-secondary/40/50 rounded-xl p-4">
             <div className="flex items-center gap-2 mb-2">
-              <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-              <span className="text-sm font-medium text-green-700 dark:text-green-300">
+              <div className="w-2 h-2 bg-secondary/50 rounded-full"></div>
+              <span className="text-sm font-medium text-secondary dark:text-secondary/70">
                 Recommended for position #{currentAdjustment.newPosition}
               </span>
             </div>
             <div className="flex items-center justify-center gap-2">
-              <span className="text-lg font-bold text-green-600 dark:text-green-400">
+              <span className="text-lg font-bold text-secondary dark:text-secondary">
                 {currentAdjustment.requiredMinRating.toFixed(1)}
               </span>
               <span className="text-muted-foreground">—</span>
-              <span className="text-lg font-bold text-green-600 dark:text-green-400">
+              <span className="text-lg font-bold text-secondary dark:text-secondary">
                 {currentAdjustment.requiredMaxRating.toFixed(1)}
               </span>
             </div>

@@ -45,7 +45,7 @@ export function RestaurantLocationMap({ latitude, longitude, name, address }: Re
         .setHTML(`
           <div class="p-2">
             <h3 class="font-semibold text-sm">${name}</h3>
-            <p class="text-xs text-gray-600 mt-1">${address}</p>
+            <p class="text-xs text-on-surface-variant mt-1">${address}</p>
           </div>
         `);
 

@@ -1,8 +1,11 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Star, X } from 'lucide-react';
 import { RestaurantList } from '@/hooks/useRestaurantLists';
+
+const MIcon = ({ name, className = '', filled = false }: { name: string; className?: string; filled?: boolean }) => (
+  <span className={`material-symbols-outlined ${className}`} style={filled ? { fontVariationSettings: "'FILL' 1" } : undefined}>{name}</span>
+);
 
 interface RestaurantListCardProps {
   list: RestaurantList;
@@ -47,11 +50,11 @@ export function RestaurantListCard({
             <Button
               variant="ghost"
               size="sm"
-              className="absolute -top-2 -right-2 h-6 w-6 p-0 rounded-full bg-red-500 hover:bg-red-600 text-white z-10"
+              className="absolute -top-2 -right-2 h-6 w-6 p-0 rounded-full bg-destructive/50 hover:bg-destructive text-white z-10"
               onClick={handleDeleteClick}
               data-testid={`delete-button-${list.id}`}
             >
-              <X className="h-4 w-4" />
+              <MIcon name="close" className="text-sm" />
             </Button>
           )}
           <div className="flex-1 min-w-0">
@@ -61,7 +64,7 @@ export function RestaurantListCard({
               </CardTitle>
               {list.is_default && (
                 <Badge variant="secondary" className="text-xs flex items-center gap-1">
-                  <Star className="h-3 w-3" />
+                  <MIcon name="grade" className="text-xs" />
                   Default
                 </Badge>
               )}

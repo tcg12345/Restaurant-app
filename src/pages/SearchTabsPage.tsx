@@ -27,42 +27,40 @@ export default function SearchTabsPage() {
   };
 
   const LoadingFallback = () => (
-    <div className="p-5 space-y-4">
+    <div className="p-6 space-y-4">
       {Array.from({ length: 3 }).map((_, i) => (
-        <div key={i} className="animate-pulse bg-muted h-20 rounded-2xl" />
+        <div key={i} className="animate-pulse bg-surface-container h-20 rounded-xl" />
       ))}
     </div>
   );
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Premium Tab Switcher */}
-      <div className="sticky top-0 z-10 bg-background/95 backdrop-blur-xl border-b border-border/20 px-5 py-3">
-        <div className="flex justify-center">
-          <div className="inline-flex bg-muted/50 rounded-full p-1 gap-0.5">
-            <button
-              onClick={() => handleTabChange('global')}
-              className={cn(
-                'px-5 py-2 rounded-full text-sm font-medium transition-all duration-200',
-                activeTab === 'global'
-                  ? 'bg-primary text-primary-foreground shadow-sm'
-                  : 'text-muted-foreground hover:text-foreground'
-              )}
-            >
-              Restaurants
-            </button>
-            <button
-              onClick={() => handleTabChange('friends')}
-              className={cn(
-                'px-5 py-2 rounded-full text-sm font-medium transition-all duration-200',
-                activeTab === 'friends'
-                  ? 'bg-primary text-primary-foreground shadow-sm'
-                  : 'text-muted-foreground hover:text-foreground'
-              )}
-            >
-              Friends & Experts
-            </button>
-          </div>
+      {/* Segmented Control - Stitch Style */}
+      <div className="sticky top-0 z-10 bg-background/80 backdrop-blur-xl px-6 py-4">
+        <div className="flex p-1 bg-surface-container rounded-xl">
+          <button
+            onClick={() => handleTabChange('global')}
+            className={cn(
+              'flex-1 py-2.5 text-sm font-semibold rounded-lg transition-all duration-200',
+              activeTab === 'global'
+                ? 'bg-surface-container-lowest shadow-sm text-primary'
+                : 'text-on-surface-variant hover:text-primary'
+            )}
+          >
+            Global
+          </button>
+          <button
+            onClick={() => handleTabChange('friends')}
+            className={cn(
+              'flex-1 py-2.5 text-sm font-semibold rounded-lg transition-all duration-200',
+              activeTab === 'friends'
+                ? 'bg-surface-container-lowest shadow-sm text-primary'
+                : 'text-on-surface-variant hover:text-primary'
+            )}
+          >
+            Social Circle
+          </button>
         </div>
       </div>
 

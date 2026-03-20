@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { Users, Star, Heart, MapPin, Clock, Filter, SortAsc, List, ChevronDown, ChevronRight, ChevronLeft, Search } from 'lucide-react';
+const MIcon = ({ name, className = '', filled = false }: { name: string; className?: string; filled?: boolean }) => (
+  <span className={`material-symbols-outlined ${className}`} style={filled ? { fontVariationSettings: "'FILL' 1" } : undefined}>{name}</span>
+);
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -672,7 +674,7 @@ export function FriendsActivityPage() {
       {/* Header */}
       <div className="hidden md:block space-y-4">
         <div className="flex items-center gap-3">
-          <Users className="h-8 w-8 text-primary" />
+          <MIcon name="group" className="text-lg text-primary" />
           <h1 className="text-4xl font-bold bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
             Friends' Activity
           </h1>
@@ -685,8 +687,8 @@ export function FriendsActivityPage() {
       <div className="md:hidden grid grid-cols-2 gap-3 mb-4">
         <div className="bg-card rounded-xl p-4 border shadow-sm">
           <div className="flex items-center gap-3">
-            <div className="p-2 bg-yellow-500/10 rounded-lg">
-              <Star className="h-4 w-4 text-yellow-500" />
+            <div className="p-2 bg-secondary/50/10 rounded-lg">
+              <MIcon name="grade" className="text-sm text-secondary" />
             </div>
             <div>
               <div className="text-xs text-muted-foreground font-medium">Total Rated</div>
@@ -697,8 +699,8 @@ export function FriendsActivityPage() {
         
         <div className="bg-card rounded-xl p-4 border shadow-sm">
           <div className="flex items-center gap-3">
-            <div className="p-2 bg-red-500/10 rounded-lg">
-              <Heart className="h-4 w-4 text-red-500" />
+            <div className="p-2 bg-destructive/50/10 rounded-lg">
+              <MIcon name="favorite" className="text-sm text-destructive" />
             </div>
             <div>
               <div className="text-xs text-muted-foreground font-medium">Wishlist</div>
@@ -706,11 +708,11 @@ export function FriendsActivityPage() {
             </div>
           </div>
         </div>
-        
+
         <div className="bg-card rounded-xl p-4 border shadow-sm">
           <div className="flex items-center gap-3">
-            <div className="p-2 bg-green-500/10 rounded-lg">
-              <Users className="h-4 w-4 text-green-500" />
+            <div className="p-2 bg-secondary/50/10 rounded-lg">
+              <MIcon name="group" className="text-sm text-secondary" />
             </div>
             <div>
               <div className="text-xs text-muted-foreground font-medium">Friends</div>
@@ -722,7 +724,7 @@ export function FriendsActivityPage() {
         <div className="bg-card rounded-xl p-4 border shadow-sm">
           <div className="flex items-center gap-3">
             <div className="p-2 bg-primary/10 rounded-lg">
-              <MapPin className="h-4 w-4 text-primary" />
+              <MIcon name="location_on" className="text-sm text-primary" />
             </div>
             <div>
               <div className="text-xs text-muted-foreground font-medium">Cities</div>
@@ -735,8 +737,8 @@ export function FriendsActivityPage() {
       <div className="hidden md:grid grid-cols-4 gap-4 mb-6">
         <div className="bg-card rounded-xl p-5 border shadow-sm">
           <div className="flex items-center gap-3">
-            <div className="p-3 bg-yellow-500/10 rounded-lg">
-              <Star className="h-5 w-5 text-yellow-500" />
+            <div className="p-3 bg-secondary/50/10 rounded-lg">
+              <MIcon name="grade" className="text-base text-secondary" />
             </div>
             <div>
               <div className="text-sm text-muted-foreground font-medium">Total Rated</div>
@@ -747,8 +749,8 @@ export function FriendsActivityPage() {
         
         <div className="bg-card rounded-xl p-5 border shadow-sm">
           <div className="flex items-center gap-3">
-            <div className="p-3 bg-red-500/10 rounded-lg">
-              <Heart className="h-5 w-5 text-red-500" />
+            <div className="p-3 bg-destructive/50/10 rounded-lg">
+              <MIcon name="favorite" className="text-base text-destructive" />
             </div>
             <div>
               <div className="text-sm text-muted-foreground font-medium">Wishlist</div>
@@ -759,8 +761,8 @@ export function FriendsActivityPage() {
 
         <div className="bg-card rounded-xl p-5 border shadow-sm">
           <div className="flex items-center gap-3">
-            <div className="p-3 bg-green-500/10 rounded-lg">
-              <Users className="h-5 w-5 text-green-500" />
+            <div className="p-3 bg-secondary/50/10 rounded-lg">
+              <MIcon name="group" className="text-base text-secondary" />
             </div>
             <div>
               <div className="text-sm text-muted-foreground font-medium">Friends</div>
@@ -772,7 +774,7 @@ export function FriendsActivityPage() {
         <div className="bg-card rounded-xl p-5 border shadow-sm">
           <div className="flex items-center gap-3">
             <div className="p-3 bg-primary/10 rounded-lg">
-              <MapPin className="h-5 w-5 text-primary" />
+              <MIcon name="location_on" className="text-base text-primary" />
             </div>
             <div>
               <div className="text-sm text-muted-foreground font-medium">Cities</div>
@@ -792,7 +794,7 @@ export function FriendsActivityPage() {
               : 'bg-muted/50 hover:bg-muted text-muted-foreground'
           }`}
         >
-          <List className="h-4 w-4" />
+          <MIcon name="list" className="text-sm" />
           All ({filterCounts.total})
         </button>
         <button
@@ -803,7 +805,7 @@ export function FriendsActivityPage() {
               : 'bg-muted/50 hover:bg-muted text-muted-foreground'
           }`}
         >
-          <Star className="h-4 w-4" />
+          <MIcon name="grade" className="text-sm" />
           Rated ({filterCounts.rated})
         </button>
         <button
@@ -814,7 +816,7 @@ export function FriendsActivityPage() {
               : 'bg-muted/50 hover:bg-muted text-muted-foreground'
           }`}
         >
-          <Heart className="h-4 w-4" />
+          <MIcon name="favorite" className="text-sm" />
           Wishlist ({filterCounts.wishlist})
         </button>
       </div>
@@ -823,7 +825,7 @@ export function FriendsActivityPage() {
       <div className="block md:hidden space-y-4">
         {/* Modern Search Bar */}
         <div className="relative">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <MIcon name="search" className="absolute left-3 top-1/2 transform -translate-y-1/2 text-sm text-muted-foreground" />
           <Input 
             placeholder="Search restaurants, friends..." 
             value={searchQuery} 
@@ -845,25 +847,25 @@ export function FriendsActivityPage() {
           {/* Modern Filter Button */}
           {isMobile ? <Button variant="outline" className="flex-1 h-12 flex items-center justify-between rounded-full border-muted bg-muted/30 hover:bg-background transition-colors" onClick={() => setShowMobileFilters(true)}>
               <span className="flex items-center gap-2">
-                <Filter className="h-4 w-4" />
+                <MIcon name="filter_list" className="text-sm" />
                 Filters
                 {selectedCuisines.length + selectedCities.length + selectedFriends.length > 0 && <Badge variant="secondary" className="ml-1 h-5 px-2 text-xs rounded-full">
                     {selectedCuisines.length + selectedCities.length + selectedFriends.length}
                   </Badge>}
               </span>
-              <ChevronDown className="h-4 w-4" />
+              <MIcon name="expand_more" className="text-sm" />
             </Button> : (/* Desktop Filters Dropdown */
           <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="outline" className="flex-1 h-12 flex items-center justify-between rounded-full border-muted bg-muted/30 hover:bg-background transition-colors">
                   <span className="flex items-center gap-2">
-                    <Filter className="h-4 w-4" />
+                    <MIcon name="filter_list" className="text-sm" />
                     Filters
                     {selectedCuisines.length + selectedCities.length + selectedFriends.length > 0 && <Badge variant="secondary" className="ml-1 h-5 px-2 text-xs rounded-full">
                         {selectedCuisines.length + selectedCities.length + selectedFriends.length}
                       </Badge>}
                   </span>
-                  <ChevronDown className="h-4 w-4" />
+                  <MIcon name="expand_more" className="text-sm" />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="start" className="w-72">
@@ -985,7 +987,7 @@ export function FriendsActivityPage() {
       <Card className="hidden md:block">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <Filter className="h-5 w-5" />
+            <MIcon name="filter_list" className="text-base" />
             Additional Filters & Search
           </CardTitle>
         </CardHeader>
@@ -1038,7 +1040,7 @@ export function FriendsActivityPage() {
                         ({selectedFriends.length} selected)
                       </span>}
                   </span>
-                  <ChevronDown className={`h-4 w-4 transition-transform ${isFriendsDropdownOpen ? 'rotate-180' : ''}`} />
+                  <MIcon name="expand_more" className={`text-sm transition-transform ${isFriendsDropdownOpen ? 'rotate-180' : ''}`} />
                 </Button>
               </CollapsibleTrigger>
               <CollapsibleContent className="space-y-2">
@@ -1069,7 +1071,7 @@ export function FriendsActivityPage() {
                         ({selectedCities.length} selected)
                       </span>}
                   </span>
-                  <ChevronDown className={`h-4 w-4 transition-transform ${isCityDropdownOpen ? 'rotate-180' : ''}`} />
+                  <MIcon name="expand_more" className={`text-sm transition-transform ${isCityDropdownOpen ? 'rotate-180' : ''}`} />
                 </Button>
               </CollapsibleTrigger>
               <CollapsibleContent className="space-y-2">
@@ -1100,7 +1102,7 @@ export function FriendsActivityPage() {
                         ({selectedCuisines.length} selected)
                       </span>}
                   </span>
-                  <ChevronDown className={`h-4 w-4 transition-transform ${isCuisineDropdownOpen ? 'rotate-180' : ''}`} />
+                  <MIcon name="expand_more" className={`text-sm transition-transform ${isCuisineDropdownOpen ? 'rotate-180' : ''}`} />
                 </Button>
               </CollapsibleTrigger>
               <CollapsibleContent className="space-y-2">
@@ -1161,7 +1163,7 @@ export function FriendsActivityPage() {
         {friendsRestaurants.length === 0 && !isLoading ? <div className="px-6">
             <Card>
               <CardContent className="p-12 text-center">
-                <Users className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                <MIcon name="group" className="text-5xl text-muted-foreground mx-auto mb-4" />
                 <h3 className="text-lg font-medium mb-2">No Activity Found</h3>
                 <p className="text-muted-foreground">
                   {friendsRestaurants.length === 0 && !isLoading ? "Your friends haven't added any restaurants yet." : "No restaurants match your current filters."}
@@ -1193,8 +1195,8 @@ export function FriendsActivityPage() {
                         </div>
                         <div className={`px-2.5 py-1 rounded-full text-xs font-semibold ${
                           restaurant.is_wishlist 
-                            ? 'bg-rose-500/15 text-rose-400 border border-rose-500/20' 
-                            : 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/20'
+                            ? 'bg-secondary/50/15 text-rose-400 border border-rose-500/20' 
+                            : 'bg-secondary/50/15 text-secondary border border-emerald-500/20'
                         }`}>
                           {restaurant.is_wishlist ? 'Want' : 'Been'}
                         </div>
@@ -1226,7 +1228,7 @@ export function FriendsActivityPage() {
                           )}
                           {restaurant.rating && (
                             <div className="inline-flex items-center gap-1 bg-muted/80 backdrop-blur-sm border border-border/50 px-2.5 py-1 rounded-full">
-                              <Star className="h-3.5 w-3.5 fill-current text-amber-400" />
+                              <MIcon name="grade" className="text-xs text-secondary" filled />
                               <span className="text-xs font-semibold text-foreground">{restaurant.rating}</span>
                             </div>
                           )}
@@ -1236,7 +1238,7 @@ export function FriendsActivityPage() {
                       {/* Location + Date Row */}
                       <div className="flex items-center justify-between text-xs">
                         <div className="flex items-center gap-1.5 text-muted-foreground">
-                          <MapPin className="h-3.5 w-3.5" />
+                          <MIcon name="location_on" className="text-xs" />
                           <span>{restaurant.city}</span>
                         </div>
                         <div className="bg-muted/60 border border-border/40 px-2 py-1 rounded-full text-muted-foreground font-medium">
@@ -1271,7 +1273,7 @@ export function FriendsActivityPage() {
                             className="inline-flex items-center justify-center h-8 w-8 rounded-lg border border-border text-muted-foreground hover:bg-muted/50 hover:border-border transition-all duration-150"
                             onClick={(e) => e.stopPropagation()}
                           >
-                            <Heart className="h-3.5 w-3.5" />
+                            <MIcon name="favorite" className="text-xs" />
                           </button>
                         </div>
                       </div>
@@ -1293,7 +1295,7 @@ export function FriendsActivityPage() {
                 {/* Previous Page Button */}
                 {currentPage > 1 && <Button onClick={loadPreviousPage} disabled={isLoadingMore} size="sm" variant="outline" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm">
                     {isLoadingMore ? 'Loading...' : <>
-                        <ChevronLeft className="h-3 w-3 sm:h-4 sm:w-4" />
+                        <MIcon name="chevron_left" className="text-xs sm:text-sm" />
                         <span className="hidden sm:inline">Previous Page ({currentPage - 1})</span>
                         <span className="sm:hidden">Prev</span>
                       </>}
@@ -1309,7 +1311,7 @@ export function FriendsActivityPage() {
                     {isLoadingMore ? 'Loading...' : <>
                         <span className="hidden sm:inline">Next Page ({currentPage + 1})</span>
                         <span className="sm:hidden">Next</span>
-                        <ChevronRight className="h-3 w-3 sm:h-4 sm:w-4" />
+                        <MIcon name="chevron_right" className="text-xs sm:text-sm" />
                       </>}
                   </Button>}
                 

@@ -550,7 +550,7 @@ export function HotelDetailsPage() {
                   <h1 className="text-2xl font-bold text-white">{hotel.name}</h1>
                   <div className="flex items-center gap-3">
                     {hotel.rating && (
-                      <Badge className="bg-amber-500/90 text-amber-50 border-0 px-2 py-1 text-sm font-semibold">
+                      <Badge className="bg-secondary/50/90 text-amber-50 border-0 px-2 py-1 text-sm font-semibold">
                         <Star className="w-3 h-3 fill-current mr-1" />
                         {hotel.rating.toFixed(1)}
                       </Badge>
@@ -606,7 +606,7 @@ export function HotelDetailsPage() {
                   <h1 className="text-2xl font-bold text-white">{hotel.name}</h1>
                   <div className="flex items-center gap-3">
                     {hotel.rating && (
-                      <Badge className="bg-amber-500/90 text-amber-50 border-0 px-2 py-1 text-sm font-semibold">
+                      <Badge className="bg-secondary/50/90 text-amber-50 border-0 px-2 py-1 text-sm font-semibold">
                         <Star className="w-3 h-3 fill-current mr-1" />
                         {hotel.rating.toFixed(1)}
                       </Badge>
@@ -647,8 +647,8 @@ export function HotelDetailsPage() {
               </Button>
               
               <div className="flex items-center gap-3 mb-4 pr-8">
-                <div className="p-2 rounded-lg bg-blue-100 dark:bg-blue-900/30">
-                  <Star className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+                <div className="p-2 rounded-lg bg-primary/10 dark:bg-blue-900/30">
+                  <Star className="w-4 h-4 text-primary dark:text-primary/70" />
                 </div>
                 <h2 className="text-lg font-bold">About this hotel</h2>
               </div>
@@ -674,8 +674,8 @@ export function HotelDetailsPage() {
               onClick={() => setIsStayDetailsExpanded(!isStayDetailsExpanded)}
             >
               <div className="flex items-center gap-3">
-                <div className="p-2 rounded-lg bg-green-100 dark:bg-green-900/30">
-                  <Calendar className="w-4 h-4 text-green-600 dark:text-green-400" />
+                <div className="p-2 rounded-lg bg-secondary/10 dark:bg-green-900/30">
+                  <Calendar className="w-4 h-4 text-secondary dark:text-secondary" />
                 </div>
                 <h3 className="text-lg font-bold">Your Stay Details</h3>
               </div>
@@ -695,7 +695,7 @@ export function HotelDetailsPage() {
                 {(hotel.stayDetails.checkIn || hotel.stayDetails.checkOut) && (
                   <div className="space-y-4">
                     <div className="flex items-center gap-2">
-                      <Calendar className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+                      <Calendar className="w-4 h-4 text-primary dark:text-primary/70" />
                       <h4 className="font-semibold text-base text-foreground">Stay Dates</h4>
                     </div>
                     <div className="space-y-3">
@@ -731,7 +731,7 @@ export function HotelDetailsPage() {
                 {(hotel.stayDetails.guests || hotel.stayDetails.rooms || hotel.stayDetails.roomType) && (
                   <div className="space-y-4">
                     <div className="flex items-center gap-2">
-                      <Bed className="w-4 h-4 text-green-600 dark:text-green-400" />
+                      <Bed className="w-4 h-4 text-secondary dark:text-secondary" />
                       <h4 className="font-semibold text-base text-foreground">Room Details</h4>
                     </div>
                     <div className="bg-muted/30 rounded-lg p-4 space-y-3">
@@ -763,7 +763,7 @@ export function HotelDetailsPage() {
               {(hotel.stayDetails.confirmationNumber || hotel.stayDetails.totalCost) && (
                 <div className="mt-6 pt-6 border-t border-border/30">
                   <div className="flex items-center gap-2 mb-4">
-                    <CreditCard className="w-4 h-4 text-purple-600 dark:text-purple-400" />
+                    <CreditCard className="w-4 h-4 text-tertiary dark:text-tertiary" />
                     <h4 className="font-semibold text-base text-foreground">Booking Information</h4>
                   </div>
                   
@@ -811,7 +811,7 @@ export function HotelDetailsPage() {
                   {hotel.stayDetails.specialRequests && (
                     <div>
                       <div className="flex items-center gap-2 mb-3">
-                        <ExternalLink className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+                        <ExternalLink className="w-4 h-4 text-primary dark:text-primary/70" />
                         <h5 className="font-semibold text-sm text-foreground">Links</h5>
                       </div>
                       <div className="bg-muted/30 rounded-lg p-4 border border-border/20">
@@ -824,7 +824,7 @@ export function HotelDetailsPage() {
                                 : `https://${trimmedLine}`;
                               return (
                                 <div key={index} className="flex">
-                                  <a href={href} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-blue-50 to-blue-100 dark:from-blue-900/30 dark:to-blue-800/30 border border-blue-200 dark:border-blue-700/50 rounded-lg text-blue-700 dark:text-blue-300 hover:from-blue-100 hover:to-blue-200 dark:hover:from-blue-800/40 dark:hover:to-blue-700/40 hover:border-blue-300 dark:hover:border-blue-600 transition-all duration-200 shadow-sm hover:shadow-md font-medium text-sm group">
+                                  <a href={href} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-blue-50 to-blue-100 dark:from-blue-900/30 dark:to-blue-800/30 border border-primary/20 dark:border-blue-700/50 rounded-lg text-blue-700 dark:text-primary/50 hover:from-blue-100 hover:to-blue-200 dark:hover:from-blue-800/40 dark:hover:to-blue-700/40 hover:border-primary/30 dark:hover:border-blue-600 transition-all duration-200 shadow-sm hover:shadow-md font-medium text-sm group">
                                     <ExternalLink className="w-4 h-4 group-hover:scale-110 transition-transform duration-200" />
                                     <span className="truncate">{trimmedLine}</span>
                                   </a>
@@ -860,8 +860,8 @@ export function HotelDetailsPage() {
           <Card className="shadow-sm border-border/50">
             <CardContent className="p-5">
               <div className="flex items-center gap-3 mb-4">
-                <div className="p-2 rounded-lg bg-purple-100 dark:bg-purple-900/30">
-                  <Wifi className="w-4 h-4 text-purple-600 dark:text-purple-400" />
+                <div className="p-2 rounded-lg bg-tertiary/10 dark:bg-purple-900/30">
+                  <Wifi className="w-4 h-4 text-tertiary dark:text-tertiary" />
                 </div>
                 <h3 className="text-lg font-bold">Amenities</h3>
               </div>
@@ -884,8 +884,8 @@ export function HotelDetailsPage() {
         <Card className="shadow-sm border-border/50">
           <CardContent className="p-5">
             <div className="flex items-center gap-3 mb-4">
-              <div className="p-2 rounded-lg bg-green-100 dark:bg-green-900/30">
-                <Phone className="w-4 h-4 text-green-600 dark:text-green-400" />
+              <div className="p-2 rounded-lg bg-secondary/10 dark:bg-green-900/30">
+                <Phone className="w-4 h-4 text-secondary dark:text-secondary" />
               </div>
               <h3 className="text-lg font-bold">Contact & Booking</h3>
             </div>
@@ -945,8 +945,8 @@ export function HotelDetailsPage() {
           <Card className="shadow-sm border-border/50">
             <CardContent className="p-5">
               <div className="flex items-center gap-3 mb-4">
-                <div className="p-2 rounded-lg bg-red-100 dark:bg-red-900/30">
-                  <MapPin className="w-4 h-4 text-red-600 dark:text-red-400" />
+                <div className="p-2 rounded-lg bg-destructive/10 dark:bg-red-900/30">
+                  <MapPin className="w-4 h-4 text-destructive dark:text-destructive/70" />
                 </div>
                 <h3 className="text-lg font-bold">Location</h3>
               </div>
@@ -981,7 +981,7 @@ export function HotelDetailsPage() {
           {/* Close button */}
           <button
             onClick={() => setShowPhotoGallery(false)}
-            className="absolute top-6 right-6 z-10 w-10 h-10 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 flex items-center justify-center text-white hover:bg-white/20 transition-colors"
+            className="absolute top-6 right-6 z-10 w-10 h-10 rounded-full bg-background/10 backdrop-blur-sm border border-white/20 flex items-center justify-center text-white hover:bg-background/20 transition-colors"
           >
             <X className="w-5 h-5" />
           </button>
@@ -1008,13 +1008,13 @@ export function HotelDetailsPage() {
               <>
                 <button
                   onClick={() => setGalleryPhotoIndex((prev) => prev === 0 ? hotelPhotos.length - 1 : prev - 1)}
-                  className="absolute left-6 top-1/2 transform -translate-y-1/2 w-12 h-12 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 flex items-center justify-center text-white hover:bg-white/20 transition-colors"
+                  className="absolute left-6 top-1/2 transform -translate-y-1/2 w-12 h-12 rounded-full bg-background/10 backdrop-blur-sm border border-white/20 flex items-center justify-center text-white hover:bg-background/20 transition-colors"
                 >
                   <ChevronLeft className="w-6 h-6" />
                 </button>
                 <button
                   onClick={() => setGalleryPhotoIndex((prev) => prev === hotelPhotos.length - 1 ? 0 : prev + 1)}
-                  className="absolute right-6 top-1/2 transform -translate-y-1/2 w-12 h-12 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 flex items-center justify-center text-white hover:bg-white/20 transition-colors"
+                  className="absolute right-6 top-1/2 transform -translate-y-1/2 w-12 h-12 rounded-full bg-background/10 backdrop-blur-sm border border-white/20 flex items-center justify-center text-white hover:bg-background/20 transition-colors"
                 >
                   <ChevronRight className="w-6 h-6" />
                 </button>
