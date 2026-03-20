@@ -35,13 +35,13 @@ export function Layout({
   };
 
   return (
-    <div className="flex min-h-screen flex-col bg-background mobile-viewport">
+    <div className="flex min-h-screen flex-col bg-background font-body mobile-viewport selection:bg-secondary/30">
       {showNavbar && (
         <Navbar activeTab={activeTab} onTabChange={handleTabChange} />
       )}
 
-      <main className="flex-1 pb-16 lg:pb-0 mobile-scroll w-full">
-        <div className="min-h-full w-full">
+      <main className="flex-1 pb-20 lg:pb-0 mobile-scroll w-full">
+        <div className="min-h-full w-full max-w-screen-xl mx-auto">
           {children}
         </div>
       </main>

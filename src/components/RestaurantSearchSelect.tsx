@@ -1,6 +1,9 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { Search, MapPin, Star, DollarSign, Loader2 } from 'lucide-react';
 import { Input } from '@/components/ui/input';
+
+const MIcon = ({ name, className = '', filled = false }: { name: string; className?: string; filled?: boolean }) => (
+  <span className={`material-symbols-outlined ${className}`} style={filled ? { fontVariationSettings: "'FILL' 1" } : undefined}>{name}</span>
+);
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
 import { supabase } from '@/integrations/supabase/client';
@@ -286,7 +289,7 @@ export function RestaurantSearchSelect({
   return (
     <div className="relative w-full">
       <div className="relative">
-        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+        <MIcon name="search" className="absolute left-3 top-1/2 transform -translate-y-1/2 text-sm text-muted-foreground" />
         <Input
           ref={searchRef}
           type="text"
@@ -300,7 +303,7 @@ export function RestaurantSearchSelect({
           disabled={disabled}
         />
         {isSearching && (
-          <Loader2 className="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 animate-spin text-muted-foreground" />
+          <MIcon name="progress_activity" className="absolute right-3 top-1/2 transform -translate-y-1/2 text-sm animate-spin text-muted-foreground" />
         )}
       </div>
 
@@ -323,7 +326,7 @@ export function RestaurantSearchSelect({
                   <div className="flex-1">
                     <h4 className="font-medium text-sm">{place.name}</h4>
                     <div className="flex items-center gap-2 mt-1">
-                      <MapPin className="h-3 w-3 text-muted-foreground" />
+                      <MIcon name="location_on" className="text-xs text-muted-foreground" />
                       <span className="text-xs text-muted-foreground truncate">
                         {place.formatted_address}
                       </span>
@@ -334,14 +337,14 @@ export function RestaurantSearchSelect({
                       </Badge>
                       {place.rating && (
                         <div className="flex items-center gap-1">
-                          <Star className="h-3 w-3 text-yellow-400 fill-current" />
+                          <MIcon name="grade" className="text-xs text-secondary" filled />
                           <span className="text-xs font-medium">{place.rating}</span>
                         </div>
                       )}
                       {place.price_level && (
                         <div className="flex items-center">
                           {Array.from({ length: place.price_level }, (_, i) => (
-                            <DollarSign key={i} className="h-3 w-3 text-green-600" />
+                            <MIcon key={i} name="attach_money" className="text-xs text-secondary" />
                           ))}
                         </div>
                       )}

@@ -2,8 +2,11 @@ import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Star, MapPin, Lightbulb, Heart, Clock, Globe, Phone, Eye } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
+
+const MIcon = ({ name, className = '', filled = false }: { name: string; className?: string; filled?: boolean }) => (
+  <span className={`material-symbols-outlined ${className}`} style={filled ? { fontVariationSettings: "'FILL' 1" } : undefined}>{name}</span>
+);
 import { useAuth } from '@/contexts/AuthContext';
 import { useRestaurants } from '@/contexts/RestaurantContext';
 import { Restaurant } from '@/types/restaurant';
@@ -381,7 +384,7 @@ export function PersonalizedRecommendations() {
     return (
       <Card>
         <CardContent className="p-6 text-center">
-          <Lightbulb className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
+          <MIcon name="lightbulb" className="text-5xl mx-auto mb-4 text-muted-foreground" />
           <h3 className="text-lg font-semibold mb-2">Sign in for Personalized Recommendations</h3>
           <p className="text-muted-foreground">
             Rate some restaurants to get personalized recommendations based on your preferences!
@@ -395,7 +398,7 @@ export function PersonalizedRecommendations() {
     return (
       <Card>
         <CardContent className="p-6 text-center">
-          <Lightbulb className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
+          <MIcon name="lightbulb" className="text-5xl mx-auto mb-4 text-muted-foreground" />
           <h3 className="text-lg font-semibold mb-2">Get AI-Powered Restaurant Recommendations</h3>
           <p className="text-muted-foreground mb-4">
             Get personalized recommendations based on your rated restaurants and dining preferences!
@@ -417,7 +420,7 @@ export function PersonalizedRecommendations() {
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <Lightbulb className="h-5 w-5" />
+            <MIcon name="lightbulb" className="text-base" />
             AI-Powered Personalized Recommendations
           </CardTitle>
           {preferences && (
@@ -471,18 +474,18 @@ export function PersonalizedRecommendations() {
                       <Button
                         size="icon"
                         variant="ghost"
-                        className="h-8 w-8 text-muted-foreground hover:text-red-500 transition-colors flex-shrink-0"
+                        className="h-8 w-8 text-muted-foreground hover:text-destructive transition-colors flex-shrink-0"
                         onClick={() => handleAddToWishlist(place)}
                         disabled={addingToWishlist[place.place_id]}
                       >
-                        <Heart className="h-5 w-5" />
+                        <MIcon name="favorite" className="text-base" />
                       </Button>
                     </div>
 
                     {/* Rating */}
                     {place.rating && (
                       <div className="flex items-center gap-2 mb-3">
-                        <Star className="h-4 w-4 text-yellow-500 fill-current" />
+                        <MIcon name="grade" className="text-sm text-secondary" filled />
                         <span className="text-lg font-semibold text-white">{place.rating}</span>
                         {place.user_ratings_total && (
                           <span className="text-muted-foreground text-sm">
@@ -494,7 +497,7 @@ export function PersonalizedRecommendations() {
 
                     {/* Price Range */}
                     <div className="mb-3">
-                      <span className="text-green-400 font-semibold text-lg">
+                      <span className="text-secondary font-semibold text-lg">
                         {getPriceDisplay(place.price_range || place.price_level)}
                       </span>
                     </div>
@@ -502,7 +505,7 @@ export function PersonalizedRecommendations() {
                     {/* Opening Hours */}
                     {(place.opening_hours?.open_now !== undefined || getCurrentDayHours(place)) && (
                       <div className="flex items-center gap-2 mb-3">
-                        <Clock className="h-4 w-4 text-muted-foreground" />
+                        <MIcon name="schedule" className="text-sm text-muted-foreground" />
                         <span className="text-muted-foreground text-sm">
                           {getCurrentDayHours(place) ? (
                             `Today: ${getCurrentDayHours(place)}`
@@ -515,7 +518,7 @@ export function PersonalizedRecommendations() {
 
                     {/* Address */}
                     <div className="flex items-center gap-2 mb-4">
-                      <MapPin className="h-4 w-4 text-muted-foreground flex-shrink-0" />
+                      <MIcon name="location_on" className="text-sm text-muted-foreground flex-shrink-0" />
                       <span className="text-muted-foreground text-sm line-clamp-1">
                         {formatAddress(place.formatted_address)}
                       </span>
@@ -529,14 +532,14 @@ export function PersonalizedRecommendations() {
                         className="flex-1 border-border text-muted-foreground bg-card hover:bg-muted"
                         onClick={() => handleShowDetails(place)}
                       >
-                        <Eye className="h-4 w-4 mr-1" />
+                        <MIcon name="visibility" className="text-sm mr-1" />
                         Details
                       </Button>
                       <a 
                         href={`tel:${place.formatted_phone_number || ''}`}
                         className="flex items-center justify-center px-3 py-2 border border-border rounded-md hover:bg-muted transition-colors"
                       >
-                        <Phone className="h-4 w-4 text-muted-foreground" />
+                        <MIcon name="phone" className="text-sm text-muted-foreground" />
                       </a>
                       <a 
                         href={place.google_maps_url || `https://www.google.com/maps/place/?q=place_id:${place.place_id}`}
@@ -544,7 +547,7 @@ export function PersonalizedRecommendations() {
                         rel="noopener noreferrer"
                         className="flex items-center justify-center px-3 py-2 border border-border rounded-md hover:bg-muted transition-colors"
                       >
-                        <Globe className="h-4 w-4 text-muted-foreground" />
+                        <MIcon name="language" className="text-sm text-muted-foreground" />
                       </a>
                     </div>
                   </CardContent>

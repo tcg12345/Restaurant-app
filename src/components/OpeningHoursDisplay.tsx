@@ -1,5 +1,8 @@
 import { useState } from 'react';
-import { Clock, ChevronDown } from 'lucide-react';
+
+const MIcon = ({ name, className = '', filled = false }: { name: string; className?: string; filled?: boolean }) => (
+  <span className={`material-symbols-outlined ${className}`} style={filled ? { fontVariationSettings: "'FILL' 1" } : undefined}>{name}</span>
+);
 
 interface OpeningHoursDisplayProps {
   hours: string[];
@@ -67,8 +70,8 @@ export function OpeningHoursDisplay({ hours, className = "" }: OpeningHoursDispl
           <div className="flex items-center gap-3">
             <span className={`text-sm font-semibold px-2 py-1 rounded-full ${
               isOpen 
-                ? 'bg-green-500/20 text-green-400 border border-green-500/30' 
-                : 'bg-red-500/20 text-red-400 border border-red-500/30'
+                ? 'bg-secondary/50/20 text-secondary border border-green-500/30' 
+                : 'bg-destructive/50/20 text-destructive/70 border border-red-500/30'
             }`}>
               {isOpen ? 'Open' : 'Closed'}
             </span>
@@ -93,17 +96,17 @@ export function OpeningHoursDisplay({ hours, className = "" }: OpeningHoursDispl
                   key={index} 
                   className={`flex justify-between items-center py-2 px-3 rounded-lg transition-colors ${
                     isToday 
-                      ? 'bg-blue-500/10 border border-blue-500/20' 
+                      ? 'bg-primary/50/10 border border-blue-500/20' 
                       : 'hover:bg-muted/20'
                   }`}
                 >
                   <span className={`text-sm font-medium ${
-                    isToday ? 'text-blue-400' : 'text-muted-foreground'
+                    isToday ? 'text-primary/70' : 'text-muted-foreground'
                   }`}>
                     {day}
                   </span>
                   <span className={`text-sm ${
-                    isToday ? 'text-blue-400 font-medium' : 'text-muted-foreground'
+                    isToday ? 'text-primary/70 font-medium' : 'text-muted-foreground'
                   }`}>
                     {time}
                   </span>

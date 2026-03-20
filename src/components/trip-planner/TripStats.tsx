@@ -30,29 +30,29 @@ export function TripStats({
     label: 'Total Trips',
     value: totalTrips,
     icon: Map,
-    color: 'text-blue-600',
-    bgColor: 'bg-blue-50',
+    color: 'text-primary',
+    bgColor: 'bg-primary/5',
     trend: totalTrips > 0 ? `${totalTrips} created` : 'Start exploring'
   }, {
     label: 'Upcoming',
     value: upcomingTrips,
     icon: Calendar,
-    color: 'text-green-600',
-    bgColor: 'bg-green-50',
+    color: 'text-secondary',
+    bgColor: 'bg-secondary/5',
     trend: upcomingTrips > 0 ? 'Adventures ahead' : 'Plan your next trip'
   }, {
     label: 'Completed',
     value: completedTrips,
     icon: Star,
-    color: 'text-purple-600',
-    bgColor: 'bg-purple-50',
+    color: 'text-tertiary',
+    bgColor: 'bg-tertiary/5',
     trend: completedTrips > 0 ? 'Memories made' : 'Create memories'
   }, {
     label: 'Public Trips',
     value: publicTrips,
     icon: TrendingUp,
-    color: 'text-orange-600',
-    bgColor: 'bg-orange-50',
+    color: 'text-secondary',
+    bgColor: 'bg-secondary/5',
     trend: publicTrips > 0 ? 'Shared with friends' : 'Share your adventures'
   }];
   return <Card className="border-0 shadow-md">

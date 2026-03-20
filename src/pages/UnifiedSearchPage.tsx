@@ -1,7 +1,10 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Search, MapPin, Star, Heart, Phone, Globe, Navigation, Clock, Plus, Truck, ShoppingBag, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+
+const MIcon = ({ name, className = '', filled = false }: { name: string; className?: string; filled?: boolean }) => (
+  <span className={`material-symbols-outlined ${className}`} style={filled ? { fontVariationSettings: "'FILL' 1" } : undefined}>{name}</span>
+);
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -579,7 +582,7 @@ export default function UnifiedSearchPage() {
                 <div className="lg:col-span-2 relative" ref={searchRef}>
                   <div className="relative group w-full">
                     <div className="relative">
-                      <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4 group-hover:text-primary transition-colors duration-300 z-10" />
+                      <MIcon name="search" className="absolute left-4 top-1/2 transform -translate-y-1/2 text-muted-foreground text-sm group-hover:text-primary transition-colors duration-300 z-10" />
                       <Input 
                         placeholder="Search restaurants, cuisines, or dishes..." 
                         value={searchQuery} 
@@ -587,7 +590,7 @@ export default function UnifiedSearchPage() {
                         className="w-full h-11 pl-11 pr-10 rounded-full border border-border bg-background focus:border-primary focus:ring-2 focus:ring-primary/20 text-sm placeholder:text-muted-foreground transition-all duration-300 shadow-sm hover:shadow-md" 
                       />
                       {searchQuery && <button onClick={clearSearch} className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors p-1.5 rounded-full hover:bg-muted/50">
-                          <X className="h-4 w-4" />
+                          <MIcon name="close" className="text-sm" />
                         </button>}
                     </div>
                   </div>
@@ -597,7 +600,7 @@ export default function UnifiedSearchPage() {
                 <div className="relative">
                   <div className="relative group w-full">
                     <div className="relative">
-                      <MapPin className="absolute left-4 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors duration-300 z-10" />
+                      <MIcon name="location_on" className="absolute left-4 top-1/2 transform -translate-y-1/2 text-sm text-muted-foreground group-hover:text-primary transition-colors duration-300 z-10" />
                       <Input 
                         placeholder="Location" 
                         value={locationQuery} 
@@ -661,12 +664,12 @@ export default function UnifiedSearchPage() {
                         {/* Top Row: Name + Rating + Button */}
                         <div className="flex items-center justify-between gap-2">
                           <div className="flex items-center gap-2 flex-1 min-w-0">
-                            <Clock className="w-3 h-3 text-blue-600 dark:text-blue-400 flex-shrink-0" />
+                            <MIcon name="schedule" className="text-xs text-primary dark:text-primary/70 flex-shrink-0" />
                             <h4 className="font-bold text-sm text-foreground truncate">{place.name}</h4>
                           </div>
                           <div className="flex items-center gap-2 flex-shrink-0">
                             {place.rating && <div className="flex items-center gap-1">
-                                <div className="text-amber-400 text-xs">★</div>
+                                <div className="text-secondary text-xs">★</div>
                                 <span className="text-xs font-bold text-foreground">
                                   {place.rating.toFixed(1)}
                                 </span>
@@ -675,7 +678,7 @@ export default function UnifiedSearchPage() {
                       e.stopPropagation();
                       handleAddRestaurant(place);
                     }}>
-                              <Plus className="h-3 w-3" />
+                              <MIcon name="add" className="text-xs" />
                             </Button>
                           </div>
                         </div>
@@ -742,12 +745,12 @@ export default function UnifiedSearchPage() {
                           {/* Top Row: Name + Rating + Button */}
                           <div className="flex items-center justify-between gap-2">
                             <div className="flex items-center gap-2 flex-1 min-w-0">
-                              <Navigation className="w-3 h-3 text-emerald-600 dark:text-emerald-400 flex-shrink-0" />
+                              <MIcon name="directions" className="text-xs text-secondary dark:text-secondary flex-shrink-0" />
                               <h4 className="font-bold text-sm text-foreground truncate">{place.name}</h4>
                             </div>
                             <div className="flex items-center gap-2 flex-shrink-0">
                               {place.rating && <div className="flex items-center gap-1">
-                                  <div className="text-amber-400 text-xs">★</div>
+                                  <div className="text-secondary text-xs">★</div>
                                   <span className="text-xs font-bold text-foreground">
                                     {place.rating.toFixed(1)}
                                   </span>
@@ -756,7 +759,7 @@ export default function UnifiedSearchPage() {
                         e.stopPropagation();
                         handleAddRestaurant(place);
                       }}>
-                                <Plus className="h-3 w-3" />
+                                <MIcon name="add" className="text-xs" />
                               </Button>
                             </div>
                           </div>
@@ -822,7 +825,7 @@ export default function UnifiedSearchPage() {
                           <div className="flex items-center justify-between gap-3">
                             <h3 className="font-bold text-base text-foreground truncate flex-1">{place.name}</h3>
                             {place.rating && <div className="flex items-center gap-1.5 flex-shrink-0">
-                                <div className="text-amber-400 text-sm">★</div>
+                                <div className="text-secondary text-sm">★</div>
                                 <span className="text-sm font-bold text-foreground">
                                   {place.rating.toFixed(1)}
                                 </span>
@@ -847,7 +850,7 @@ export default function UnifiedSearchPage() {
                             </span>
                             {place.price_level && <>
                                 <span className="text-muted-foreground">•</span>
-                                <span className="text-sm font-bold text-emerald-600 dark:text-emerald-400 tracking-tight">
+                                <span className="text-sm font-bold text-secondary dark:text-secondary tracking-tight">
                                   {place.yelpData?.price || getPriceDisplay(place.price_level)}
                                 </span>
                               </>}
@@ -874,7 +877,7 @@ export default function UnifiedSearchPage() {
                           return parts[0] || '';
                         })()}
                               </span>
-                              {place.opening_hours?.open_now !== undefined && <div className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${place.opening_hours.open_now ? 'bg-green-50 dark:bg-green-950/30 text-green-700 dark:text-green-300' : 'bg-red-50 dark:bg-red-950/30 text-red-700 dark:text-red-300'}`}>
+                              {place.opening_hours?.open_now !== undefined && <div className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${place.opening_hours.open_now ? 'bg-secondary/5 dark:bg-green-950/30 text-secondary dark:text-secondary/70' : 'bg-destructive/5 dark:bg-red-950/30 text-red-700 dark:text-red-300'}`}>
                                   {place.opening_hours.open_now ? 'Open' : 'Closed'}
                                 </div>}
                               <ExpertIndicator 
@@ -901,7 +904,7 @@ export default function UnifiedSearchPage() {
                           <div className="flex items-center justify-between gap-3">
                             <h3 className="font-bold text-lg text-foreground truncate flex-1">{place.name}</h3>
                             {place.rating && <div className="flex items-center gap-1.5 flex-shrink-0">
-                                <div className="text-amber-400 text-base">★</div>
+                                <div className="text-secondary text-base">★</div>
                                 <span className="text-base font-bold text-foreground">
                                   {place.rating.toFixed(1)}
                                 </span>
@@ -929,7 +932,7 @@ export default function UnifiedSearchPage() {
                             </span>
                             {place.price_level && <>
                                 <span className="text-muted-foreground">•</span>
-                                <span className="text-base font-bold text-emerald-600 dark:text-emerald-400 tracking-tight">
+                                <span className="text-base font-bold text-secondary dark:text-secondary tracking-tight">
                                   {place.yelpData?.price || getPriceDisplay(place.price_level)}
                                 </span>
                               </>}
@@ -956,7 +959,7 @@ export default function UnifiedSearchPage() {
                           return parts[0] || '';
                         })()}
                               </span>
-                              {place.opening_hours?.open_now !== undefined && <div className={`inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium ${place.opening_hours.open_now ? 'bg-green-50 dark:bg-green-950/30 text-green-700 dark:text-green-300' : 'bg-red-50 dark:bg-red-950/30 text-red-700 dark:text-red-300'}`}>
+                              {place.opening_hours?.open_now !== undefined && <div className={`inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium ${place.opening_hours.open_now ? 'bg-secondary/5 dark:bg-green-950/30 text-secondary dark:text-secondary/70' : 'bg-destructive/5 dark:bg-red-950/30 text-red-700 dark:text-red-300'}`}>
                                   {place.opening_hours.open_now ? 'Open' : 'Closed'}
                                 </div>}
                             </div>
@@ -976,15 +979,15 @@ export default function UnifiedSearchPage() {
                           
                           {/* Optional Service Tags Row - only show if present and space permits */}
                           {(place.yelpData || place.yelpData?.transactions?.length > 0) && <div className="flex items-center gap-1.5 pt-1">
-                              {place.yelpData && <div className="inline-flex items-center rounded-full bg-red-50 dark:bg-red-950/30 px-2 py-0.5 text-xs font-medium text-red-700 dark:text-red-300">
+                              {place.yelpData && <div className="inline-flex items-center rounded-full bg-destructive/5 dark:bg-red-950/30 px-2 py-0.5 text-xs font-medium text-red-700 dark:text-red-300">
                                   Yelp ✓
                                 </div>}
-                              {place.yelpData?.transactions?.includes('delivery') && <div className="inline-flex items-center gap-1 rounded-full bg-blue-50 dark:bg-blue-950/30 px-2 py-0.5 text-xs font-medium text-blue-700 dark:text-blue-300">
-                                  <Truck className="h-2.5 w-2.5" />
+                              {place.yelpData?.transactions?.includes('delivery') && <div className="inline-flex items-center gap-1 rounded-full bg-primary/5 dark:bg-blue-950/30 px-2 py-0.5 text-xs font-medium text-blue-700 dark:text-primary/50">
+                                  <MIcon name="local_shipping" className="text-xs" />
                                   Delivery
                                 </div>}
-                              {place.yelpData?.transactions?.includes('pickup') && <div className="inline-flex items-center gap-1 rounded-full bg-orange-50 dark:bg-orange-950/30 px-2 py-0.5 text-xs font-medium text-orange-700 dark:text-orange-300">
-                                  <ShoppingBag className="h-2.5 w-2.5" />
+                              {place.yelpData?.transactions?.includes('pickup') && <div className="inline-flex items-center gap-1 rounded-full bg-secondary/5 dark:bg-orange-950/30 px-2 py-0.5 text-xs font-medium text-orange-700 dark:text-orange-300">
+                                  <MIcon name="shopping_bag" className="text-xs" />
                                   Pickup
                                 </div>}
                             </div>}

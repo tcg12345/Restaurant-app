@@ -8,7 +8,9 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { toast } from 'sonner';
-import { ArrowLeft, Award } from 'lucide-react';
+const MIcon = ({ name, className = '', filled = false }: { name: string; className?: string; filled?: boolean }) => (
+  <span className={`material-symbols-outlined ${className}`} style={filled ? { fontVariationSettings: "'FILL' 1" } : undefined}>{name}</span>
+);
 
 export default function ApplyExpertPage() {
   const navigate = useNavigate();
@@ -73,10 +75,10 @@ export default function ApplyExpertPage() {
       <div className="sticky top-0 z-50 bg-background backdrop-blur border-b pt-safe-area-top">
         <div className="flex items-center gap-3 p-4">
           <Button variant="ghost" size="sm" onClick={() => navigate(-1)} className="h-10 w-10 p-0" aria-label="Go back">
-            <ArrowLeft className="h-4 w-4" />
+            <MIcon name="arrow_back" className="text-sm" />
           </Button>
           <div className="flex items-center gap-2">
-            <Award className="h-4 w-4" />
+            <MIcon name="verified" className="text-sm" filled={true} />
             <h1 className="text-lg font-semibold">Apply for Expert Account</h1>
           </div>
         </div>

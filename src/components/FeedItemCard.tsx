@@ -1,10 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { MapPin, Star, Clock } from 'lucide-react';
-import { Card, CardContent } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
 import { ExpertBadge } from '@/components/ExpertBadge';
 import { MichelinStars } from '@/components/MichelinStars';
 import { FeedItem } from '@/types/feed';
@@ -55,138 +52,130 @@ export function FeedItemCard({ item, onRestaurantClick, onUserClick }: FeedItemC
     if (isReview) {
       return isExpert ? 'wrote an expert review for' : 'reviewed';
     } else {
-      return isExpert ? 'rated as an expert' : 'visited and rated';
+      return isExpert ? 'rated as an expert' : 'rated';
     }
   };
 
   return (
-    <Card className="border-0 border-b border-border/50 rounded-none hover:bg-muted/30 transition-colors">
-      <CardContent className="p-4">
-        {/* Header: User info */}
-        <div className="flex items-center gap-3 mb-3">
-          <Button
-            variant="ghost"
-            className="p-0 h-auto"
-            onClick={handleUserClick}
-          >
-            <Avatar className="h-10 w-10">
-              <AvatarImage src={item.avatar_url || ''} alt={item.name} />
-              <AvatarFallback className="bg-gradient-to-br from-primary/20 to-primary/10 text-primary font-semibold">
+    <div className="border-b border-outline-variant/10 py-6 last:border-b-0">
+      {/* Header: User info */}
+      <div className="flex items-start gap-4">
+        <div className="flex-none relative">
+          <button onClick={handleUserClick} className="block">
+            <Avatar className="h-12 w-12">
+              <AvatarImage src={item.avatar_url || ''} alt={item.name} className="object-cover" />
+              <AvatarFallback className="bg-surface-container-high text-on-surface-variant font-headline font-bold text-sm">
                 {(item.name || item.username || 'U').charAt(0).toUpperCase()}
               </AvatarFallback>
             </Avatar>
-          </Button>
-          
-          <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-2 mb-1">
-              <Button
-                variant="ghost"
-                className="p-0 h-auto font-medium text-sm hover:underline"
-                onClick={handleUserClick}
-              >
-                {item.name || item.username}
-              </Button>
-              {isExpert && <ExpertBadge size="sm" />}
+          </button>
+          {isExpert && (
+            <div className="absolute -bottom-1 -right-1 bg-secondary w-5 h-5 rounded-full border-2 border-background flex items-center justify-center">
+              <span className="material-symbols-outlined text-[10px] text-white" style={{ fontVariationSettings: "'FILL' 1" }}>verified</span>
             </div>
-            <div className="flex items-center gap-2 text-xs text-muted-foreground">
-              <span>{getActivityText()}</span>
-              <Clock className="h-3 w-3" />
-              <span>{formatTimeAgo(item.created_at)}</span>
+          )}
+          {!isExpert && (
+            <div className="absolute -bottom-1 -right-1 bg-primary w-5 h-5 rounded-full border-2 border-background flex items-center justify-center">
+              <span className="material-symbols-outlined text-[10px] text-white" style={{ fontVariationSettings: "'FILL' 1" }}>grade</span>
             </div>
-          </div>
+          )}
         </div>
 
-        {/* Restaurant info and rating */}
-        <div className="ml-13"> {/* Offset content under avatar */}
-          <Button
-            variant="ghost"
-            className="p-0 h-auto w-full text-left"
-            onClick={handleRestaurantClick}
-          >
-            <div className="flex items-start justify-between w-full">
-              <div className="flex-1 min-w-0">
-                <h3 className="font-semibold text-base truncate hover:underline">
-                  {item.restaurant_name}
-                </h3>
-                <div className="flex items-center gap-2 mt-1">
-                  <MapPin className="h-3 w-3 text-muted-foreground flex-shrink-0" />
-                  <span className="text-sm text-muted-foreground truncate">
-                    {item.city && item.country 
-                      ? `${item.city}, ${item.country}` 
-                      : item.restaurant_address || 'Location unknown'}
-                  </span>
+        <div className="flex-1 min-w-0">
+          {/* User and activity */}
+          <div className="flex justify-between items-start mb-2">
+            <p className="text-sm font-body">
+              <button onClick={handleUserClick} className="font-headline font-bold text-primary hover:text-secondary transition-colors">
+                {item.name || item.username}
+              </button>
+              {' '}{getActivityText()}{' '}
+              <button onClick={handleRestaurantClick} className="font-headline font-bold text-primary hover:text-secondary transition-colors">
+                {item.restaurant_name}
+              </button>
+            </p>
+            <span className="text-[10px] text-on-surface-variant uppercase font-bold tracking-tighter flex-shrink-0 ml-2">
+              {formatTimeAgo(item.created_at).replace(' ago', '').replace('about ', '')}
+            </span>
+          </div>
+
+          {/* Rating stars */}
+          {rating && (
+            <div className="flex gap-0.5 mb-3">
+              {Array.from({ length: Math.min(Math.round(Number(rating) / 2), 5) }).map((_, i) => (
+                <span key={i} className="material-symbols-outlined text-secondary text-base" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
+              ))}
+              {Array.from({ length: Math.max(5 - Math.round(Number(rating) / 2), 0) }).map((_, i) => (
+                <span key={`empty-${i}`} className="material-symbols-outlined text-outline-variant text-base" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
+              ))}
+            </div>
+          )}
+
+          {/* Review text / Notes */}
+          {(item.review_text || item.notes) && (
+            <div className="bg-surface-container-low rounded-xl p-4 cursor-pointer hover:bg-surface-container transition-colors mb-3" onClick={handleRestaurantClick}>
+              <div className="flex gap-4">
+                {item.photos && item.photos.length > 0 && (
+                  <img
+                    src={item.photos[0]}
+                    alt={item.photo_dish_names?.[0] || 'Photo'}
+                    className="w-20 h-20 rounded-lg object-cover flex-shrink-0"
+                  />
+                )}
+                <div className="flex-1 min-w-0">
+                  <p className="text-xs text-on-surface-variant leading-relaxed line-clamp-3 mb-2">
+                    "{item.review_text || item.notes}"
+                  </p>
+                  <p className="text-[10px] font-bold text-secondary uppercase tracking-widest">Read Full Review</p>
                 </div>
               </div>
-              
-              {/* Rating and price */}
-              <div className="flex items-center gap-2 flex-shrink-0 ml-3">
-                {rating && (
-                  <div className="flex items-center gap-1 bg-primary/10 px-2 py-1 rounded-full">
-                    <Star className="h-3 w-3 text-primary fill-primary" />
-                    <span className="text-sm font-medium text-primary">
-                      {Number(rating).toFixed(1)}
-                    </span>
-                  </div>
-                )}
-                {item.price_range && (
-                  <Badge variant="outline" className="text-xs px-2 py-0.5">
-                    {getPriceDisplay(item.price_range)}
-                  </Badge>
-                )}
-              </div>
             </div>
-          </Button>
+          )}
 
-          {/* Additional tags */}
-          <div className="flex items-center gap-2 mt-3 flex-wrap">
+          {/* Photos (if no review text but has photos) */}
+          {!(item.review_text || item.notes) && item.photos && item.photos.length > 0 && (
+            <div className="flex gap-2 mt-2 overflow-x-auto hide-scrollbar pb-1">
+              {item.photos.slice(0, 4).map((url, idx) => (
+                <img
+                  key={idx}
+                  src={url}
+                  alt={item.photo_dish_names?.[idx] || `Photo ${idx + 1}`}
+                  className="h-20 w-20 object-cover rounded-lg flex-shrink-0 cursor-pointer hover:opacity-80 transition-opacity"
+                  onClick={handleRestaurantClick}
+                />
+              ))}
+              {item.photos.length > 4 && (
+                <div className="h-20 w-20 bg-surface-container rounded-lg flex items-center justify-center flex-shrink-0">
+                  <span className="text-xs text-on-surface-variant font-headline font-bold">
+                    +{item.photos.length - 4}
+                  </span>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Tags */}
+          <div className="flex items-center gap-2 mt-2 flex-wrap">
             {item.cuisine && (
-              <Badge variant="secondary" className="text-xs px-2 py-0.5">
+              <span className="text-xs bg-surface-container-high px-2 py-0.5 rounded text-on-surface-variant font-medium">
                 {item.cuisine}
-              </Badge>
+              </span>
+            )}
+            {item.city && (
+              <span className="text-xs bg-surface-container-high px-2 py-0.5 rounded text-on-surface-variant font-medium">
+                {item.city}
+              </span>
+            )}
+            {item.price_range && (
+              <span className="text-xs bg-surface-container-high px-2 py-0.5 rounded text-on-surface-variant font-medium">
+                {getPriceDisplay(item.price_range)}
+              </span>
             )}
             {item.michelin_stars && item.michelin_stars > 0 && (
               <MichelinStars stars={item.michelin_stars} size="sm" />
             )}
-            {item.date_visited && (
-              <Badge variant="outline" className="text-xs px-2 py-0.5">
-                Visited {new Date(item.date_visited).toLocaleDateString()}
-              </Badge>
-            )}
           </div>
-
-          {/* Review text */}
-          {(item.review_text || item.notes) && (
-            <div className="mt-3 p-3 bg-muted/30 rounded-lg">
-              <p className="text-sm leading-relaxed text-foreground/90 line-clamp-4">
-                {item.review_text || item.notes}
-              </p>
-            </div>
-          )}
-
-          {/* Photos */}
-          {item.photos && item.photos.length > 0 && (
-            <div className="mt-3">
-              <div className="flex gap-2 overflow-x-auto pb-2">
-                {item.photos.slice(0, 4).map((url, idx) => (
-                  <img 
-                    key={idx} 
-                    src={url} 
-                    alt={item.photo_dish_names?.[idx] || `Photo ${idx + 1}`} 
-                    className="h-20 w-20 object-cover rounded-lg flex-shrink-0 cursor-pointer hover:opacity-80 transition-opacity"
-                  />
-                ))}
-                {item.photos.length > 4 && (
-                  <div className="h-20 w-20 bg-muted rounded-lg flex items-center justify-center flex-shrink-0">
-                    <span className="text-xs text-muted-foreground font-medium">
-                      +{item.photos.length - 4}
-                    </span>
-                  </div>
-                )}
-              </div>
-            </div>
-          )}
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 }

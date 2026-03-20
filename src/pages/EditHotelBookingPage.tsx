@@ -87,8 +87,8 @@ export default function EditHotelBookingPage() {
 
   const ratingColor = (rating?: number) => {
     if (!rating) return "bg-muted text-foreground/80";
-    if (rating >= 4.5) return "bg-blue-600/15 text-blue-200 border-blue-500/40";
-    if (rating >= 4.0) return "bg-blue-600/10 text-blue-200 border-blue-500/30";
+    if (rating >= 4.5) return "bg-primary/15 text-blue-200 border-blue-500/40";
+    if (rating >= 4.0) return "bg-primary/10 text-blue-200 border-blue-500/30";
     return "bg-muted text-foreground/80";
   };
 

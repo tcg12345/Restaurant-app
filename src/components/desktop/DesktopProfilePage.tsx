@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { format } from 'date-fns';
-import { MapPin, Camera, Edit2, Star, Bookmark, Route, Users, Activity, Share2, Heart, MessageCircle, TrendingUp, MapPinIcon } from 'lucide-react';
+const MIcon = ({ name, className = '', filled = false }: { name: string; className?: string; filled?: boolean }) => (
+  <span className={`material-symbols-outlined ${className}`} style={filled ? { fontVariationSettings: "'FILL' 1" } : undefined}>{name}</span>
+);
 import { useAuth } from '@/contexts/AuthContext';
 import { useFriends } from '@/hooks/useFriends';
 import { useItineraries } from '@/hooks/useItineraries';
@@ -140,10 +142,10 @@ export default function DesktopProfilePage() {
           <div className="flex items-center gap-3">
             <h1 className="text-3xl font-bold">{profile.name || profile.username}</h1>
             <Button size="sm" variant="outline" onClick={() => navigate('/profile/edit')}>
-              <Edit2 className="h-4 w-4 mr-2" /> Edit Profile
+              <MIcon name="edit" className="text-sm mr-2" /> Edit Profile
             </Button>
             <Button size="sm" variant="outline" onClick={() => navigate('/profile/edit-photo')}>
-              <Camera className="h-4 w-4 mr-2" /> Update Photo
+              <MIcon name="photo_camera" className="text-sm mr-2" /> Update Photo
             </Button>
           </div>
           {profile.username && profile.name && (
@@ -154,7 +156,7 @@ export default function DesktopProfilePage() {
           )}
           {profile.home_city && (
             <div className="flex items-center gap-2 text-sm text-muted-foreground mt-2">
-              <MapPin className="h-4 w-4" />
+              <MIcon name="location_on" className="text-sm" />
               <span>{profile.home_city}</span>
             </div>
           )}
@@ -165,7 +167,7 @@ export default function DesktopProfilePage() {
       <div className="grid grid-cols-3 gap-4">
         <Button onClick={() => navigate('/rated')} variant="outline" className="h-14 justify-start">
           <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center mr-3">
-            <Star className="h-5 w-5 text-primary" />
+            <MIcon name="grade" className="text-base text-primary" />
           </div>
           <div className="flex-1 text-left">
             <p className="text-base font-medium">Rated Restaurants</p>
@@ -173,8 +175,8 @@ export default function DesktopProfilePage() {
           <span className="text-lg font-bold">{stats.rated_count}</span>
         </Button>
         <Button onClick={() => navigate('/wishlist')} variant="outline" className="h-14 justify-start">
-          <div className="w-10 h-10 rounded-full bg-orange-100 flex items-center justify-center mr-3">
-            <Bookmark className="h-5 w-5 text-orange-600" />
+          <div className="w-10 h-10 rounded-full bg-secondary/10 flex items-center justify-center mr-3">
+            <MIcon name="bookmark" className="text-base text-secondary" />
           </div>
           <div className="flex-1 text-left">
             <p className="text-base font-medium">Want to Try</p>
@@ -182,8 +184,8 @@ export default function DesktopProfilePage() {
           <span className="text-lg font-bold">{stats.wishlist_count}</span>
         </Button>
         <Button onClick={() => navigate('/travel?view=saved')} variant="outline" className="h-14 justify-start">
-          <div className="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center mr-3">
-            <Route className="h-5 w-5 text-green-600" />
+          <div className="w-10 h-10 rounded-full bg-secondary/10 flex items-center justify-center mr-3">
+            <MIcon name="route" className="text-base text-secondary" />
           </div>
           <div className="flex-1 text-left">
             <p className="text-base font-medium">Itineraries</p>
@@ -195,28 +197,28 @@ export default function DesktopProfilePage() {
       {/* Stats cards */}
       <div className="grid grid-cols-4 gap-4">
         <Card className="p-4 flex items-center gap-3">
-          <div className="p-2 bg-primary/10 rounded-lg"><Star className="h-5 w-5 text-primary" /></div>
+          <div className="p-2 bg-primary/10 rounded-lg"><MIcon name="grade" className="text-base text-primary" /></div>
           <div>
             <p className="text-xl font-bold">{stats.avg_rating.toFixed(1)}</p>
             <p className="text-xs text-muted-foreground">Avg Rating</p>
           </div>
         </Card>
         <Card className="p-4 flex items-center gap-3">
-          <div className="p-2 bg-green-100 rounded-lg"><Users className="h-5 w-5 text-green-600" /></div>
+          <div className="p-2 bg-secondary/10 rounded-lg"><MIcon name="group" className="text-base text-secondary" /></div>
           <div>
             <p className="text-xl font-bold">{stats.following_count}</p>
             <p className="text-xs text-muted-foreground">Following</p>
           </div>
         </Card>
         <Card className="p-4 flex items-center gap-3">
-          <div className="p-2 bg-yellow-100 rounded-lg"><TrendingUp className="h-5 w-5 text-yellow-600" /></div>
+          <div className="p-2 bg-secondary/10 rounded-lg"><MIcon name="trending_up" className="text-base text-secondary" /></div>
           <div>
             <p className="text-xl font-bold">{stats.top_cuisine || '—'}</p>
             <p className="text-xs text-muted-foreground">Top Cuisine</p>
           </div>
         </Card>
         <Card className="p-4 flex items-center gap-3">
-          <div className="p-2 bg-red-100 rounded-lg"><Heart className="h-5 w-5 text-red-500" /></div>
+          <div className="p-2 bg-destructive/10 rounded-lg"><MIcon name="favorite" className="text-base text-destructive" /></div>
           <div>
             <p className="text-xl font-bold">{stats.wishlist_count}</p>
             <p className="text-xs text-muted-foreground">Wishlist</p>
@@ -230,7 +232,7 @@ export default function DesktopProfilePage() {
       {/* Recent activity */}
       <div className="space-y-2">
         <h3 className="text-lg font-semibold flex items-center gap-2">
-          <Activity className="h-5 w-5" /> Recent Activity
+          <MIcon name="monitoring" className="text-base" /> Recent Activity
         </h3>
         <div className="divide-y divide-border rounded-md border border-border overflow-hidden">
           {loadingActivity ? (
@@ -263,7 +265,7 @@ export default function DesktopProfilePage() {
                       </div>
                     </div>
                     <div className="flex items-center gap-2 text-sm text-muted-foreground mb-2">
-                      <MapPinIcon className="h-4 w-4" />
+                      <MIcon name="location_on" className="text-sm" />
                       <span className="truncate">{activity.address}</span>
                     </div>
                   </div>
@@ -271,7 +273,7 @@ export default function DesktopProfilePage() {
                 <div className="flex items-center justify-between mt-3">
                   <div className="flex items-center gap-3">
                     <Button variant="ghost" size="sm" className="h-8 px-2" onClick={(e) => { e.stopPropagation(); navigate(`/share/restaurant/${activity.id}`); }}>
-                      <Share2 className="h-4 w-4" />
+                      <MIcon name="share" className="text-sm" />
                     </Button>
                   </div>
                   <span className="text-xs text-muted-foreground">{format(new Date(activity.created_at), 'MMM d')}</span>

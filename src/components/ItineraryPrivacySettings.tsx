@@ -6,7 +6,9 @@ import { Switch } from '@/components/ui/switch';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
-import { MapPin, Calendar, Users, Lock, Unlock, Eye, EyeOff } from 'lucide-react';
+const MIcon = ({ name, className = '', filled = false }: { name: string; className?: string; filled?: boolean }) => (
+  <span className={`material-symbols-outlined ${className}`} style={filled ? { fontVariationSettings: "'FILL' 1" } : undefined}>{name}</span>
+);
 import { toast } from 'sonner';
 import { format } from 'date-fns';
 import { useIsMobile } from '@/hooks/useIsMobile';
@@ -154,7 +156,7 @@ export function ItineraryPrivacySettings() {
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <Users className="w-5 h-5" />
+            <MIcon name="group" className="text-base" />
             Itinerary Privacy Settings
           </CardTitle>
         </CardHeader>
@@ -183,7 +185,7 @@ export function ItineraryPrivacySettings() {
         {/* Header */}
         <div className="px-4 py-4 bg-background">
           <h3 className="text-lg font-semibold flex items-center gap-2">
-            <Users className="h-5 w-5" />
+            <MIcon name="group" className="text-base" />
             Itinerary Privacy
           </h3>
           <p className="text-sm text-muted-foreground mt-1">
@@ -198,11 +200,11 @@ export function ItineraryPrivacySettings() {
           <div className="flex justify-between items-center mb-4">
             <div className="flex gap-6">
               <div className="text-center">
-                <div className="text-xl font-bold text-green-600">{publicCount}</div>
+                <div className="text-xl font-bold text-secondary">{publicCount}</div>
                 <div className="text-xs text-muted-foreground">Shared</div>
               </div>
               <div className="text-center">
-                <div className="text-xl font-bold text-orange-600">{privateCount}</div>
+                <div className="text-xl font-bold text-secondary">{privateCount}</div>
                 <div className="text-xs text-muted-foreground">Private</div>
               </div>
             </div>
@@ -211,11 +213,11 @@ export function ItineraryPrivacySettings() {
           {/* Action Buttons */}
           <div className="flex gap-3">
             <Button variant="outline" size="sm" onClick={makeAllPublic} className="flex-1">
-              <Unlock className="w-4 h-4 mr-2" />
+              <MIcon name="lock_open" className="text-sm mr-2" />
               Share All
             </Button>
             <Button variant="outline" size="sm" onClick={makeAllPrivate} className="flex-1">
-              <Lock className="w-4 h-4 mr-2" />
+              <MIcon name="lock" className="text-sm mr-2" />
               Make All Private
             </Button>
           </div>
@@ -237,12 +239,12 @@ export function ItineraryPrivacySettings() {
                     >
                       {itinerary.is_shareable ? (
                         <>
-                          <Eye className="w-3 h-3 mr-1" />
+                          <MIcon name="visibility" className="text-xs mr-1" />
                           Shared
                         </>
                       ) : (
                         <>
-                          <EyeOff className="w-3 h-3 mr-1" />
+                          <MIcon name="visibility_off" className="text-xs mr-1" />
                           Private
                         </>
                       )}
@@ -251,13 +253,13 @@ export function ItineraryPrivacySettings() {
                   
                   <div className="space-y-1 text-sm text-muted-foreground">
                     <div className="flex items-center gap-1">
-                      <Calendar className="w-4 h-4" />
+                      <MIcon name="calendar_month" className="text-sm" />
                       <span>
                         {format(new Date(itinerary.start_date), 'MMM d')} - {format(new Date(itinerary.end_date), 'MMM d, yyyy')}
                       </span>
                     </div>
                     <div className="flex items-center gap-1">
-                      <MapPin className="w-4 h-4" />
+                      <MIcon name="location_on" className="text-sm" />
                       <span>{Array.isArray(itinerary.locations) ? itinerary.locations.length : 0} location(s)</span>
                     </div>
                   </div>
@@ -285,7 +287,7 @@ export function ItineraryPrivacySettings() {
     <Card>
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
-          <Users className="w-5 h-5" />
+          <MIcon name="group" className="text-base" />
           Itinerary Privacy Settings
         </CardTitle>
         <p className="text-sm text-muted-foreground">
@@ -297,21 +299,21 @@ export function ItineraryPrivacySettings() {
         <div className="flex items-center justify-between p-4 bg-muted/50 rounded-lg">
           <div className="flex items-center gap-4">
             <div className="text-center">
-              <div className="text-2xl font-bold text-green-600">{publicCount}</div>
+              <div className="text-2xl font-bold text-secondary">{publicCount}</div>
               <div className="text-xs text-muted-foreground">Shared</div>
             </div>
             <div className="text-center">
-              <div className="text-2xl font-bold text-orange-600">{privateCount}</div>
+              <div className="text-2xl font-bold text-secondary">{privateCount}</div>
               <div className="text-xs text-muted-foreground">Private</div>
             </div>
           </div>
           <div className="flex gap-2">
             <Button variant="outline" size="sm" onClick={makeAllPublic}>
-              <Unlock className="w-4 h-4 mr-1" />
+              <MIcon name="lock_open" className="text-sm mr-1" />
               Share All
             </Button>
             <Button variant="outline" size="sm" onClick={makeAllPrivate}>
-              <Lock className="w-4 h-4 mr-1" />
+              <MIcon name="lock" className="text-sm mr-1" />
               Make All Private
             </Button>
           </div>
@@ -336,12 +338,12 @@ export function ItineraryPrivacySettings() {
                   >
                     {itinerary.is_shareable ? (
                       <>
-                        <Eye className="w-3 h-3 mr-1" />
+                        <MIcon name="visibility" className="text-xs mr-1" />
                         Shared with friends
                       </>
                     ) : (
                       <>
-                        <EyeOff className="w-3 h-3 mr-1" />
+                        <MIcon name="visibility_off" className="text-xs mr-1" />
                         Private
                       </>
                     )}
@@ -349,13 +351,13 @@ export function ItineraryPrivacySettings() {
                 </div>
                 <div className="flex items-center gap-4 text-sm text-muted-foreground">
                   <div className="flex items-center gap-1">
-                    <Calendar className="w-4 h-4" />
+                    <MIcon name="calendar_month" className="text-sm" />
                     <span>
                       {format(new Date(itinerary.start_date), 'MMM d')} - {format(new Date(itinerary.end_date), 'MMM d, yyyy')}
                     </span>
                   </div>
                   <div className="flex items-center gap-1">
-                    <MapPin className="w-4 h-4" />
+                    <MIcon name="location_on" className="text-sm" />
                     <span>{Array.isArray(itinerary.locations) ? itinerary.locations.length : 0} location(s)</span>
                   </div>
                 </div>

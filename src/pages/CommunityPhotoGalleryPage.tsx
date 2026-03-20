@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { useParams, useSearchParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, User, ChevronLeft, ChevronRight, Grid, Folder } from 'lucide-react';
+const MIcon = ({ name, className = '', filled = false }: { name: string; className?: string; filled?: boolean }) => (
+  <span className={`material-symbols-outlined ${className}`} style={filled ? { fontVariationSettings: "'FILL' 1" } : undefined}>{name}</span>
+);
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { LazyImage } from '@/components/LazyImage';
@@ -175,7 +177,7 @@ export default function CommunityPhotoGalleryPage() {
               onClick={handleBack}
               className="h-8 w-8 p-0"
             >
-              <ArrowLeft className="h-4 w-4" />
+              <MIcon name="arrow_back" className="text-sm" />
             </Button>
             <h1 className="font-semibold text-lg">Community Photos</h1>
           </div>
@@ -202,14 +204,14 @@ export default function CommunityPhotoGalleryPage() {
               onClick={handleBack}
               className="h-8 w-8 p-0"
             >
-              <ArrowLeft className="h-4 w-4" />
+              <MIcon name="arrow_back" className="text-sm" />
             </Button>
             <h1 className="font-semibold text-lg">Community Photos</h1>
           </div>
         </div>
         <div className="flex flex-col items-center justify-center p-8 text-center min-h-[50vh]">
           <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center mb-4">
-            <User className="h-8 w-8 text-muted-foreground" />
+            <MIcon name="person" className="text-2xl text-muted-foreground" />
           </div>
           <h3 className="text-lg font-semibold mb-2">No Community Photos Yet</h3>
           <p className="text-muted-foreground mb-4">
@@ -239,7 +241,7 @@ export default function CommunityPhotoGalleryPage() {
                 onClick={handleBack}
                 className="h-8 w-8 p-0 flex-shrink-0"
               >
-                <ArrowLeft className="h-4 w-4" />
+                <MIcon name="arrow_back" className="text-sm" />
               </Button>
               <div className="flex-1 min-w-0">
                 <h1 className="font-semibold text-lg truncate">
@@ -263,7 +265,7 @@ export default function CommunityPhotoGalleryPage() {
                     }}
                     className="text-xs px-2"
                   >
-                    <Folder className="h-3 w-3 mr-1" />
+                    <MIcon name="folder" className="text-xs mr-1" />
                     Groups
                   </Button>
                   <Button
@@ -272,7 +274,7 @@ export default function CommunityPhotoGalleryPage() {
                     onClick={() => setViewMode('all')}
                     className="text-xs px-2"
                   >
-                    <Grid className="h-3 w-3 mr-1" />
+                    <MIcon name="grid_view" className="text-xs mr-1" />
                     All
                   </Button>
                 </div>
@@ -342,7 +344,7 @@ export default function CommunityPhotoGalleryPage() {
                   
                   {/* Arrow */}
                   <div className="flex items-center pr-3">
-                    <ChevronRight className="h-5 w-5 text-muted-foreground" />
+                    <MIcon name="chevron_right" className="text-base text-muted-foreground" />
                   </div>
                 </div>
               </div>
@@ -359,7 +361,7 @@ export default function CommunityPhotoGalleryPage() {
                   onClick={() => setSelectedGroup(null)}
                   className="mb-2"
                 >
-                  <ArrowLeft className="h-4 w-4 mr-2" />
+                  <MIcon name="arrow_back" className="text-sm mr-2" />
                   Back to Groups
                 </Button>
               </div>
@@ -386,7 +388,7 @@ export default function CommunityPhotoGalleryPage() {
                   {/* Photo Info Overlay */}
                   <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-3 rounded-b-lg">
                     <div className="flex items-center gap-2 text-white text-xs">
-                      <User className="h-3 w-3" />
+                      <MIcon name="person" className="text-xs" />
                       <span className="font-medium">{photo.username}</span>
                     </div>
                     
@@ -441,7 +443,7 @@ export default function CommunityPhotoGalleryPage() {
                 onClick={goToPreviousPhoto}
                 className="absolute left-4 top-1/2 -translate-y-1/2 z-10 h-12 w-12 p-0 bg-black/50 hover:bg-black/70 text-white"
               >
-                <ChevronLeft className="h-6 w-6" />
+                <MIcon name="chevron_left" className="text-lg" />
               </Button>
             )}
             
@@ -453,7 +455,7 @@ export default function CommunityPhotoGalleryPage() {
                 onClick={goToNextPhoto}
                 className="absolute right-4 top-1/2 -translate-y-1/2 z-10 h-12 w-12 p-0 bg-black/50 hover:bg-black/70 text-white"
               >
-                <ChevronRight className="h-6 w-6" />
+                <MIcon name="chevron_right" className="text-lg" />
               </Button>
             )}
             
@@ -469,7 +471,7 @@ export default function CommunityPhotoGalleryPage() {
               (currentPhoto.captions && currentPhoto.captions[currentPhoto.photoIndex])) && (
               <div className="mt-4 bg-black/70 backdrop-blur-sm rounded-lg p-4 max-w-md mx-auto">
                 <div className="flex items-center gap-2 text-white text-sm mb-2">
-                  <User className="h-4 w-4" />
+                  <MIcon name="person" className="text-sm" />
                   <span className="font-medium">{currentPhoto.username}</span>
                 </div>
                 

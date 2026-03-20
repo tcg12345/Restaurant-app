@@ -1,23 +1,18 @@
 import { useState, useEffect, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { 
-  ArrowLeft, 
-  Star, 
-  Heart,
+import {
   RefreshCw,
-  Globe,
   ChefHat,
-  MapPin,
-  Calendar,
   TrendingUp,
-  Award,
   BarChart3,
   PieChart,
-  Activity,
   Utensils,
-  Map as MapIcon,
   Route
 } from 'lucide-react';
+
+const MIcon = ({ name, className = '', filled = false }: { name: string; className?: string; filled?: boolean }) => (
+  <span className={`material-symbols-outlined ${className}`} style={filled ? { fontVariationSettings: "'FILL' 1" } : undefined}>{name}</span>
+);
 import { FriendProfileSkeleton } from '@/components/skeletons/FriendProfileSkeleton';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -211,7 +206,7 @@ export default function FriendProfilePage() {
                 onClick={() => navigate('/mobile/friends')}
                 className="h-8 w-8 p-0"
               >
-                <ArrowLeft className="h-4 w-4" />
+                <MIcon name="arrow_back" className="text-sm" />
               </Button>
               <Avatar className="h-10 w-10">
                 <AvatarImage src={friend.avatar_url} alt={friend.name || friend.username} />
@@ -243,7 +238,7 @@ export default function FriendProfilePage() {
                   onClick={() => navigate('/mobile/friends')}
                   className="h-9 w-9 p-0 hover:bg-primary/10"
                 >
-                  <ArrowLeft className="h-5 w-5" />
+                  <MIcon name="arrow_back" className="text-base" />
                 </Button>
                 <div className="flex items-center gap-4">
                   <Avatar className="h-14 w-14 ring-2 ring-primary/20">
@@ -260,7 +255,7 @@ export default function FriendProfilePage() {
                       @{friend.username}
                       {friend.is_public && (
                         <Badge variant="secondary" className="text-xs">
-                          <Globe className="h-3 w-3 mr-1" />
+                          <MIcon name="language" className="text-xs mr-1" />
                           Public
                         </Badge>
                       )}
@@ -293,19 +288,19 @@ export default function FriendProfilePage() {
             </Card>
             <Card className="p-3 border-l-4 border-l-orange-500/50">
               <div className="text-center">
-                <div className="text-xl font-bold text-orange-500">{profileData.wishlist_count || 0}</div>
+                <div className="text-xl font-bold text-secondary">{profileData.wishlist_count || 0}</div>
                 <div className="text-xs text-muted-foreground">Wishlist</div>
               </div>
             </Card>
             <Card className="p-3 border-l-4 border-l-green-500/50">
               <div className="text-center">
-                <div className="text-xl font-bold text-green-500">{profileData.avg_rating ? profileData.avg_rating.toFixed(1) : '0.0'}</div>
+                <div className="text-xl font-bold text-secondary">{profileData.avg_rating ? profileData.avg_rating.toFixed(1) : '0.0'}</div>
                 <div className="text-xs text-muted-foreground">Avg Rating</div>
               </div>
             </Card>
             <Card className="p-3 border-l-4 border-l-purple-500/50">
               <div className="text-center">
-                <div className="text-xl font-bold text-purple-500">{availableCities.length || 0}</div>
+                <div className="text-xl font-bold text-tertiary">{availableCities.length || 0}</div>
                 <div className="text-xs text-muted-foreground">Cities</div>
               </div>
             </Card>
@@ -316,7 +311,7 @@ export default function FriendProfilePage() {
             <Card className="p-4 hover:shadow-lg transition-all duration-300 border-l-4 border-l-primary/50">
               <div className="flex items-center gap-3">
                 <div className="p-2 bg-gradient-to-br from-primary/20 to-primary/10 rounded-lg">
-                  <Star className="h-5 w-5 text-primary" />
+                  <MIcon name="grade" className="text-base text-primary" />
                 </div>
                 <div>
                   <div className="text-2xl font-bold">{profileData.rated_count || 0}</div>
@@ -328,7 +323,7 @@ export default function FriendProfilePage() {
             <Card className="p-4 hover:shadow-lg transition-all duration-300 border-l-4 border-l-orange-500/50">
               <div className="flex items-center gap-3">
                 <div className="p-2 bg-gradient-to-br from-orange-500/20 to-orange-500/10 rounded-lg">
-                  <Heart className="h-5 w-5 text-orange-500" />
+                  <MIcon name="favorite" className="text-base text-secondary" />
                 </div>
                 <div>
                   <div className="text-2xl font-bold">{profileData.wishlist_count || 0}</div>
@@ -340,7 +335,7 @@ export default function FriendProfilePage() {
             <Card className="p-4 hover:shadow-lg transition-all duration-300 border-l-4 border-l-green-500/50">
               <div className="flex items-center gap-3">
                 <div className="p-2 bg-gradient-to-br from-green-500/20 to-green-500/10 rounded-lg">
-                  <TrendingUp className="h-5 w-5 text-green-500" />
+                  <TrendingUp className="h-5 w-5 text-secondary" />
                 </div>
                 <div>
                   <div className="text-2xl font-bold">{profileData.avg_rating ? profileData.avg_rating.toFixed(1) : '0.0'}</div>
@@ -352,7 +347,7 @@ export default function FriendProfilePage() {
             <Card className="p-4 hover:shadow-lg transition-all duration-300 border-l-4 border-l-purple-500/50">
               <div className="flex items-center gap-3">
                 <div className="p-2 bg-gradient-to-br from-purple-500/20 to-purple-500/10 rounded-lg">
-                  <Award className="h-5 w-5 text-purple-500" />
+                  <MIcon name="verified" className="text-base text-tertiary" filled />
                 </div>
                 <div>
                   <div className="text-2xl font-bold">{profileData.michelin_count || 0}</div>
@@ -364,7 +359,7 @@ export default function FriendProfilePage() {
             <Card className="p-4 hover:shadow-lg transition-all duration-300 border-l-4 border-l-blue-500/50">
               <div className="flex items-center gap-3">
                 <div className="p-2 bg-gradient-to-br from-blue-500/20 to-blue-500/10 rounded-lg">
-                  <ChefHat className="h-5 w-5 text-blue-500" />
+                  <ChefHat className="h-5 w-5 text-primary" />
                 </div>
                 <div>
                   <div className="text-2xl font-bold">{topCuisines?.length || 0}</div>
@@ -376,7 +371,7 @@ export default function FriendProfilePage() {
             <Card className="p-4 hover:shadow-lg transition-all duration-300 border-l-4 border-l-red-500/50">
               <div className="flex items-center gap-3">
                 <div className="p-2 bg-gradient-to-br from-red-500/20 to-red-500/10 rounded-lg">
-                  <MapIcon className="h-5 w-5 text-red-500" />
+                  <MIcon name="map" className="text-base text-destructive" />
                 </div>
                 <div>
                   <div className="text-2xl font-bold">{availableCities.length || 0}</div>
@@ -396,7 +391,7 @@ export default function FriendProfilePage() {
                   <span className="sm:hidden">({filteredRestaurants.length})</span>
                 </TabsTrigger>
                 <TabsTrigger value="wishlist" className="text-xs rounded-lg">
-                  <Heart className="h-3 w-3 mr-1" />
+                  <MIcon name="favorite" className="text-xs mr-1" />
                   <span className="hidden sm:inline">Wishlist</span>
                   <span className="sm:hidden">({allWishlist.length})</span>
                 </TabsTrigger>
@@ -493,7 +488,7 @@ export default function FriendProfilePage() {
                        <div className="p-4 pt-3 space-y-2">
                          <div className="flex items-center gap-2 text-muted-foreground">
                            <div className="p-1 bg-muted/50 rounded-lg">
-                             <MapPin className="h-3 w-3" />
+                             <MIcon name="location_on" className="text-xs" />
                            </div>
                            <span className="text-sm font-medium truncate">{restaurant.city}</span>
                          </div>
@@ -532,11 +527,11 @@ export default function FriendProfilePage() {
                             )}
                           </div>
                           <div className="flex items-center gap-2 mt-1 text-muted-foreground">
-                            <MapPin className="h-3 w-3" />
+                            <MIcon name="location_on" className="text-xs" />
                             <span className="text-xs truncate">{restaurant.city}</span>
                           </div>
                         </div>
-                        <Heart className="h-5 w-5 text-orange-500 fill-orange-500" />
+                        <MIcon name="favorite" className="text-base text-secondary" filled />
                       </div>
                     </Card>
                   ))}
@@ -544,7 +539,7 @@ export default function FriendProfilePage() {
 
                 {allWishlist.length === 0 && (
                   <Card className="p-8 text-center">
-                    <Heart className="h-8 w-8 text-muted-foreground mx-auto mb-3" />
+                    <MIcon name="favorite" className="text-3xl text-muted-foreground mx-auto mb-3" />
                     <h3 className="font-semibold mb-2">No wishlist items</h3>
                     <p className="text-sm text-muted-foreground">No restaurants saved yet</p>
                   </Card>
@@ -568,7 +563,7 @@ export default function FriendProfilePage() {
                       <div className="text-xs text-muted-foreground">Michelin Stars</div>
                     </Card>
                     <Card className="p-3 text-center">
-                      <div className="text-2xl font-bold text-blue-500">{topCuisines?.length || 0}</div>
+                      <div className="text-2xl font-bold text-primary">{topCuisines?.length || 0}</div>
                       <div className="text-xs text-muted-foreground">Cuisines Tried</div>
                     </Card>
                   </div>
@@ -576,7 +571,7 @@ export default function FriendProfilePage() {
                   {/* Top Cuisines - Mobile */}
                   <Card className="p-4">
                     <h3 className="font-semibold mb-3 flex items-center gap-2">
-                      <ChefHat className="h-4 w-4 text-blue-500" />
+                      <ChefHat className="h-4 w-4 text-primary" />
                       Top Cuisines
                     </h3>
                     <div className="space-y-2">
@@ -592,11 +587,11 @@ export default function FriendProfilePage() {
                   {/* Cities - Mobile */}
                   <Card className="p-4">
                     <h3 className="font-semibold mb-3 flex items-center gap-2">
-                      <MapIcon className="h-4 w-4 text-red-500" />
+                      <MIcon name="map" className="text-sm text-destructive" />
                       Cities Explored
                     </h3>
                     <div className="text-center mb-3">
-                      <div className="text-3xl font-bold text-red-500">{availableCities.length}</div>
+                      <div className="text-3xl font-bold text-destructive">{availableCities.length}</div>
                       <div className="text-xs text-muted-foreground">cities total</div>
                     </div>
                     <div className="space-y-2">
@@ -622,7 +617,7 @@ export default function FriendProfilePage() {
                   Restaurants ({filteredRestaurants.length})
                 </TabsTrigger>
                 <TabsTrigger value="wishlist" className="flex items-center gap-2 text-sm">
-                  <Heart className="h-4 w-4" />
+                  <MIcon name="favorite" className="text-sm" />
                   Wishlist ({allWishlist.length})
                 </TabsTrigger>
                 {hasItineraries && (
@@ -747,7 +742,7 @@ export default function FriendProfilePage() {
                     <div className="p-6 pt-4 space-y-4">
                       <div className="flex items-center gap-2 text-muted-foreground">
                         <div className="p-1.5 bg-muted/50 rounded-lg">
-                          <MapPin className="h-4 w-4" />
+                          <MIcon name="location_on" className="text-sm" />
                         </div>
                         <span className="text-sm font-medium truncate">{restaurant.city}</span>
                       </div>
@@ -755,7 +750,7 @@ export default function FriendProfilePage() {
                       {restaurant.date_visited && (
                         <div className="flex items-center gap-2 text-muted-foreground">
                           <div className="p-1.5 bg-muted/50 rounded-lg">
-                            <Calendar className="h-4 w-4" />
+                            <MIcon name="calendar_month" className="text-sm" />
                           </div>
                           <span className="text-sm">
                             Visited {new Date(restaurant.date_visited).toLocaleDateString()}
@@ -776,7 +771,7 @@ export default function FriendProfilePage() {
                           className="h-9 px-4 text-xs font-medium group-hover:bg-gradient-to-r group-hover:from-primary group-hover:to-primary/80 group-hover:text-primary-foreground group-hover:shadow-lg transition-all duration-300"
                         >
                           View Details
-                          <ArrowLeft className="h-3 w-3 ml-2 rotate-180 group-hover:translate-x-1 transition-transform" />
+                          <MIcon name="arrow_back" className="text-xs ml-2 rotate-180 group-hover:translate-x-1 transition-transform" />
                         </Button>
                       </div>
                     </div>
@@ -805,7 +800,7 @@ export default function FriendProfilePage() {
                     <div className="space-y-4">
                       <div className="flex justify-between items-start">
                         <div className="flex-1 min-w-0">
-                          <h3 className="font-bold text-lg group-hover:text-orange-500 transition-colors truncate">
+                          <h3 className="font-bold text-lg group-hover:text-secondary transition-colors truncate">
                             {restaurant.name}
                           </h3>
                           <div className="flex items-center gap-2 mt-2">
@@ -818,11 +813,11 @@ export default function FriendProfilePage() {
                             )}
                           </div>
                         </div>
-                        <Heart className="h-5 w-5 text-orange-500 fill-orange-500" />
+                        <MIcon name="favorite" className="text-base text-secondary" filled />
                       </div>
 
                       <div className="flex items-center gap-2 text-muted-foreground">
-                        <MapPin className="h-4 w-4" />
+                        <MIcon name="location_on" className="text-sm" />
                         <span className="text-sm truncate">{restaurant.city}</span>
                       </div>
 
@@ -833,7 +828,7 @@ export default function FriendProfilePage() {
                         <Button 
                           size="sm" 
                           variant="ghost" 
-                          className="h-8 px-3 text-xs group-hover:bg-orange-500 group-hover:text-white"
+                          className="h-8 px-3 text-xs group-hover:bg-secondary/50 group-hover:text-white"
                         >
                           View Details →
                         </Button>
@@ -845,7 +840,7 @@ export default function FriendProfilePage() {
 
               {allWishlist.length === 0 && (
                 <Card className="p-12 text-center">
-                  <Heart className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                  <MIcon name="favorite" className="text-5xl text-muted-foreground mx-auto mb-4" />
                   <h3 className="text-lg font-semibold mb-2">No wishlist items</h3>
                   <p className="text-muted-foreground">This user hasn't added any restaurants to their wishlist yet.</p>
                 </Card>
@@ -888,7 +883,7 @@ export default function FriendProfilePage() {
                 <Card className="hover:shadow-lg transition-shadow">
                   <CardHeader className="pb-4">
                     <CardTitle className="text-lg flex items-center gap-2">
-                      <ChefHat className="h-5 w-5 text-blue-500" />
+                      <ChefHat className="h-5 w-5 text-primary" />
                       Top Cuisines
                     </CardTitle>
                   </CardHeader>
@@ -911,12 +906,12 @@ export default function FriendProfilePage() {
                 <Card className="hover:shadow-lg transition-shadow">
                   <CardHeader className="pb-4">
                     <CardTitle className="text-lg flex items-center gap-2">
-                      <MapIcon className="h-5 w-5 text-red-500" />
+                      <MIcon name="map" className="text-base text-destructive" />
                       Geographic Spread
                     </CardTitle>
                   </CardHeader>
                   <CardContent className="text-center">
-                    <div className="text-4xl font-bold text-red-500 mb-2">{availableCities.length}</div>
+                    <div className="text-4xl font-bold text-destructive mb-2">{availableCities.length}</div>
                     <div className="text-sm text-muted-foreground mb-4">cities explored</div>
                     <div className="space-y-2">
                       {availableCities.slice(0, 5).map(({ city, count }) => (

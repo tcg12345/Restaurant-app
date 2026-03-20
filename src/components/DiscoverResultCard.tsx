@@ -14,27 +14,9 @@ import { CommunityPhotoGallery } from '@/components/CommunityPhotoGallery';
 
 import { useRestaurantReviews } from '@/hooks/useRestaurantReviews';
 
-import { 
-  Star, 
-  MapPin, 
-  Heart, 
-  ExternalLink, 
-  Phone, 
-  Clock, 
-  Globe,
-  Award,
-  Users,
-  Car,
-  Wifi,
-  CreditCard,
-  ChefHat,
-  ChevronDown,
-  Eye,
-  ShoppingBag,
-  Truck,
-  Plus
-} from 'lucide-react';
-
+const MIcon = ({ name, className = '', filled = false }: { name: string; className?: string; filled?: boolean }) => (
+  <span className={`material-symbols-outlined ${className}`} style={filled ? { fontVariationSettings: "'FILL' 1" } : undefined}>{name}</span>
+);
 
 interface RestaurantResult {
   id: string;
@@ -78,23 +60,23 @@ interface DiscoverResultCardProps {
   onRate?: (restaurant: RestaurantResult) => void;
 }
 
-const FEATURE_ICONS: { [key: string]: any } = {
-  outdoor: Car,
-  wifi: Wifi,
-  vegetarian: ChefHat,
-  family: Users,
-  card: CreditCard,
-  default: ChefHat
+const FEATURE_ICON_NAMES: { [key: string]: string } = {
+  outdoor: 'directions_car',
+  wifi: 'wifi',
+  vegetarian: 'restaurant',
+  family: 'group',
+  card: 'credit_card',
+  default: 'restaurant'
 };
 
-const getFeatureIcon = (feature: string) => {
+const getFeatureIconName = (feature: string): string => {
   const lowerFeature = feature.toLowerCase();
-  if (lowerFeature.includes('outdoor') || lowerFeature.includes('patio')) return FEATURE_ICONS.outdoor;
-  if (lowerFeature.includes('wifi')) return FEATURE_ICONS.wifi;
-  if (lowerFeature.includes('vegetarian') || lowerFeature.includes('vegan')) return FEATURE_ICONS.vegetarian;
-  if (lowerFeature.includes('family') || lowerFeature.includes('kids')) return FEATURE_ICONS.family;
-  if (lowerFeature.includes('card') || lowerFeature.includes('payment')) return FEATURE_ICONS.card;
-  return FEATURE_ICONS.default;
+  if (lowerFeature.includes('outdoor') || lowerFeature.includes('patio')) return FEATURE_ICON_NAMES.outdoor;
+  if (lowerFeature.includes('wifi')) return FEATURE_ICON_NAMES.wifi;
+  if (lowerFeature.includes('vegetarian') || lowerFeature.includes('vegan')) return FEATURE_ICON_NAMES.vegetarian;
+  if (lowerFeature.includes('family') || lowerFeature.includes('kids')) return FEATURE_ICON_NAMES.family;
+  if (lowerFeature.includes('card') || lowerFeature.includes('payment')) return FEATURE_ICON_NAMES.card;
+  return FEATURE_ICON_NAMES.default;
 };
 
 export function DiscoverResultCard({ restaurant, onToggleWishlist, isInWishlist, onViewDetails, onRate }: DiscoverResultCardProps) {
@@ -269,7 +251,7 @@ export function DiscoverResultCard({ restaurant, onToggleWishlist, isInWishlist,
         <div className="absolute top-3 left-3">
           <Badge 
             variant={restaurant.isOpen ? "default" : "secondary"}
-            className={`${restaurant.isOpen ? "bg-green-600 hover:bg-green-700" : "bg-gray-500"} shadow-lg`}
+            className={`${restaurant.isOpen ? "bg-secondary hover:bg-green-700" : "bg-surface-container-low0"} shadow-lg`}
           >
             {restaurant.isOpen ? "Open Now" : "Closed"}
           </Badge>
@@ -281,13 +263,13 @@ export function DiscoverResultCard({ restaurant, onToggleWishlist, isInWishlist,
             variant="secondary"
             className={`h-10 w-10 shadow-lg transition-all duration-200 ${
               isInWishlist 
-                ? 'bg-red-500 hover:bg-red-600 text-white scale-110' 
+                ? 'bg-destructive/50 hover:bg-destructive text-white scale-110' 
                 : 'bg-background/90 hover:bg-background text-muted-foreground hover:scale-110'
             }`}
             onClick={handleAddToWishlist}
             disabled={isAddingToWishlist}
           >
-            <Heart className={`h-5 w-5 ${isInWishlist ? 'fill-current' : ''}`} />
+            <MIcon name="favorite" className={`text-base ${isInWishlist ? '' : ''}`} filled={isInWishlist} />
           </Button>
         </div>
       </div>
@@ -306,7 +288,7 @@ export function DiscoverResultCard({ restaurant, onToggleWishlist, isInWishlist,
                 onClick={handleRatingClick}
                 className="flex items-center gap-1 hover:opacity-80 transition-opacity cursor-pointer"
               >
-                <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+                <MIcon name="grade" className="text-sm text-secondary" filled />
                 <span className="font-semibold">{restaurant.rating}</span>
                 {restaurant.reviewCount && (
                   <span className="text-xs text-muted-foreground">
@@ -319,14 +301,14 @@ export function DiscoverResultCard({ restaurant, onToggleWishlist, isInWishlist,
 
           {/* Price and Cuisine */}
           <div className="flex items-center gap-2 flex-wrap">
-            <span className="text-green-600 font-bold text-lg">
+            <span className="text-secondary font-bold text-lg">
               {restaurant.yelpData?.price || getPriceDisplay(restaurant.priceRange)}
             </span>
             <Badge variant="outline" className="text-xs font-medium">
               {restaurant.cuisine}
             </Badge>
             {restaurant.yelpData && (
-              <Badge variant="secondary" className="text-xs bg-red-100 text-red-800 border-red-200">
+              <Badge variant="secondary" className="text-xs bg-destructive/10 text-red-800 border-destructive/20">
                 Yelp ✓
               </Badge>
             )}
@@ -337,13 +319,13 @@ export function DiscoverResultCard({ restaurant, onToggleWishlist, isInWishlist,
             <div className="flex gap-1 flex-wrap">
               {restaurant.yelpData.transactions.includes('delivery') && (
                 <Badge variant="outline" className="text-xs flex items-center gap-1">
-                  <Truck className="h-3 w-3" />
+                  <MIcon name="local_shipping" className="text-xs" />
                   Delivery
                 </Badge>
               )}
               {restaurant.yelpData.transactions.includes('pickup') && (
                 <Badge variant="outline" className="text-xs flex items-center gap-1">
-                  <ShoppingBag className="h-3 w-3" />
+                  <MIcon name="shopping_bag" className="text-xs" />
                   Pickup
                 </Badge>
               )}
@@ -352,7 +334,7 @@ export function DiscoverResultCard({ restaurant, onToggleWishlist, isInWishlist,
 
           {/* Location */}
           <CardDescription className="flex items-center text-sm">
-            <MapPin className="h-3.5 w-3.5 mr-1 flex-shrink-0" />
+            <MIcon name="location_on" className="text-sm mr-1 flex-shrink-0" />
             <span className="truncate">
               {restaurant.location?.city || 'Unknown location'}
             </span>
@@ -365,7 +347,7 @@ export function DiscoverResultCard({ restaurant, onToggleWishlist, isInWishlist,
         <div className="space-y-2">
           {restaurant.phoneNumber && (
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
-              <Phone className="h-3.5 w-3.5" />
+              <MIcon name="phone" className="text-sm" />
               <span className="truncate">{restaurant.phoneNumber}</span>
             </div>
           )}
@@ -373,7 +355,7 @@ export function DiscoverResultCard({ restaurant, onToggleWishlist, isInWishlist,
           {restaurant.openingHours && (
             <div className="space-y-1">
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                <Clock className="h-3.5 w-3.5" />
+                <MIcon name="schedule" className="text-sm" />
                 <span className="flex-1 truncate">{getCurrentDayHours(restaurant.openingHours)}</span>
                 <Collapsible open={showFullWeekHours} onOpenChange={setShowFullWeekHours}>
                   <CollapsibleTrigger asChild>
@@ -382,7 +364,7 @@ export function DiscoverResultCard({ restaurant, onToggleWishlist, isInWishlist,
                       size="sm"
                       className="h-5 w-5 p-0 hover:bg-muted"
                     >
-                      <ChevronDown className={`h-3 w-3 transition-transform ${showFullWeekHours ? 'rotate-180' : ''}`} />
+                      <MIcon name="expand_more" className={`text-xs transition-transform ${showFullWeekHours ? 'rotate-180' : ''}`} />
                     </Button>
                   </CollapsibleTrigger>
                 </Collapsible>
@@ -411,7 +393,7 @@ export function DiscoverResultCard({ restaurant, onToggleWishlist, isInWishlist,
               onClick={() => onRate?.(restaurant)}
               className="h-8 text-xs bg-primary hover:bg-primary/90"
             >
-              <Plus className="h-3 w-3 mr-1" />
+              <MIcon name="add" className="text-xs mr-1" />
               Rate
             </Button>
             
@@ -421,7 +403,7 @@ export function DiscoverResultCard({ restaurant, onToggleWishlist, isInWishlist,
               onClick={() => onViewDetails?.(restaurant)}
               className="h-8 text-xs"
             >
-              <Eye className="h-3 w-3 mr-1" />
+              <MIcon name="visibility" className="text-xs mr-1" />
               Details
             </Button>
             
@@ -434,7 +416,7 @@ export function DiscoverResultCard({ restaurant, onToggleWishlist, isInWishlist,
                 window.open(website, '_blank');
               }}
             >
-              <Globe className="h-3 w-3 mr-1" />
+              <MIcon name="language" className="text-xs mr-1" />
               Site
             </Button>
           </div>
@@ -448,10 +430,10 @@ export function DiscoverResultCard({ restaurant, onToggleWishlist, isInWishlist,
                   className="h-8 text-xs w-full justify-between"
                 >
                   <div className="flex items-center">
-                    <ExternalLink className="h-3 w-3 mr-1" />
+                    <MIcon name="open_in_new" className="text-xs mr-1" />
                     More Info
                   </div>
-                  <ChevronDown className={`h-3 w-3 transition-transform ${isMoreInfoOpen ? 'rotate-180' : ''}`} />
+                  <MIcon name="expand_more" className={`text-xs transition-transform ${isMoreInfoOpen ? 'rotate-180' : ''}`} />
                 </Button>
               </CollapsibleTrigger>
             </Collapsible>
@@ -468,7 +450,7 @@ export function DiscoverResultCard({ restaurant, onToggleWishlist, isInWishlist,
                     className="h-8 text-xs w-full justify-start"
                     onClick={() => window.open(`tel:${restaurant.phoneNumber}`, '_self')}
                   >
-                    <Phone className="h-3 w-3 mr-2" />
+                    <MIcon name="phone" className="text-xs mr-2" />
                     Call Restaurant
                   </Button>
                 )}
@@ -479,7 +461,7 @@ export function DiscoverResultCard({ restaurant, onToggleWishlist, isInWishlist,
                   className="h-8 text-xs w-full justify-start"
                   onClick={() => window.open(restaurant.googleMapsUrl || `https://www.google.com/maps/search/${encodeURIComponent(restaurant.name + ' ' + restaurant.address)}`, '_blank')}
                 >
-                  <MapPin className="h-3 w-3 mr-2" />
+                  <MIcon name="location_on" className="text-xs mr-2" />
                   View on Map
                 </Button>
                 
@@ -490,7 +472,7 @@ export function DiscoverResultCard({ restaurant, onToggleWishlist, isInWishlist,
                      className="h-8 text-xs w-full justify-start"
                      onClick={() => window.open(restaurant.yelpData.url, '_blank')}
                    >
-                     <Star className="h-3 w-3 mr-2" />
+                     <MIcon name="grade" className="text-xs mr-2" />
                      View on Yelp
                    </Button>
                  )}

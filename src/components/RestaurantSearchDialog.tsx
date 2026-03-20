@@ -1,6 +1,9 @@
 import { useState, useEffect } from 'react';
-import { Search, MapPin, Star, Clock, ExternalLink } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+
+const MIcon = ({ name, className = '', filled = false }: { name: string; className?: string; filled?: boolean }) => (
+  <span className={`material-symbols-outlined ${className}`} style={filled ? { fontVariationSettings: "'FILL' 1" } : undefined}>{name}</span>
+);
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -134,20 +137,22 @@ export function RestaurantSearchDialog({ isOpen, onClose, onSelect }: Restaurant
 
   const renderStars = (rating: number) => {
     return Array.from({ length: 5 }, (_, i) => (
-      <Star
+      <MIcon
         key={i}
-        className={`w-3 h-3 ${
-          i < Math.floor(rating) 
-            ? 'fill-yellow-400 text-yellow-400' 
-            : 'text-gray-300'
+        name="grade"
+        className={`text-xs ${
+          i < Math.floor(rating)
+            ? 'text-secondary'
+            : 'text-outline-variant'
         }`}
+        filled={i < Math.floor(rating)}
       />
     ));
   };
 
   const renderPriceLevel = (level: number) => {
     return Array.from({ length: 4 }, (_, i) => (
-      <span key={i} className={i < level ? 'text-green-600' : 'text-gray-300'}>
+      <span key={i} className={i < level ? 'text-secondary' : 'text-outline-variant'}>
         $
       </span>
     ));
@@ -180,7 +185,7 @@ export function RestaurantSearchDialog({ isOpen, onClose, onSelect }: Restaurant
                   disabled={isLoading || !searchQuery.trim()}
                   className="flex items-center gap-2"
                 >
-                  <Search className="w-4 h-4" />
+                  <MIcon name="search" className="text-sm" />
                   {isLoading ? 'Searching...' : 'Search'}
                 </Button>
               </div>
@@ -220,7 +225,7 @@ export function RestaurantSearchDialog({ isOpen, onClose, onSelect }: Restaurant
                         <div className="flex-1">
                           <CardTitle className="text-base">{result.name}</CardTitle>
                           <CardDescription className="flex items-center gap-1 mt-1">
-                            <MapPin className="w-3 h-3" />
+                            <MIcon name="location_on" className="text-xs" />
                             {result.formatted_address || result.vicinity}
                           </CardDescription>
                         </div>
@@ -258,7 +263,7 @@ export function RestaurantSearchDialog({ isOpen, onClose, onSelect }: Restaurant
 
             {searchResults.length === 0 && searchQuery && !isLoading && (
               <div className="text-center py-8 text-muted-foreground">
-                <Search className="w-8 h-8 mx-auto mb-2 opacity-50" />
+                <MIcon name="search" className="text-2xl mx-auto mb-2 opacity-50" />
                 <p>No restaurants found</p>
                 <p className="text-sm">Try a different search term</p>
               </div>
@@ -273,7 +278,7 @@ export function RestaurantSearchDialog({ isOpen, onClose, onSelect }: Restaurant
                   <div>
                     <CardTitle className="text-lg">{selectedResult.name}</CardTitle>
                     <CardDescription className="flex items-center gap-1 mt-1">
-                      <MapPin className="w-3 h-3" />
+                      <MIcon name="location_on" className="text-xs" />
                       {selectedResult.formatted_address || selectedResult.vicinity}
                     </CardDescription>
                   </div>
@@ -304,13 +309,13 @@ export function RestaurantSearchDialog({ isOpen, onClose, onSelect }: Restaurant
                     <div className="space-y-2">
                       {selectedResult.formatted_phone_number && (
                         <div className="flex items-center gap-2 text-sm">
-                          <Clock className="w-4 h-4" />
+                          <MIcon name="schedule" className="text-sm" />
                           <span>{selectedResult.formatted_phone_number}</span>
                         </div>
                       )}
                       {selectedResult.website && (
                         <div className="flex items-center gap-2 text-sm">
-                          <ExternalLink className="w-4 h-4" />
+                          <MIcon name="open_in_new" className="text-sm" />
                           <a 
                             href={selectedResult.website} 
                             target="_blank" 

@@ -1,5 +1,7 @@
 import { useState } from 'react';
-import { ArrowLeft, Users, Plus, UserPlus, Clock } from 'lucide-react';
+const MIcon = ({ name, className = '', filled = false }: { name: string; className?: string; filled?: boolean }) => (
+  <span className={`material-symbols-outlined ${className}`} style={filled ? { fontVariationSettings: "'FILL' 1" } : undefined}>{name}</span>
+);
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useNavigate } from 'react-router-dom';
@@ -83,7 +85,7 @@ export function MobileFriendsPage() {
             onClick={() => navigate('/profile')}
             className="h-10 w-10 p-0"
           >
-            <ArrowLeft className="h-5 w-5" />
+            <MIcon name="arrow_back" className="text-base" />
           </Button>
           <div className="flex-1">
             <h1 className="text-xl font-bold">Friends</h1>
@@ -97,15 +99,15 @@ export function MobileFriendsPage() {
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <TabsList className="w-full grid grid-cols-3 gap-1 p-1 mb-6 bg-muted rounded-lg">
             <TabsTrigger value="friends" className="text-xs">
-              <Users className="h-4 w-4 mr-1" />
+              <MIcon name="group" className="text-sm mr-1" />
               Friends
             </TabsTrigger>
             <TabsTrigger value="find" className="text-xs">
-              <Plus className="h-4 w-4 mr-1" />
+              <MIcon name="add" className="text-sm mr-1" />
               Find
             </TabsTrigger>
             <TabsTrigger value="requests" className="text-xs">
-              <Clock className="h-4 w-4 mr-1" />
+              <MIcon name="schedule" className="text-sm mr-1" />
               Requests
             </TabsTrigger>
           </TabsList>
@@ -114,11 +116,11 @@ export function MobileFriendsPage() {
           <TabsContent value="friends" className="space-y-4">
             {friends.length === 0 ? (
               <div className="text-center py-12">
-                <Users className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                <MIcon name="group" className="text-5xl text-muted-foreground mx-auto mb-4" />
                 <h3 className="text-lg font-semibold mb-2">No friends yet</h3>
                 <p className="text-muted-foreground mb-4">Start building your network</p>
                 <Button onClick={() => setActiveTab('find')}>
-                  <UserPlus className="h-4 w-4 mr-2" />
+                  <MIcon name="person_add" className="text-sm mr-2" />
                   Find Friends
                 </Button>
               </div>

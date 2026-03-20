@@ -1,17 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { 
-  ArrowLeft, 
-  Star, 
-  MapPin, 
-  Heart,
-  Search,
-  SlidersHorizontal,
-  Grid3X3,
-  List,
-  Filter,
-  Sliders
-} from 'lucide-react';
+const MIcon = ({ name, className = '', filled = false }: { name: string; className?: string; filled?: boolean }) => (
+  <span className={`material-symbols-outlined ${className}`} style={filled ? { fontVariationSettings: "'FILL' 1" } : undefined}>{name}</span>
+);
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -244,7 +235,7 @@ export default function MobileFriendProfilePage() {
             </Badge>
             {restaurant.rating && (
               <div className="flex items-center gap-0.5">
-                <Star className="h-2.5 w-2.5 text-yellow-400 fill-yellow-400" />
+                <MIcon name="grade" className="text-xs text-secondary" filled />
                 <span className="text-[10px] font-medium">{restaurant.rating}</span>
               </div>
             )}
@@ -270,7 +261,7 @@ export default function MobileFriendProfilePage() {
             </Badge>
             {restaurant.rating && (
               <div className="flex items-center gap-1">
-                <Star className="h-3 w-3 text-yellow-400 fill-yellow-400" />
+                <MIcon name="grade" className="text-xs text-secondary" filled />
                 <span className="text-xs">{restaurant.rating}</span>
               </div>
             )}
@@ -282,7 +273,7 @@ export default function MobileFriendProfilePage() {
             )}
           </div>
           <div className="flex items-center gap-1 mt-1 text-xs text-muted-foreground">
-            <MapPin className="h-3 w-3" />
+            <MIcon name="location_on" className="text-xs" />
             <span className="truncate">{restaurant.city}</span>
           </div>
         </div>
@@ -296,7 +287,7 @@ export default function MobileFriendProfilePage() {
             }}
             className="h-8 w-8 p-0"
           >
-            <Heart className="h-4 w-4" />
+            <MIcon name="favorite" className="text-sm" />
           </Button>
         )}
       </div>
@@ -311,7 +302,7 @@ export default function MobileFriendProfilePage() {
         <div className="min-h-screen bg-background">
         <div className="flex items-center gap-3 p-3 border-b">
           <Button variant="ghost" size="sm" onClick={() => navigate('/friends')}>
-            <ArrowLeft className="h-4 w-4" />
+            <MIcon name="arrow_back" className="text-sm" />
           </Button>
           <div className="w-8 h-8 bg-muted animate-pulse rounded-full"></div>
           <div className="w-24 h-4 bg-muted animate-pulse rounded"></div>
@@ -338,7 +329,7 @@ export default function MobileFriendProfilePage() {
       <div className="sticky top-0 z-50 bg-background/95 backdrop-blur border-b">
         <div className="flex items-center gap-3 p-3">
           <Button variant="ghost" size="sm" onClick={() => navigate('/friends')} className="h-8 w-8 p-0">
-            <ArrowLeft className="h-4 w-4" />
+            <MIcon name="arrow_back" className="text-sm" />
           </Button>
           <Avatar className="h-7 w-7">
             <AvatarImage src={friend.avatar_url || ''} />
@@ -402,7 +393,7 @@ export default function MobileFriendProfilePage() {
         {/* Search and Controls */}
         <div className="flex gap-2">
           <div className="relative flex-1">
-            <Search className="absolute left-2.5 top-1/2 transform -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
+            <MIcon name="search" className="absolute left-2.5 top-1/2 transform -translate-y-1/2 text-sm text-muted-foreground" />
             <Input
               placeholder="Search..."
               value={searchTerm}
@@ -416,7 +407,7 @@ export default function MobileFriendProfilePage() {
             <Popover>
               <PopoverTrigger asChild>
                 <Button variant="outline" size="sm" className="h-8 w-8 p-0">
-                  <Sliders className="h-3.5 w-3.5" />
+                  <MIcon name="tune" className="text-sm" />
                 </Button>
               </PopoverTrigger>
               <PopoverContent className="w-56 p-3" align="end">
@@ -445,7 +436,7 @@ export default function MobileFriendProfilePage() {
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline" size="sm" className="h-8 w-8 p-0">
-                <Filter className="h-3.5 w-3.5" />
+                <MIcon name="filter_list" className="text-sm" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-56">
@@ -518,7 +509,7 @@ export default function MobileFriendProfilePage() {
             onClick={() => setViewMode(viewMode === 'list' ? 'grid' : 'list')}
             className="h-8 w-8 p-0"
           >
-            {viewMode === 'list' ? <Grid3X3 className="h-3.5 w-3.5" /> : <List className="h-3.5 w-3.5" />}
+            {viewMode === 'list' ? <MIcon name="grid_view" className="text-sm" /> : <MIcon name="view_list" className="text-sm" />}
           </Button>
         </div>
 

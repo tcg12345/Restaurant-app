@@ -1,6 +1,9 @@
 import { useState, useRef, useEffect } from 'react';
-import { Search, MapPin, Star, Clock, X } from 'lucide-react';
 import { Input } from '@/components/ui/input';
+
+const MIcon = ({ name, className = '', filled = false }: { name: string; className?: string; filled?: boolean }) => (
+  <span className={`material-symbols-outlined ${className}`} style={filled ? { fontVariationSettings: "'FILL' 1" } : undefined}>{name}</span>
+);
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -330,7 +333,7 @@ export function AttractionsSearch({
                       <div className="flex flex-col items-end gap-1">
                         {attraction.rating && (
                           <div className="flex items-center gap-1">
-                            <Star className="w-3 h-3 fill-yellow-400 text-yellow-400" />
+                            <Star className="w-3 h-3 fill-yellow-400 text-secondary" />
                             <span className="text-xs font-medium">{attraction.rating}</span>
                             {attraction.numReviews && (
                               <span className="text-xs text-muted-foreground">({attraction.numReviews})</span>

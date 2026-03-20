@@ -1,7 +1,10 @@
 import { useState, useEffect, useRef, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useIsMobile } from '@/hooks/useIsMobile';
-import { ArrowLeft, MapPin, Clock, Phone, Globe, Star, Heart, Plus, Share2, Navigation, ExternalLink, Check, User, Users, Award, ChevronDown, ChevronUp } from 'lucide-react';
+// Material Symbols helper
+const MIcon = ({ name, className = '', filled = false }: { name: string; className?: string; filled?: boolean }) => (
+  <span className={`material-symbols-outlined ${className}`} style={filled ? { fontVariationSettings: "'FILL' 1" } : undefined}>{name}</span>
+);
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -607,9 +610,9 @@ export function UnifiedRestaurantDetails({
               />
             </div>
           ) : (
-            <div className="h-full w-full bg-gradient-to-br from-gray-800 to-gray-900 flex items-center justify-center">
+            <div className="h-full w-full bg-gradient-to-br from-primary to-primary/80 flex items-center justify-center">
               <div className="text-center text-white/80">
-                <Globe className="h-12 w-12 mx-auto mb-2" />
+                <MIcon name="language" className="text-5xl mx-auto mb-2" />
                 <p>No photo available</p>
               </div>
             </div>
@@ -626,7 +629,7 @@ export function UnifiedRestaurantDetails({
               onClick={handleBack}
               className="absolute top-4 left-4 h-10 w-10 p-0 bg-black/30 backdrop-blur-sm border-0 hover:bg-black/40 text-white"
             >
-              <ArrowLeft className="h-4 w-4" />
+              <MIcon name="arrow_back" className="text-sm" />
             </Button>
           )}
           
@@ -636,7 +639,7 @@ export function UnifiedRestaurantDetails({
             onClick={handleShare}
             className="absolute top-4 right-4 h-10 w-10 p-0 bg-black/30 backdrop-blur-sm border-0 hover:bg-black/40 text-white"
           >
-            <Share2 className="h-4 w-4" />
+            <MIcon name="share" className="text-sm" />
           </Button>
           
           
@@ -676,7 +679,7 @@ export function UnifiedRestaurantDetails({
           <div className="px-4 mb-6">
             <div className="flex items-center gap-3 flex-wrap mb-4">
               <span className="text-muted-foreground text-base">{restaurantData.cuisine}</span>
-              <span className="text-green-400 font-semibold text-base">
+              <span className="text-secondary font-semibold text-base">
                 {getPriceDisplay(restaurantData.priceRange || restaurantData.price_range)}
               </span>
               <div className="flex items-center gap-1">
@@ -696,12 +699,12 @@ export function UnifiedRestaurantDetails({
                   variant="outline"
                   className={`flex-1 flex items-center gap-2 ${
                     isOnWishlist 
-                      ? 'bg-red-500/20 border-red-500 text-red-400 hover:bg-red-500/30' 
+                      ? 'bg-destructive/10 border-destructive/30 text-destructive hover:bg-destructive/20'
                       : 'bg-card border-border text-foreground hover:bg-muted'
                   }`}
                   disabled={isAdding || isOnWishlist}
                 >
-                  <Heart className={`h-4 w-4 ${isOnWishlist ? 'fill-red-500 text-red-500' : ''}`} />
+                  <MIcon name="favorite" className="text-sm" filled={isOnWishlist} />
                   {isAdding ? 'Adding...' : isOnWishlist ? 'On Wishlist' : 'Wishlist'}
                 </Button>
                 <Button
@@ -709,7 +712,7 @@ export function UnifiedRestaurantDetails({
                   variant="outline"
                   className="flex-1 flex items-center gap-2 bg-card border-border text-foreground hover:bg-muted"
                 >
-                  <Plus className="h-4 w-4" />
+                  <MIcon name="add" className="text-sm" />
                   Add to List
                 </Button>
               </div>
@@ -723,7 +726,7 @@ export function UnifiedRestaurantDetails({
                 <Card className="bg-card border-border cursor-pointer hover:bg-muted transition-colors">
                   <CardContent className="p-4 text-center">
                     <div className="flex items-center justify-center gap-2 mb-2">
-                      <Users className="h-4 w-4 text-blue-400" />
+                      <MIcon name="group" className="text-sm text-primary/70" />
                       <span className="text-sm font-medium text-muted-foreground">Friends</span>
                     </div>
                     <div className="text-xl font-bold text-white mb-1">
@@ -745,7 +748,7 @@ export function UnifiedRestaurantDetails({
                 >
                   <CardContent className="p-4 text-center">
                     <div className="flex items-center justify-center gap-2 mb-2">
-                      <Award className="h-4 w-4 text-amber-400" />
+                      <MIcon name="verified" className="text-sm text-secondary" filled />
                       <span className="text-sm font-medium text-muted-foreground">Experts</span>
                     </div>
                     <div className="text-xl font-bold text-white mb-1">
@@ -766,25 +769,25 @@ export function UnifiedRestaurantDetails({
               {getPhoneNumber() && (
                 <Button
                   onClick={handleCall}
-                  className="flex-1 flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white rounded-full"
+                  className="flex-1 flex items-center gap-2 bg-primary hover:bg-primary/90 text-white rounded-full"
                 >
-                  <Phone className="h-4 w-4" />
+                  <MIcon name="phone" className="text-sm" />
                   Call
                 </Button>
               )}
               <Button
                 onClick={handleDirections}
-                className="flex-1 flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white rounded-full"
+                className="flex-1 flex items-center gap-2 bg-primary hover:bg-primary/90 text-white rounded-full"
               >
-                <Navigation className="h-4 w-4" />
+                <MIcon name="directions" className="text-sm" />
                 Directions
               </Button>
               {restaurantData.website && (
                 <Button
                   onClick={handleWebsite}
-                  className="flex-1 flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white rounded-full"
+                  className="flex-1 flex items-center gap-2 bg-primary hover:bg-primary/90 text-white rounded-full"
                 >
-                  <Globe className="h-4 w-4" />
+                  <MIcon name="language" className="text-sm" />
                   Website
                 </Button>
               )}
@@ -827,7 +830,7 @@ export function UnifiedRestaurantDetails({
             <Card className="bg-card border-border">
               <CardContent className="p-4">
                 <div className="flex items-start gap-3">
-                  <MapPin className="h-5 w-5 text-muted-foreground mt-0.5 flex-shrink-0" />
+                  <MIcon name="location_on" className="text-lg text-muted-foreground mt-0.5 flex-shrink-0" />
                   <div className="flex-1">
                     <p className="text-sm font-medium text-white mb-1">Address</p>
                     <p className="text-sm text-muted-foreground">{restaurantData.address}</p>
@@ -881,7 +884,7 @@ export function UnifiedRestaurantDetails({
                   <Button 
                     variant="ghost" 
                     size="sm" 
-                    className="w-full text-blue-400 hover:text-blue-300"
+                    className="w-full text-primary/70 hover:text-primary/50"
                     onClick={handleDirections}
                   >
                     Open in Maps

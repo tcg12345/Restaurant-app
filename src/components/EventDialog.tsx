@@ -687,9 +687,9 @@ export function EventDialog({
                 {newLinkInput && (
                   <div className="flex items-center">
                     {isValidUrl(newLinkInput) ? (
-                      <div className="w-2 h-2 rounded-full bg-green-500"></div>
+                      <div className="w-2 h-2 rounded-full bg-secondary/50"></div>
                     ) : newLinkInput.trim() ? (
-                      <div className="w-2 h-2 rounded-full bg-red-500"></div>
+                      <div className="w-2 h-2 rounded-full bg-destructive/50"></div>
                     ) : null}
                   </div>
                 )}
@@ -720,7 +720,7 @@ export function EventDialog({
               <Label className="text-xs text-muted-foreground font-medium">Added Links ({customLinks.length})</Label>
               {customLinks.map((link, index) => (
                 <div key={index} className="flex items-center gap-2 p-2 bg-muted/20 rounded-lg border border-border/20">
-                  <div className="w-2 h-2 rounded-full bg-green-500 flex-shrink-0"></div>
+                  <div className="w-2 h-2 rounded-full bg-secondary/50 flex-shrink-0"></div>
                   <span className="text-sm text-foreground flex-1 truncate">{link}</span>
                   <Button
                     type="button"

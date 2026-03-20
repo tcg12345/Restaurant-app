@@ -3,8 +3,11 @@ import mapboxgl from 'mapbox-gl';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Plus, MapPin, Star, Hotel, Camera } from 'lucide-react';
 import { Trip, PlaceRating } from '@/hooks/useTrips';
+
+const MIcon = ({ name, className = '', filled = false }: { name: string; className?: string; filled?: boolean }) => (
+  <span className={`material-symbols-outlined ${className}`} style={filled ? { fontVariationSettings: "'FILL' 1" } : undefined}>{name}</span>
+);
 import { useMapboxToken } from '@/hooks/useMapboxToken';
 import { cn } from '@/lib/utils';
 import 'mapbox-gl/dist/mapbox-gl.css';
@@ -117,7 +120,7 @@ export function TripMap({ trip, ratings, onAddPlace }: TripMapProps) {
       <Card className="h-full">
         <CardContent className="flex items-center justify-center h-full">
           <div className="text-center">
-            <MapPin className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+            <MIcon name="location_on" className="text-4xl text-muted-foreground mx-auto mb-4" />
             <h3 className="text-lg font-semibold text-foreground mb-2">Select a Trip</h3>
             <p className="text-muted-foreground">Choose a trip from the list to view places on the map</p>
           </div>
@@ -135,12 +138,12 @@ export function TripMap({ trip, ratings, onAddPlace }: TripMapProps) {
             <div>
               <CardTitle className="text-xl">{trip.title}</CardTitle>
               <CardDescription className="flex items-center gap-1">
-                <MapPin className="w-4 h-4" />
+                <MIcon name="location_on" className="text-sm" />
                 {trip.destination} • {ratings.length} places rated
               </CardDescription>
             </div>
             <Button onClick={onAddPlace} className="flex items-center gap-2">
-              <Plus className="w-4 h-4" />
+              <MIcon name="add" className="text-sm" />
               Add Place
             </Button>
           </div>
@@ -171,7 +174,7 @@ export function TripMap({ trip, ratings, onAddPlace }: TripMapProps) {
               <div className="h-[calc(100%-5rem)] overflow-y-auto px-6 pb-6">
                 {ratings.length === 0 ? (
                   <div className="text-center py-8">
-                    <Camera className="w-8 h-8 text-muted-foreground mx-auto mb-2" />
+                    <MIcon name="photo_camera" className="text-2xl text-muted-foreground mx-auto mb-2" />
                     <p className="text-muted-foreground">No places added yet</p>
                     <Button
                       variant="outline"
@@ -213,26 +216,26 @@ function PlaceCard({ rating, isSelected, onClick }: PlaceCardProps) {
   const getTypeIcon = (type: string) => {
     switch (type) {
       case 'restaurant':
-        return <Star className="w-4 h-4" />;
+        return <MIcon name="grade" className="text-sm" />;
       case 'attraction':
-        return <MapPin className="w-4 h-4" />;
+        return <MIcon name="location_on" className="text-sm" />;
       case 'hotel':
-        return <Hotel className="w-4 h-4" />;
+        return <MIcon name="hotel" className="text-sm" />;
       default:
-        return <MapPin className="w-4 h-4" />;
+        return <MIcon name="location_on" className="text-sm" />;
     }
   };
 
   const getTypeColor = (type: string) => {
     switch (type) {
       case 'restaurant':
-        return 'bg-red-500 text-white';
+        return 'bg-destructive/50 text-white';
       case 'attraction':
-        return 'bg-blue-500 text-white';
+        return 'bg-primary/50 text-white';
       case 'hotel':
-        return 'bg-purple-500 text-white';
+        return 'bg-tertiary/50 text-white';
       default:
-        return 'bg-gray-500 text-white';
+        return 'bg-surface-container-low0 text-white';
     }
   };
 
@@ -259,7 +262,7 @@ function PlaceCard({ rating, isSelected, onClick }: PlaceCardProps) {
             </Badge>
             {rating.overall_rating && (
               <div className="flex items-center gap-1">
-                <Star className="w-3 h-3 fill-yellow-400 text-yellow-400" />
+                <MIcon name="grade" className="text-xs fill-yellow-400 text-secondary" filled />
                 <span className="text-xs font-medium">{rating.overall_rating}</span>
               </div>
             )}

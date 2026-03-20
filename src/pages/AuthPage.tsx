@@ -50,7 +50,7 @@ export default function AuthPage() {
 
   const handleDemoSignIn = () => {
     signInAsDemo();
-    toast.success('Welcome to Grubby Demo!');
+    toast.success('Welcome to The Culinary Editorial Demo!');
     const state = (location.state as any) || {};
     const params = new URLSearchParams(location.search);
     const redirectTo = state.from || params.get('redirectTo') || '/';
@@ -264,16 +264,15 @@ export default function AuthPage() {
   };
 
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center p-4">
+    <div className="min-h-screen bg-background flex items-center justify-center p-6 font-body selection:bg-secondary/30">
       <div className="w-full max-w-md">
         {/* Logo */}
         <div className="text-center mb-8">
-          <GrubbyLogo className="mx-auto h-12 w-auto" />
-          <h1 className="text-2xl font-bold text-foreground mt-4">Welcome to Grubby</h1>
-          <p className="text-muted-foreground">Sign in to your account or create a new one</p>
+          <GrubbyLogo className="justify-center" size="lg" />
+          <p className="text-on-surface-variant mt-3 text-sm">Sign in to your account or create a new one</p>
         </div>
 
-        <Card className="bg-card border border-border/30 rounded-2xl shadow-none">
+        <Card className="bg-surface-container-lowest border border-outline-variant/10 rounded-xl shadow-premium">
           {/* Demo Mode Sign In Button */}
           {DEMO_MODE_ENABLED && (
             <div className="p-6 pb-0">
@@ -473,7 +472,7 @@ export default function AuthPage() {
                       />
                       <div className="space-y-1">
                         <Label htmlFor="signup-expert" className="text-sm font-medium cursor-pointer flex items-center gap-2">
-                          <Shield className="h-4 w-4 text-amber-600" />
+                          <Shield className="h-4 w-4 text-secondary" />
                           Create as Expert Account
                         </Label>
                         <p className="text-xs text-muted-foreground">

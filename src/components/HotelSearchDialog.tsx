@@ -1,5 +1,7 @@
 import { useState } from 'react';
-import { Search, Hotel, Star, MapPin, Wifi, Car, Coffee, Dumbbell, Waves, Utensils, Calendar, ArrowLeft, X } from 'lucide-react';
+const MIcon = ({ name, className = '', filled = false }: { name: string; className?: string; filled?: boolean }) => (
+  <span className={`material-symbols-outlined ${className}`} style={filled ? { fontVariationSettings: "'FILL' 1" } : undefined}>{name}</span>
+);
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -151,19 +153,19 @@ export function HotelSearchDialog({ isOpen, onClose, onSelect, locations, isMult
 
   const getAmenityIcon = (amenity: string) => {
     const amenityLower = amenity.toLowerCase();
-    if (amenityLower.includes('wifi')) return <Wifi className="w-3 h-3" />;
-    if (amenityLower.includes('parking') || amenityLower.includes('car')) return <Car className="w-3 h-3" />;
-    if (amenityLower.includes('breakfast') || amenityLower.includes('coffee')) return <Coffee className="w-3 h-3" />;
-    if (amenityLower.includes('gym') || amenityLower.includes('fitness')) return <Dumbbell className="w-3 h-3" />;
-    if (amenityLower.includes('pool') || amenityLower.includes('swimming')) return <Waves className="w-3 h-3" />;
-    if (amenityLower.includes('restaurant') || amenityLower.includes('dining')) return <Utensils className="w-3 h-3" />;
+    if (amenityLower.includes('wifi')) return <MIcon name="wifi" className="text-xs" />;
+    if (amenityLower.includes('parking') || amenityLower.includes('car')) return <MIcon name="directions_car" className="text-xs" />;
+    if (amenityLower.includes('breakfast') || amenityLower.includes('coffee')) return <MIcon name="coffee" className="text-xs" />;
+    if (amenityLower.includes('gym') || amenityLower.includes('fitness')) return <MIcon name="fitness_center" className="text-xs" />;
+    if (amenityLower.includes('pool') || amenityLower.includes('swimming')) return <MIcon name="pool" className="text-xs" />;
+    if (amenityLower.includes('restaurant') || amenityLower.includes('dining')) return <MIcon name="restaurant" className="text-xs" />;
     return null;
   };
 
   const getRatingColor = (rating: number) => {
     if (rating >= 4.5) return 'bg-emerald-100 text-emerald-800 border-emerald-300';
-    if (rating >= 4.0) return 'bg-blue-100 text-blue-800 border-blue-300';
-    if (rating >= 3.5) return 'bg-yellow-100 text-yellow-800 border-yellow-300';
+    if (rating >= 4.0) return 'bg-primary/10 text-blue-800 border-primary/30';
+    if (rating >= 3.5) return 'bg-secondary/10 text-yellow-800 border-yellow-300';
     return 'bg-muted text-foreground border-border';
   };
   const handleCheckInSelect = (date: Date | undefined) => {
@@ -199,7 +201,7 @@ if (isMobile) {
                   <DrawerDescription className="text-sm text-muted-foreground font-medium">Find the perfect accommodation for your trip</DrawerDescription>
                 </div>
                 <Button variant="ghost" size="icon" onClick={handleClose} className="h-8 w-8 rounded-full bg-muted/30 hover:bg-muted/50 transition-colors">
-                  <X className="h-4 w-4" />
+                  <MIcon name="close" className="text-sm" />
                 </Button>
               </div>
               
@@ -207,7 +209,7 @@ if (isMobile) {
               <div className="space-y-3">
                 <div className="relative">
                   <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
-                    <Search className="h-4 w-4 text-muted-foreground" />
+                    <MIcon name="search" className="text-sm text-muted-foreground" />
                   </div>
                   <Input
                     value={searchQuery}
@@ -222,7 +224,7 @@ if (isMobile) {
                     size="icon"
                     className="absolute right-2 top-1/2 -translate-y-1/2 h-8 w-8 rounded-full bg-primary hover:bg-primary/90 shadow-sm"
                   >
-                    <Search className="w-4 h-4" />
+                    <MIcon name="search" className="text-sm" />
                   </Button>
                 </div>
               </div>
@@ -236,7 +238,7 @@ if (isMobile) {
                 <Card className="p-4 bg-muted/5 border-muted/20 shadow-sm">
                   <div className="space-y-3">
                     <Label className="text-sm font-semibold flex items-center gap-2 text-foreground">
-                      <MapPin className="w-4 h-4 text-primary" />
+                      <MIcon name="location_on" className="text-sm text-primary" />
                       Location
                     </Label>
                     <Select value={selectedLocation} onValueChange={setSelectedLocation}>
@@ -271,7 +273,7 @@ if (isMobile) {
                   </>
                 ) : (
                   <>
-                    <Search className="w-4 h-4 mr-2" />
+                    <MIcon name="search" className="text-sm mr-2" />
                     Search Hotels
                   </>
                 )}
@@ -294,12 +296,12 @@ if (isMobile) {
                     onClick={() => setShowResults(false)}
                     className="h-9 w-9 rounded-full bg-muted/50 hover:bg-muted"
                   >
-                    <ArrowLeft className="h-4 w-4" />
+                    <MIcon name="arrow_back" className="text-sm" />
                   </Button>
                   <div className="space-y-0.5">
                     <DrawerTitle className="text-base font-semibold flex items-center gap-2">
                       <div className="p-2 rounded-xl bg-primary/10">
-                        <Hotel className="w-4 h-4 text-primary" />
+                        <MIcon name="hotel" className="text-sm text-primary" />
                       </div>
                       {hotels.length} Available Hotels
                     </DrawerTitle>
@@ -309,7 +311,7 @@ if (isMobile) {
                   </div>
                 </div>
                 <Button variant="ghost" size="icon" onClick={handleClose} className="h-9 w-9 rounded-full bg-muted/50 hover:bg-muted">
-                  <X className="h-4 w-4" />
+                  <MIcon name="close" className="text-sm" />
                 </Button>
               </div>
             </div>
@@ -334,20 +336,20 @@ if (isMobile) {
                                 <h3 className={cn("font-semibold text-lg", isMobile && "text-base")}>{hotel.name}</h3>
                                 {hotel.rating && (
                                   <Badge className={cn("text-xs font-medium", getRatingColor(hotel.rating))}>
-                                    <Star className="w-3 h-3 mr-1 fill-current" />
+                                    <MIcon name="grade" className="text-xs mr-1" filled />
                                     {hotel.rating}
                                   </Badge>
                                 )}
                                 {hotel.searchLocation && (
                                   <Badge variant="outline" className="text-xs">
-                                    <MapPin className="w-3 h-3 mr-1" />
+                                    <MIcon name="location_on" className="text-xs mr-1" />
                                     {hotel.searchLocation}
                                   </Badge>
                                 )}
                               </div>
 
                               <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                                <MapPin className="w-4 h-4 flex-shrink-0" />
+                                <MIcon name="location_on" className="text-sm flex-shrink-0" />
                                 <span className="line-clamp-1">{hotel.address}</span>
                               </div>
 
@@ -395,7 +397,7 @@ if (isMobile) {
                   </div>
                 ) : (
                   <div className="text-center py-12 text-muted-foreground">
-                    <Hotel className="w-16 h-16 mx-auto mb-4 opacity-50" />
+                    <MIcon name="hotel" className="text-6xl mx-auto mb-4 opacity-50" />
                     <p className="text-lg">No hotels found</p>
                     <Button variant="outline" onClick={() => setShowResults(false)} className="mt-4">
                       Search Again
@@ -445,12 +447,12 @@ return (
             <div className="flex items-center justify-between">
               <DialogTitle className={cn("flex items-center gap-3", isMobile ? "text-lg" : "text-2xl") }>
                 <div className="p-2 rounded-xl bg-primary/10">
-                  <Hotel className="w-6 h-6 text-primary" />
+                  <MIcon name="hotel" className="text-lg text-primary" />
                 </div>
                 Hotel Search
               </DialogTitle>
               <Button variant="ghost" size="sm" onClick={handleClose} className="h-8 w-8 p-0">
-                <X className="w-4 h-4" />
+                <MIcon name="close" className="text-sm" />
               </Button>
             </div>
             {!isMobile && (
@@ -476,7 +478,7 @@ return (
                 disabled={isSearching || !searchQuery.trim()}
                 className="h-10 px-4"
               >
-                <Search className="w-4 h-4 mr-1" />
+                <MIcon name="search" className="text-sm mr-1" />
                 Go
               </Button>
             </div>
@@ -493,7 +495,7 @@ return (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label className="text-sm font-medium flex items-center gap-2">
-                <Search className="w-4 h-4" />
+                <MIcon name="search" className="text-sm" />
                 Hotel Name or Type
               </Label>
               <Input
@@ -507,7 +509,7 @@ return (
             
             <div className="space-y-2">
               <Label className="text-sm font-medium flex items-center gap-2">
-                <MapPin className="w-4 h-4" />
+                <MIcon name="location_on" className="text-sm" />
                 Location
               </Label>
               <Select value={selectedLocation} onValueChange={setSelectedLocation}>
@@ -529,7 +531,7 @@ return (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label className="text-sm font-medium flex items-center gap-2">
-                <Calendar className="w-4 h-4" />
+                <MIcon name="calendar_month" className="text-sm" />
                 Check-in Date
               </Label>
               <Popover open={isCheckInOpen} onOpenChange={setIsCheckInOpen}>
@@ -541,7 +543,7 @@ return (
                       !checkInDate && "text-muted-foreground"
                     )}
                   >
-                    <Calendar className="mr-2 h-4 w-4" />
+                    <MIcon name="calendar_month" className="text-sm mr-2" />
                     {checkInDate ? format(checkInDate, "MMM dd") : "Select date"}
                   </Button>
                 </PopoverTrigger>
@@ -559,7 +561,7 @@ return (
             
             <div className="space-y-2">
               <Label className="text-sm font-medium flex items-center gap-2">
-                <Calendar className="w-4 h-4" />
+                <MIcon name="calendar_month" className="text-sm" />
                 Check-out Date
               </Label>
               <Popover open={isCheckOutOpen} onOpenChange={setIsCheckOutOpen}>
@@ -571,7 +573,7 @@ return (
                       !checkOutDate && "text-muted-foreground"
                     )}
                   >
-                    <Calendar className="mr-2 h-4 w-4" />
+                    <MIcon name="calendar_month" className="text-sm mr-2" />
                     {checkOutDate ? format(checkOutDate, "MMM dd") : "Select date"}
                   </Button>
                 </PopoverTrigger>
@@ -595,7 +597,7 @@ return (
               disabled={isSearching || !searchQuery.trim()}
               className="w-full h-12 text-lg bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 shadow-lg"
             >
-              <Search className="w-5 h-5 mr-2" />
+              <MIcon name="search" className="text-base mr-2" />
               {isSearching ? 'Searching Hotels...' : 'Search Hotels'}
             </Button>
           )}
@@ -620,15 +622,15 @@ return (
                   onClick={() => setShowResults(false)}
                   className="h-8 w-8 p-0 mr-2"
                 >
-                  <ArrowLeft className="w-4 h-4" />
+                  <MIcon name="arrow_back" className="text-sm" />
                 </Button>
                 <div className="p-2 rounded-xl bg-primary/10">
-                  <Hotel className="w-6 h-6 text-primary" />
+                  <MIcon name="hotel" className="text-lg text-primary" />
                 </div>
                 {hotels.length} Available Hotels
               </DialogTitle>
               <Button variant="ghost" size="sm" onClick={handleClose} className="h-8 w-8 p-0">
-                <X className="w-4 h-4" />
+                <MIcon name="close" className="text-sm" />
               </Button>
             </div>
             {!isMobile && (
@@ -657,20 +659,20 @@ return (
                             <h3 className={cn("font-semibold text-lg", isMobile && "text-base")}>{hotel.name}</h3>
                             {hotel.rating && (
                               <Badge className={cn("text-xs font-medium", getRatingColor(hotel.rating))}>
-                                <Star className="w-3 h-3 mr-1 fill-current" />
+                                <MIcon name="grade" className="text-xs mr-1" filled />
                                 {hotel.rating}
                               </Badge>
                             )}
                             {hotel.searchLocation && (
                               <Badge variant="outline" className="text-xs">
-                                <MapPin className="w-3 h-3 mr-1" />
+                                <MIcon name="location_on" className="text-xs mr-1" />
                                 {hotel.searchLocation}
                               </Badge>
                             )}
                           </div>
 
                           <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                            <MapPin className="w-4 h-4 flex-shrink-0" />
+                            <MIcon name="location_on" className="text-sm flex-shrink-0" />
                             <span className="line-clamp-1">{hotel.address}</span>
                           </div>
 
@@ -718,7 +720,7 @@ return (
               </div>
             ) : (
               <div className="text-center py-12 text-muted-foreground">
-                <Hotel className="w-16 h-16 mx-auto mb-4 opacity-50" />
+                <MIcon name="hotel" className="text-6xl mx-auto mb-4 opacity-50" />
                 <p className="text-lg">No hotels found</p>
                 <Button variant="outline" onClick={() => setShowResults(false)} className="mt-4">
                   Search Again

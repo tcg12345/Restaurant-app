@@ -223,8 +223,8 @@ export function HotelStayDetailsDialog({
       {/* Dates Section */}
       <div className="bg-card/50 backdrop-blur-sm rounded-2xl p-6 border border-border/50">
         <div className="flex items-center gap-3 mb-4">
-          <div className="p-2 bg-blue-500/10 rounded-xl">
-            <Calendar className="w-5 h-5 text-blue-500" />
+          <div className="p-2 bg-primary/50/10 rounded-xl">
+            <Calendar className="w-5 h-5 text-primary" />
           </div>
           <div>
             <h3 className="font-semibold text-lg text-foreground">DATE</h3>
@@ -356,8 +356,8 @@ export function HotelStayDetailsDialog({
       {/* Guests Section */}
       <div className="bg-card/50 backdrop-blur-sm rounded-2xl p-6 border border-border/50">
         <div className="flex items-center gap-3 mb-4">
-          <div className="p-2 bg-purple-500/10 rounded-xl">
-            <Users className="w-5 h-5 text-purple-500" />
+          <div className="p-2 bg-tertiary/50/10 rounded-xl">
+            <Users className="w-5 h-5 text-tertiary" />
           </div>
           <div>
             <h3 className="font-semibold text-lg text-foreground">GUESTS</h3>
@@ -403,8 +403,8 @@ export function HotelStayDetailsDialog({
       {/* Additional Details Section */}
       <div className="bg-card/50 backdrop-blur-sm rounded-2xl p-6 border border-border/50">
         <div className="flex items-center gap-3 mb-4">
-          <div className="p-2 bg-green-500/10 rounded-xl">
-            <FileText className="w-5 h-5 text-green-500" />
+          <div className="p-2 bg-secondary/50/10 rounded-xl">
+            <FileText className="w-5 h-5 text-secondary" />
           </div>
           <div>
             <h3 className="font-semibold text-lg text-foreground">DETAILS</h3>

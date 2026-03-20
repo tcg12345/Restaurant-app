@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Camera, ChevronRight, Save, Loader2 } from 'lucide-react';
+const MIcon = ({ name, className = '', filled = false }: { name: string; className?: string; filled?: boolean }) => (
+  <span className={`material-symbols-outlined ${className}`} style={filled ? { fontVariationSettings: "'FILL' 1" } : undefined}>{name}</span>
+);
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -94,7 +96,7 @@ export function MobileProfileEditPage() {
             onClick={() => navigate(-1)}
             className="h-10 w-10"
           >
-            <ArrowLeft className="h-5 w-5" />
+            <MIcon name="arrow_back" className="text-base" />
           </Button>
           
           <h1 className="text-lg font-semibold">Edit profile</h1>
@@ -106,7 +108,7 @@ export function MobileProfileEditPage() {
             className="min-w-[80px]"
           >
             {isLoading ? (
-              <Loader2 className="h-4 w-4 animate-spin" />
+              <MIcon name="progress_activity" className="text-sm animate-spin" />
             ) : (
               'Save'
             )}
@@ -147,7 +149,7 @@ export function MobileProfileEditPage() {
             <span className="text-muted-foreground">
               {formData.name || 'Add your name'}
             </span>
-            <ChevronRight className="h-4 w-4 text-muted-foreground" />
+            <MIcon name="chevron_right" className="text-sm text-muted-foreground" />
           </div>
         </Button>
 
@@ -162,7 +164,7 @@ export function MobileProfileEditPage() {
             <span className="text-muted-foreground">
               {formData.username || 'Add username'}
             </span>
-            <ChevronRight className="h-4 w-4 text-muted-foreground" />
+            <MIcon name="chevron_right" className="text-sm text-muted-foreground" />
           </div>
         </Button>
 
@@ -177,7 +179,7 @@ export function MobileProfileEditPage() {
             <span className="text-muted-foreground">
               {formData.home_city || 'Add home city'}
             </span>
-            <ChevronRight className="h-4 w-4 text-muted-foreground" />
+            <MIcon name="chevron_right" className="text-sm text-muted-foreground" />
           </div>
         </Button>
 
@@ -192,7 +194,7 @@ export function MobileProfileEditPage() {
             <span className="text-muted-foreground">
               {formData.bio || 'Add a bio'}
             </span>
-            <ChevronRight className="h-4 w-4 text-muted-foreground" />
+            <MIcon name="chevron_right" className="text-sm text-muted-foreground" />
           </div>
         </Button>
       </div>
@@ -234,7 +236,7 @@ export function MobileProfileEditPage() {
           onClick={() => navigate('/settings')}
         >
           <span className="text-base font-medium text-foreground">Account settings</span>
-          <ChevronRight className="h-4 w-4 text-muted-foreground" />
+          <MIcon name="chevron_right" className="text-sm text-muted-foreground" />
         </Button>
       </div>
 

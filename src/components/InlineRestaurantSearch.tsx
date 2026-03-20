@@ -1,6 +1,9 @@
 import { useState, useEffect, useRef } from 'react';
-import { Search, MapPin, Star, DollarSign, Loader2, X } from 'lucide-react';
 import { Input } from '@/components/ui/input';
+
+const MIcon = ({ name, className = '', filled = false }: { name: string; className?: string; filled?: boolean }) => (
+  <span className={`material-symbols-outlined ${className}`} style={filled ? { fontVariationSettings: "'FILL' 1" } : undefined}>{name}</span>
+);
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
@@ -312,14 +315,14 @@ export function InlineRestaurantSearch({
                       </Badge>
                       {place.rating && (
                         <div className="flex items-center gap-1">
-                          <Star className="h-3 w-3 text-yellow-400 fill-current" />
+                          <Star className="h-3 w-3 text-secondary fill-current" />
                           <span className="text-xs font-medium">{place.rating}</span>
                         </div>
                       )}
                       {place.price_level && (
                         <div className="flex items-center">
                           {Array.from({ length: place.price_level }, (_, i) => (
-                            <DollarSign key={i} className="h-3 w-3 text-green-600" />
+                            <DollarSign key={i} className="h-3 w-3 text-secondary" />
                           ))}
                         </div>
                       )}

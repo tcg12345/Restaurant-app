@@ -1,8 +1,11 @@
 import { Button } from '@/components/ui/button';
-import { MapPin, Plus, Heart, Star, Sparkles } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { useNavigate } from 'react-router-dom';
 import { cn } from '@/lib/utils';
+
+const MIcon = ({ name, className = '', filled = false }: { name: string; className?: string; filled?: boolean }) => (
+  <span className={`material-symbols-outlined ${className}`} style={filled ? { fontVariationSettings: "'FILL' 1" } : undefined}>{name}</span>
+);
 
 interface RecommendationCardProps {
   restaurant: {
@@ -38,8 +41,8 @@ export function RecommendationCard({ restaurant, onAdd, onAddToWishlist }: Recom
 
   const getConfidenceColor = (score?: number) => {
     if (!score) return 'text-muted-foreground bg-muted';
-    if (score >= 80) return 'text-emerald-700 bg-emerald-500/15 border-emerald-500/30';
-    if (score >= 60) return 'text-amber-700 bg-amber-500/15 border-amber-500/30';
+    if (score >= 80) return 'text-emerald-700 bg-secondary/50/15 border-emerald-500/30';
+    if (score >= 60) return 'text-secondary bg-secondary/50/15 border-amber-500/30';
     return 'text-muted-foreground bg-muted/50 border-border';
   };
 
@@ -67,7 +70,7 @@ export function RecommendationCard({ restaurant, onAdd, onAddToWishlist }: Recom
             </h3>
             <div className="flex items-center gap-1.5 text-xs">
               {restaurant.priceRange && (
-                <span className="text-emerald-600 dark:text-emerald-400 font-medium">
+                <span className="text-secondary dark:text-secondary font-medium">
                   {getPriceDisplay(restaurant.priceRange)}
                 </span>
               )}
@@ -85,16 +88,16 @@ export function RecommendationCard({ restaurant, onAdd, onAddToWishlist }: Recom
                 'inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-semibold border',
                 getConfidenceColor(restaurant.confidenceScore)
               )}>
-                <Sparkles className="h-3 w-3" />
+                <MIcon name="auto_awesome" className="text-xs" />
                 {restaurant.confidenceScore}%
               </div>
             )}
 
             {/* Google Rating */}
             {restaurant.rating && (
-              <div className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-md bg-amber-500/10 border border-amber-500/20">
-                <Star className="h-3 w-3 text-amber-500 fill-amber-500" />
-                <span className="text-amber-700 dark:text-amber-300 font-medium text-xs">
+              <div className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-md bg-secondary/50/10 border border-amber-500/20">
+                <MIcon name="grade" className="text-xs text-secondary" filled />
+                <span className="text-secondary dark:text-secondary/70 font-medium text-xs">
                   {restaurant.rating.toFixed(1)}
                 </span>
               </div>
@@ -115,7 +118,7 @@ export function RecommendationCard({ restaurant, onAdd, onAddToWishlist }: Recom
 
         {/* Address */}
         <div className="flex items-start gap-1.5 mb-2">
-          <MapPin className="h-3 w-3 text-muted-foreground flex-shrink-0 mt-0.5" />
+          <MIcon name="location_on" className="text-xs text-muted-foreground flex-shrink-0 mt-0.5" />
           <span className="text-muted-foreground text-xs line-clamp-1">
             {restaurant.address}
           </span>
@@ -128,8 +131,8 @@ export function RecommendationCard({ restaurant, onAdd, onAddToWishlist }: Recom
               <span className={cn(
                 'text-[11px] font-medium px-1.5 py-0.5 rounded-full',
                 restaurant.isOpen
-                  ? 'text-emerald-600 bg-emerald-500/10'
-                  : 'text-red-500 bg-red-500/10'
+                  ? 'text-secondary bg-secondary/50/10'
+                  : 'text-destructive bg-destructive/50/10'
               )}>
                 {restaurant.isOpen ? 'Open' : 'Closed'}
               </span>
@@ -148,15 +151,15 @@ export function RecommendationCard({ restaurant, onAdd, onAddToWishlist }: Recom
               className="h-7 w-7 rounded-full hover:bg-primary/10 hover:text-primary"
               onClick={(e) => handleButtonClick(e, onAdd || (() => {}))}
             >
-              <Plus className="h-3.5 w-3.5" />
+              <MIcon name="add" className="text-sm" />
             </Button>
             <Button
               variant="ghost"
               size="icon"
-              className="h-7 w-7 rounded-full hover:bg-red-500/10 hover:text-red-500"
+              className="h-7 w-7 rounded-full hover:bg-destructive/50/10 hover:text-destructive"
               onClick={(e) => handleButtonClick(e, onAddToWishlist || (() => {}))}
             >
-              <Heart className="h-3.5 w-3.5" />
+              <MIcon name="favorite" className="text-sm" />
             </Button>
           </div>
         </div>

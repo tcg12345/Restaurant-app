@@ -1,5 +1,7 @@
 import React from 'react';
-import { Star, MapPin, Info, Calendar, DollarSign, Globe, Phone } from 'lucide-react';
+const MIcon = ({ name, className = '', filled = false }: { name: string; className?: string; filled?: boolean }) => (
+  <span className={`material-symbols-outlined ${className}`} style={filled ? { fontVariationSettings: "'FILL' 1" } : undefined}>{name}</span>
+);
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { format } from 'date-fns';
@@ -60,11 +62,11 @@ export function MobileTripPlaceCard({ place, onDetailsClick, onPlaceClick }: Mob
     return (
       <div className="flex items-center gap-1">
         {[...Array(fullStars)].map((_, i) => (
-          <Star key={i} className="w-3 h-3 fill-yellow-400 text-yellow-400" />
+          <Star key={i} className="w-3 h-3 fill-yellow-400 text-secondary" />
         ))}
-        {halfStar && <Star className="w-3 h-3 fill-yellow-400/50 text-yellow-400" />}
+        {halfStar && <Star className="w-3 h-3 fill-yellow-400/50 text-secondary" />}
         {[...Array(emptyStars)].map((_, i) => (
-          <Star key={i} className="w-3 h-3 text-gray-300" />
+          <Star key={i} className="w-3 h-3 text-outline-variant" />
         ))}
         <span className="ml-1 text-xs font-medium text-muted-foreground">{rating}/10</span>
       </div>
@@ -145,7 +147,7 @@ export function MobileTripPlaceCard({ place, onDetailsClick, onPlaceClick }: Mob
               variant="ghost"
               size="sm"
               asChild
-              className="h-7 w-7 p-0 text-blue-600 hover:bg-blue-50"
+              className="h-7 w-7 p-0 text-primary hover:bg-primary/5"
               onClick={(e) => e.stopPropagation()}
             >
               <a
@@ -162,7 +164,7 @@ export function MobileTripPlaceCard({ place, onDetailsClick, onPlaceClick }: Mob
               variant="ghost"
               size="sm"
               asChild
-              className="h-7 w-7 p-0 text-green-600 hover:bg-green-50"
+              className="h-7 w-7 p-0 text-secondary hover:bg-secondary/5"
               onClick={(e) => e.stopPropagation()}
             >
               <a href={`tel:${place.phone_number}`}>

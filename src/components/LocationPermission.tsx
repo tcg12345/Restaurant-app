@@ -2,8 +2,13 @@ import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { MapPin, Check, X, AlertCircle, Loader2 } from 'lucide-react';
+
+
 import { useLocation } from '@/hooks/useLocation';
+
+const MIcon = ({ name, className = '', filled = false }: { name: string; className?: string; filled?: boolean }) => (
+  <span className={`material-symbols-outlined ${className}`} style={filled ? { fontVariationSettings: "'FILL' 1" } : undefined}>{name}</span>
+);
 
 interface LocationPermissionProps {
   onLocationGranted?: (location: any) => void;
@@ -134,8 +139,8 @@ export function LocationPermission({
         
         {hasPermission && location && (
           <div className="space-y-3">
-            <div className="flex items-center justify-center p-3 bg-green-50 rounded-lg">
-              <Check className="h-5 w-5 text-green-600 mr-2" />
+            <div className="flex items-center justify-center p-3 bg-secondary/5 rounded-lg">
+              <Check className="h-5 w-5 text-secondary mr-2" />
               <span className="text-green-800 font-medium">Location Enabled</span>
             </div>
             
@@ -148,8 +153,8 @@ export function LocationPermission({
         
         {error && (
           <div className="space-y-3">
-            <div className="flex items-center justify-center p-3 bg-red-50 rounded-lg">
-              <AlertCircle className="h-5 w-5 text-red-600 mr-2" />
+            <div className="flex items-center justify-center p-3 bg-destructive/5 rounded-lg">
+              <AlertCircle className="h-5 w-5 text-destructive mr-2" />
               <span className="text-red-800 font-medium">Access Denied</span>
             </div>
             

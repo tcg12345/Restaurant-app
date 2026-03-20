@@ -378,9 +378,9 @@ export function HotelFlightSection({
                             {/* Rating & Details Row */}
                             <div className="flex items-center gap-3">
                               {booking.hotel.rating && (
-                                <div className="flex items-center bg-gradient-to-r from-amber-50 to-amber-100 dark:from-amber-900/20 dark:to-amber-800/20 px-3 py-1.5 rounded-full border border-amber-200 dark:border-amber-700/30">
-                                  <Star className="w-3.5 h-3.5 text-amber-500 fill-current mr-1.5" />
-                                  <span className="text-sm font-semibold text-amber-700 dark:text-amber-300">{booking.hotel.rating}</span>
+                                <div className="flex items-center bg-gradient-to-r from-amber-50 to-amber-100 dark:from-amber-900/20 dark:to-amber-800/20 px-3 py-1.5 rounded-full border border-secondary/20 dark:border-amber-700/30">
+                                  <Star className="w-3.5 h-3.5 text-secondary fill-current mr-1.5" />
+                                  <span className="text-sm font-semibold text-secondary dark:text-secondary/70">{booking.hotel.rating}</span>
                                 </div>
                               )}
                               <Button 
@@ -695,7 +695,7 @@ export function HotelFlightSection({
         <DialogContent overlayClassName="bg-transparent" className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto fixed z-[100] bg-background border shadow-lg">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
-              <Hotel className="w-5 h-5 text-blue-600" />
+              <Hotel className="w-5 h-5 text-primary" />
               {selectedHotel?.hotel.name || 'Hotel Details'}
             </DialogTitle>
             <DialogDescription>
@@ -723,7 +723,7 @@ export function HotelFlightSection({
                 )}
               </div>
               {(selectedHotel.checkIn || selectedHotel.checkOut) && (
-                <div className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
+                <div className="p-4 bg-primary/5 dark:bg-blue-900/20 rounded-lg">
                   <h4 className="font-medium text-sm mb-2 text-blue-900 dark:text-blue-100">Stay Dates</h4>
                   <div className="space-y-1 text-sm">
                     {selectedHotel.checkIn && (
@@ -765,7 +765,7 @@ export function HotelFlightSection({
               {tripAdvisorPhotos.length > 0 && (
                 <div className="space-y-3">
                   <div className="flex items-center gap-2">
-                    <Camera className="w-4 h-4 text-blue-600" />
+                    <Camera className="w-4 h-4 text-primary" />
                     <h4 className="font-medium text-sm">Photos from TripAdvisor</h4>
                   </div>
                   <div className="grid grid-cols-3 gap-2 max-h-64 overflow-y-auto">
@@ -797,7 +797,7 @@ export function HotelFlightSection({
               {tripAdvisorReviews.length > 0 && (
                 <div className="space-y-3">
                   <div className="flex items-center gap-2">
-                    <Star className="w-4 h-4 text-yellow-500" />
+                    <Star className="w-4 h-4 text-secondary" />
                     <h4 className="font-medium text-sm">Reviews from TripAdvisor</h4>
                   </div>
                   <div className="space-y-2 max-h-48 overflow-y-auto">
@@ -807,7 +807,7 @@ export function HotelFlightSection({
                           <div className="flex items-center gap-1">
                             <div className="flex items-center">
                               {[...Array(5)].map((_, i) => (
-                                <Star key={i} className={`${i < review.rating ? 'text-yellow-500 fill-current' : 'text-gray-300'} w-3 h-3`} />
+                                <Star key={i} className={`${i < review.rating ? 'text-secondary fill-current' : 'text-outline-variant'} w-3 h-3`} />
                               ))}
                             </div>
                             <span className="text-xs font-medium">{review.user?.username}</span>
@@ -824,10 +824,10 @@ export function HotelFlightSection({
               {tripAdvisorLocationId && (
                 <div className="space-y-3">
                   <div className="flex items-center gap-2">
-                    <Calendar className="w-4 h-4 text-green-600" />
+                    <Calendar className="w-4 h-4 text-secondary" />
                     <h4 className="font-medium text-sm">Book This Hotel</h4>
                   </div>
-                  <div className="p-4 bg-green-50 dark:bg-green-900/20 rounded-lg space-y-3">
+                  <div className="p-4 bg-secondary/5 dark:bg-green-900/20 rounded-lg space-y-3">
                     <div className="grid grid-cols-2 gap-3">
                       <div>
                         <Label htmlFor="checkin" className="text-xs">Check-in</Label>
@@ -891,22 +891,22 @@ export function HotelFlightSection({
                   </div>
                   {bookingOffers.length > 0 && (
                     <div className="space-y-2">
-                      <h5 className="text-sm font-medium text-green-700 dark:text-green-300">Available Deals</h5>
+                      <h5 className="text-sm font-medium text-secondary dark:text-secondary/70">Available Deals</h5>
                       <div className="space-y-2 max-h-48 overflow-y-auto">
                         {bookingOffers.slice(0, 5).map((offer, index) => (
-                          <div key={index} className="p-3 bg-card rounded-lg border border-green-200 dark:border-green-800/50">
+                          <div key={index} className="p-3 bg-card rounded-lg border border-secondary/20 dark:border-secondary/40/50">
                             <div className="flex items-center justify-between">
                               <div>
                                 <div className="text-sm font-medium">{offer.partner_name || 'Booking Partner'}</div>
                                 {offer.price && (
-                                  <div className="text-lg font-bold text-green-600 dark:text-green-400">
+                                  <div className="text-lg font-bold text-secondary dark:text-secondary">
                                     ${offer.price}
                                     <span className="text-xs text-muted-foreground ml-1">per night</span>
                                   </div>
                                 )}
                                 {offer.total_price && <div className="text-sm text-muted-foreground">Total: ${offer.total_price}</div>}
                               </div>
-                              <Button size="sm" onClick={() => window.open(offer.booking_url || `https://www.tripadvisor.com/Hotel_Review-d${tripAdvisorLocationId}`, '_blank')} className="bg-green-600 hover:bg-green-700">
+                              <Button size="sm" onClick={() => window.open(offer.booking_url || `https://www.tripadvisor.com/Hotel_Review-d${tripAdvisorLocationId}`, '_blank')} className="bg-secondary hover:bg-green-700">
                                 Book Now
                               </Button>
                             </div>
@@ -982,8 +982,8 @@ export function HotelFlightSection({
           <div className="flex flex-col h-[80vh]">
             <div className="flex items-center justify-between p-3 border-b border-border/20 bg-gradient-to-r from-purple-50/50 to-blue-50/50 dark:from-purple-950/30 dark:to-blue-950/30">
               <div className="flex items-center gap-3">
-                <div className="w-8 h-8 bg-purple-100 dark:bg-purple-900/50 rounded-lg flex items-center justify-center">
-                  <Plane className="w-4 h-4 text-purple-600 dark:text-purple-400" />
+                <div className="w-8 h-8 bg-tertiary/10 dark:bg-purple-900/50 rounded-lg flex items-center justify-center">
+                  <Plane className="w-4 h-4 text-tertiary dark:text-tertiary" />
                 </div>
                 <div>
                   <h2 className="text-lg font-semibold text-foreground leading-tight">
@@ -996,7 +996,7 @@ export function HotelFlightSection({
                 variant="ghost"
                 size="sm"
                 onClick={() => setIsFlightDetailsOpen(false)}
-                className="h-8 w-8 p-0 rounded-full hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-950/50"
+                className="h-8 w-8 p-0 rounded-full hover:bg-destructive/5 hover:text-destructive dark:hover:bg-red-950/50"
               >
                 <X className="h-4 w-4" />
               </Button>
@@ -1005,26 +1005,26 @@ export function HotelFlightSection({
                {selectedFlight && (
                  <div className="space-y-6">
                   {/* Flight Route Display */}
-                  <div className="p-4 bg-gradient-to-r from-purple-50 to-blue-50 dark:from-purple-900/20 dark:to-blue-900/20 rounded-lg border border-purple-200 dark:border-purple-700">
+                  <div className="p-4 bg-gradient-to-r from-purple-50 to-blue-50 dark:from-purple-900/20 dark:to-blue-900/20 rounded-lg border border-tertiary/20 dark:border-purple-700">
                     <div className="flex items-center justify-between">
                       <div className="text-center flex-1">
                         <div className="font-bold text-xl text-purple-900 dark:text-purple-100">
                           {selectedFlight.departure?.time || 'N/A'}
                         </div>
-                        <div className="text-sm font-medium text-purple-700 dark:text-purple-300">
+                        <div className="text-sm font-medium text-purple-700 dark:text-tertiary/70">
                           {selectedFlight.departure?.airport || 'N/A'}
                         </div>
-                        <div className="text-xs text-purple-600 dark:text-purple-400">
+                        <div className="text-xs text-tertiary dark:text-tertiary">
                           {selectedFlight.departure?.date || 'N/A'}
                         </div>
                       </div>
                       <div className="flex-1 flex flex-col items-center mx-6">
-                        <div className="text-xs text-purple-600 dark:text-purple-400 mb-1">
+                        <div className="text-xs text-tertiary dark:text-tertiary mb-1">
                           Flight
                         </div>
-                        <Plane className="w-6 h-6 text-purple-600 mb-1 transform rotate-90" />
+                        <Plane className="w-6 h-6 text-tertiary mb-1 transform rotate-90" />
                         <div className="w-full h-px bg-gradient-to-r from-purple-300 to-blue-300"></div>
-                        <div className="text-xs text-purple-600 dark:text-purple-400 mt-1">
+                        <div className="text-xs text-tertiary dark:text-tertiary mt-1">
                           {selectedFlight.flightNumber}
                         </div>
                       </div>
@@ -1032,10 +1032,10 @@ export function HotelFlightSection({
                         <div className="font-bold text-xl text-purple-900 dark:text-purple-100">
                           {selectedFlight.arrival?.time || 'N/A'}
                         </div>
-                        <div className="text-sm font-medium text-purple-700 dark:text-purple-300">
+                        <div className="text-sm font-medium text-purple-700 dark:text-tertiary/70">
                           {selectedFlight.arrival?.airport || 'N/A'}
                         </div>
-                        <div className="text-xs text-purple-600 dark:text-purple-400">
+                        <div className="text-xs text-tertiary dark:text-tertiary">
                           {selectedFlight.arrival?.date || 'N/A'}
                         </div>
                       </div>
@@ -1073,9 +1073,9 @@ export function HotelFlightSection({
 
                    {/* On-Time Performance */}
                    {flightStats && (
-                     <div className="p-4 bg-gradient-to-r from-green-50 to-blue-50 dark:from-green-900/20 dark:to-blue-900/20 rounded-lg border border-green-200 dark:border-green-700">
+                     <div className="p-4 bg-gradient-to-r from-green-50 to-blue-50 dark:from-green-900/20 dark:to-blue-900/20 rounded-lg border border-secondary/20 dark:border-green-700">
                        <div className="flex items-center gap-2 mb-3">
-                         <TrendingUp className="w-5 h-5 text-green-600 dark:text-green-400" />
+                         <TrendingUp className="w-5 h-5 text-secondary dark:text-secondary" />
                          <h4 className="font-semibold text-green-900 dark:text-green-100">On-Time Performance</h4>
                        </div>
                        
@@ -1083,17 +1083,17 @@ export function HotelFlightSection({
                          <div className="text-center p-3 bg-card/50 rounded-lg">
                            <div className="flex items-center justify-center gap-1 mb-1">
                              {flightStats.onTimePerformance.onTimePercentage >= 80 ? (
-                               <CheckCircle className="w-4 h-4 text-green-600" />
+                               <CheckCircle className="w-4 h-4 text-secondary" />
                              ) : flightStats.onTimePerformance.onTimePercentage >= 70 ? (
-                               <AlertCircle className="w-4 h-4 text-yellow-600" />
+                               <AlertCircle className="w-4 h-4 text-secondary" />
                              ) : (
-                               <AlertCircle className="w-4 h-4 text-red-600" />
+                               <AlertCircle className="w-4 h-4 text-destructive" />
                              )}
                              <span className="text-xs text-muted-foreground">On Time</span>
                            </div>
                            <div className={`text-lg font-bold ${
                              flightStats.onTimePerformance.onTimePercentage >= 80 
-                               ? 'text-green-700 dark:text-green-300'
+                               ? 'text-secondary dark:text-secondary/70'
                                : flightStats.onTimePerformance.onTimePercentage >= 70
                                ? 'text-yellow-700 dark:text-yellow-300'
                                : 'text-red-700 dark:text-red-300'
@@ -1104,20 +1104,20 @@ export function HotelFlightSection({
                          
                          <div className="text-center p-3 bg-card/50 rounded-lg">
                            <div className="flex items-center justify-center gap-1 mb-1">
-                             <Info className="w-4 h-4 text-blue-600" />
+                             <Info className="w-4 h-4 text-primary" />
                              <span className="text-xs text-muted-foreground">Avg Delay</span>
                            </div>
-                           <div className="text-lg font-bold text-blue-700 dark:text-blue-300">
+                           <div className="text-lg font-bold text-blue-700 dark:text-primary/50">
                              {flightStats.onTimePerformance.averageDelayMinutes}m
                            </div>
                          </div>
                          
                          <div className="text-center p-3 bg-card/50 rounded-lg">
                            <div className="flex items-center justify-center gap-1 mb-1">
-                             <Star className="w-4 h-4 text-purple-600" />
+                             <Star className="w-4 h-4 text-tertiary" />
                              <span className="text-xs text-muted-foreground">Rating</span>
                            </div>
-                           <div className="text-sm font-bold text-purple-700 dark:text-purple-300">
+                           <div className="text-sm font-bold text-purple-700 dark:text-tertiary/70">
                              {flightStats.onTimePerformance.reliability}
                            </div>
                          </div>
@@ -1134,28 +1134,28 @@ export function HotelFlightSection({
 
                     {/* Flight Delay Prediction */}
                     {flightStats?.delayPrediction && (
-                      <div className="p-4 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-lg border border-blue-200 dark:border-blue-700">
+                      <div className="p-4 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-lg border border-primary/20 dark:border-blue-700">
                         <div className="flex items-center gap-2 mb-3">
-                          <Radar className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+                          <Radar className="w-5 h-5 text-primary dark:text-primary/70" />
                           <h4 className="font-semibold text-blue-900 dark:text-blue-100">Delay Prediction</h4>
                         </div>
                         
                         <div className="bg-card/50 rounded-lg p-4">
                           <div className="flex items-start gap-3">
                             {flightStats.delayPrediction.result?.prediction === 'LESS_THAN_30_MINUTES' && (
-                              <CheckCircle className="w-6 h-6 text-green-500 mt-0.5 flex-shrink-0" />
+                              <CheckCircle className="w-6 h-6 text-secondary mt-0.5 flex-shrink-0" />
                             )}
                             {flightStats.delayPrediction.result?.prediction === 'BETWEEN_30_AND_60_MINUTES' && (
-                              <AlertCircle className="w-6 h-6 text-yellow-500 mt-0.5 flex-shrink-0" />
+                              <AlertCircle className="w-6 h-6 text-secondary mt-0.5 flex-shrink-0" />
                             )}
                             {flightStats.delayPrediction.result?.prediction === 'BETWEEN_60_AND_120_MINUTES' && (
-                              <AlertCircle className="w-6 h-6 text-orange-500 mt-0.5 flex-shrink-0" />
+                              <AlertCircle className="w-6 h-6 text-secondary mt-0.5 flex-shrink-0" />
                             )}
                             {flightStats.delayPrediction.result?.prediction === 'OVER_120_MINUTES_OR_CANCELLED' && (
-                              <AlertCircle className="w-6 h-6 text-red-500 mt-0.5 flex-shrink-0" />
+                              <AlertCircle className="w-6 h-6 text-destructive mt-0.5 flex-shrink-0" />
                             )}
                             {!flightStats.delayPrediction.result?.prediction && (
-                              <Info className="w-6 h-6 text-blue-500 mt-0.5 flex-shrink-0" />
+                              <Info className="w-6 h-6 text-primary mt-0.5 flex-shrink-0" />
                             )}
                             <div className="flex-1 min-w-0">
                               <div className="font-semibold text-foreground mb-1">
@@ -1263,26 +1263,26 @@ export function HotelFlightSection({
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 lg:contents">
       {/* Hotels Section - Desktop */}
       <div className="lg:contents">
-        <Card className="bg-gradient-to-br from-blue-50 to-blue-100/50 dark:from-blue-950/30 dark:to-blue-900/20 border-blue-200 dark:border-blue-800/30 lg:rounded-lg lg:border lg:shadow-sm rounded-none border-0 border-t border-b shadow-none relative left-1/2 right-1/2 -ml-[50vw] -mr-[50vw] w-screen lg:left-auto lg:right-auto lg:ml-0 lg:mr-0 lg:w-auto mb-6">
+        <Card className="bg-gradient-to-br from-blue-50 to-blue-100/50 dark:from-blue-950/30 dark:to-blue-900/20 border-primary/20 dark:border-blue-800/30 lg:rounded-lg lg:border lg:shadow-sm rounded-none border-0 border-t border-b shadow-none relative left-1/2 right-1/2 -ml-[50vw] -mr-[50vw] w-screen lg:left-auto lg:right-auto lg:ml-0 lg:mr-0 lg:w-auto mb-6">
           <CardContent className="p-4">
             <div className="flex items-center justify-between mb-3">
               <div className="flex items-center gap-2">
-                <div className="p-1.5 rounded-lg bg-blue-100 dark:bg-blue-900/50">
-                  <Hotel className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+                <div className="p-1.5 rounded-lg bg-primary/10 dark:bg-blue-900/50">
+                  <Hotel className="w-4 h-4 text-primary dark:text-primary/70" />
                 </div>
                 <div>
                   <h3 className="font-semibold text-sm text-blue-900 dark:text-blue-100">Hotels</h3>
-                  <p className="text-xs text-blue-700 dark:text-blue-300">Accommodations</p>
+                  <p className="text-xs text-blue-700 dark:text-primary/50">Accommodations</p>
                 </div>
               </div>
-              <Button onClick={() => setIsHotelDialogOpen(true)} size="sm" variant="outline" className="h-8 text-xs border-blue-300 text-blue-700 hover:bg-blue-100 dark:border-blue-700 dark:text-blue-300 dark:hover:bg-blue-900/50">
+              <Button onClick={() => setIsHotelDialogOpen(true)} size="sm" variant="outline" className="h-8 text-xs border-primary/30 text-blue-700 hover:bg-primary/10 dark:border-blue-700 dark:text-primary/50 dark:hover:bg-blue-900/50">
                 <Plus className="w-3 h-3 mr-1" />
                 Add
               </Button>
             </div>
             
             {hotels.length > 0 ? <div className="space-y-3 max-h-48 overflow-y-auto">
-                {hotels.map(booking => <div key={booking.id} className="flex items-start justify-between p-3 bg-white/60 dark:bg-blue-950/40 rounded-lg border border-blue-200 dark:border-blue-800/50 cursor-pointer hover:bg-white/80 dark:hover:bg-blue-950/60 transition-colors" onClick={() => handleHotelCardClick(booking)}>
+                {hotels.map(booking => <div key={booking.id} className="flex items-start justify-between p-3 bg-background/60 dark:bg-blue-950/40 rounded-lg border border-primary/20 dark:border-blue-800/50 cursor-pointer hover:bg-background/80 dark:hover:bg-blue-950/60 transition-colors" onClick={() => handleHotelCardClick(booking)}>
                     <div className="flex-1 min-w-0 space-y-2">
                       <div className="flex items-center gap-2 flex-wrap">
                         <h4 className="font-semibold text-sm text-blue-900 dark:text-blue-100">{booking.hotel.name}</h4>
@@ -1295,11 +1295,11 @@ export function HotelFlightSection({
                         </Badge>
                       </div>
                       
-                      <p className="text-xs text-blue-600 dark:text-blue-400 leading-relaxed">
+                      <p className="text-xs text-primary dark:text-primary/70 leading-relaxed">
                         {booking.hotel.address}
                       </p>
                       
-                      {(booking.checkIn || booking.checkOut) && <div className="text-xs text-blue-700 dark:text-blue-300 bg-blue-50 dark:bg-blue-900/30 px-2 py-1 rounded">
+                      {(booking.checkIn || booking.checkOut) && <div className="text-xs text-blue-700 dark:text-primary/50 bg-primary/5 dark:bg-blue-900/30 px-2 py-1 rounded">
                           {booking.checkIn && booking.checkOut ? `📅 ${formatDate(booking.checkIn)} - ${formatDate(booking.checkOut)}` : booking.checkIn ? `📅 Check-in: ${formatDate(booking.checkIn)}` : booking.checkOut ? `📅 Check-out: ${formatDate(booking.checkOut)}` : null}
                         </div>}
                       
@@ -1309,30 +1309,30 @@ export function HotelFlightSection({
 
                       {/* Quick Action Buttons */}
                       <div className="flex items-center gap-1 pt-1" onClick={e => e.stopPropagation()}>
-                        <Button size="sm" variant="ghost" onClick={() => window.open(getDirectionsUrl(booking.hotel.address), '_blank')} className="h-6 px-2 text-xs text-blue-600 hover:text-blue-800 dark:text-blue-400">
+                        <Button size="sm" variant="ghost" onClick={() => window.open(getDirectionsUrl(booking.hotel.address), '_blank')} className="h-6 px-2 text-xs text-primary hover:text-blue-800 dark:text-primary/70">
                           <Navigation className="w-3 h-3 mr-1" />
                           Directions
                         </Button>
-                        {booking.hotel.website && <Button size="sm" variant="ghost" onClick={() => window.open(booking.hotel.website, '_blank')} className="h-6 px-2 text-xs text-blue-600 hover:text-blue-800 dark:text-blue-400">
+                        {booking.hotel.website && <Button size="sm" variant="ghost" onClick={() => window.open(booking.hotel.website, '_blank')} className="h-6 px-2 text-xs text-primary hover:text-blue-800 dark:text-primary/70">
                             <ExternalLink className="w-3 h-3 mr-1" />
                             Website
                           </Button>}
-                        {booking.hotel.phone && <Button size="sm" variant="ghost" onClick={() => window.open(`tel:${booking.hotel.phone}`, '_blank')} className="h-6 px-2 text-xs text-blue-600 hover:text-blue-800 dark:text-blue-400">
+                        {booking.hotel.phone && <Button size="sm" variant="ghost" onClick={() => window.open(`tel:${booking.hotel.phone}`, '_blank')} className="h-6 px-2 text-xs text-primary hover:text-blue-800 dark:text-primary/70">
                             <Phone className="w-3 h-3 mr-1" />
                             Call
                           </Button>}
                       </div>
                     </div>
                     <div className="flex flex-col items-end gap-2 ml-3" onClick={e => e.stopPropagation()}>
-                      {booking.hotel.bookingUrl && <Button size="sm" variant="outline" onClick={() => window.open(booking.hotel.bookingUrl, '_blank')} className="text-xs text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-200 border-blue-300 dark:border-blue-700">
+                      {booking.hotel.bookingUrl && <Button size="sm" variant="outline" onClick={() => window.open(booking.hotel.bookingUrl, '_blank')} className="text-xs text-primary hover:text-blue-800 dark:text-primary/70 dark:hover:text-blue-200 border-primary/30 dark:border-blue-700">
                           Book Hotel
                         </Button>}
-                      <Button size="sm" variant="ghost" onClick={() => onRemoveHotel(booking.id)} className="text-xs text-red-500 hover:text-red-700 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20">
+                      <Button size="sm" variant="ghost" onClick={() => onRemoveHotel(booking.id)} className="text-xs text-destructive hover:text-red-700 dark:hover:text-destructive/70 hover:bg-destructive/5 dark:hover:bg-red-900/20">
                         Remove
                       </Button>
                     </div>
                   </div>)}
-              </div> : <div className="text-center py-4 text-blue-600 dark:text-blue-400">
+              </div> : <div className="text-center py-4 text-primary dark:text-primary/70">
                 <Hotel className="w-6 h-6 mx-auto mb-1 opacity-50" />
                 <p className="text-xs">No hotels added</p>
               </div>}
@@ -1342,7 +1342,7 @@ export function HotelFlightSection({
 
       {/* Flights Section */}
       <div className="lg:contents">
-        <Card className="bg-gradient-to-br from-purple-50 to-purple-100/50 dark:from-purple-950/30 dark:to-purple-900/20 border-purple-200 dark:border-purple-800/30 lg:rounded-lg lg:border lg:shadow-sm rounded-none border-0 border-t border-b shadow-none relative left-1/2 right-1/2 -ml-[50vw] -mr-[50vw] w-screen lg:left-auto lg:right-auto lg:ml-0 lg:mr-0 lg:w-auto">
+        <Card className="bg-gradient-to-br from-purple-50 to-purple-100/50 dark:from-purple-950/30 dark:to-purple-900/20 border-tertiary/20 dark:border-purple-800/30 lg:rounded-lg lg:border lg:shadow-sm rounded-none border-0 border-t border-b shadow-none relative left-1/2 right-1/2 -ml-[50vw] -mr-[50vw] w-screen lg:left-auto lg:right-auto lg:ml-0 lg:mr-0 lg:w-auto">
           <CardContent className="p-4">
             <div className="flex items-center justify-between mb-3">
               <div className="flex items-center gap-2">
@@ -1351,17 +1351,17 @@ export function HotelFlightSection({
                 </div>
                 <div>
                   <h3 className="font-semibold text-sm text-purple-900 dark:text-purple-100">Flights</h3>
-                  <p className="text-xs text-purple-700 dark:text-purple-300">Transportation</p>
+                  <p className="text-xs text-purple-700 dark:text-tertiary/70">Transportation</p>
                 </div>
               </div>
-              <Button onClick={() => setIsFlightDialogOpen(true)} size="sm" variant="outline" className="h-8 text-xs border-purple-300 text-purple-700 hover:bg-purple-100 dark:border-purple-700 dark:text-purple-300 dark:hover:bg-purple-900/50">
+              <Button onClick={() => setIsFlightDialogOpen(true)} size="sm" variant="outline" className="h-8 text-xs border-tertiary/30 text-purple-700 hover:bg-tertiary/10 dark:border-purple-700 dark:text-tertiary/70 dark:hover:bg-purple-900/50">
                 <Plus className="w-3 h-3 mr-1" />
                 Add
               </Button>
             </div>
             
             {flights.length > 0 ? <div className="space-y-3 max-h-48 overflow-y-auto">
-                {flights.map(flight => <div key={flight.id} className="flex items-start justify-between p-3 bg-white/60 dark:bg-purple-950/40 rounded-lg border border-purple-200 dark:border-purple-800/50 cursor-pointer hover:bg-white/80 dark:hover:bg-purple-950/60 transition-colors" onClick={() => handleFlightCardClick(flight)}>
+                {flights.map(flight => <div key={flight.id} className="flex items-start justify-between p-3 bg-background/60 dark:bg-purple-950/40 rounded-lg border border-tertiary/20 dark:border-purple-800/50 cursor-pointer hover:bg-background/80 dark:hover:bg-purple-950/60 transition-colors" onClick={() => handleFlightCardClick(flight)}>
                     <div className="flex-1 min-w-0 space-y-2">
                       <div className="flex items-center gap-2 flex-wrap">
                         <h4 className="font-semibold text-sm text-purple-900 dark:text-purple-100">
@@ -1376,11 +1376,11 @@ export function HotelFlightSection({
                         </Badge>
                       </div>
                       
-                      <div className="text-xs text-purple-600 dark:text-purple-400 bg-purple-50 dark:bg-purple-900/30 px-2 py-1 rounded">
+                      <div className="text-xs text-tertiary dark:text-tertiary bg-tertiary/5 dark:bg-purple-900/30 px-2 py-1 rounded">
                         ✈️ {flight.departure?.airport || 'N/A'} → {flight.arrival?.airport || 'N/A'}
                       </div>
                       
-                      <div className="flex items-center gap-4 text-xs text-purple-700 dark:text-purple-300">
+                      <div className="flex items-center gap-4 text-xs text-purple-700 dark:text-tertiary/70">
                         <div>
                           <span className="font-medium">Departure:</span> {flight.departure?.time || 'N/A'}
                         </div>
@@ -1389,37 +1389,37 @@ export function HotelFlightSection({
                         </div>
                       </div>
                       
-                      {flight.departure?.date && <div className="text-xs text-purple-600 dark:text-purple-400">
+                      {flight.departure?.date && <div className="text-xs text-tertiary dark:text-tertiary">
                           📅 {flight.departure.date}
                           {flight.arrival?.date && flight.arrival.date !== flight.departure.date && ` → ${flight.arrival.date}`}
                         </div>}
 
                       {/* Quick Action Buttons */}
                       <div className="flex items-center gap-1 pt-1" onClick={e => e.stopPropagation()}>
-                        <Button size="sm" variant="ghost" onClick={() => window.open(getAirportDirectionsUrl(flight.departure?.airport || ''), '_blank')} className="h-6 px-2 text-xs text-purple-600 hover:text-purple-800 dark:text-purple-400" disabled={!flight.departure?.airport}>
+                        <Button size="sm" variant="ghost" onClick={() => window.open(getAirportDirectionsUrl(flight.departure?.airport || ''), '_blank')} className="h-6 px-2 text-xs text-tertiary hover:text-purple-800 dark:text-tertiary" disabled={!flight.departure?.airport}>
                           <Navigation className="w-3 h-3 mr-1" />
                           To Airport
                         </Button>
-                        <Button size="sm" variant="ghost" onClick={() => window.open(getFlightTrackingUrl(flight.airline, flight.flightNumber), '_blank')} className="h-6 px-2 text-xs text-purple-600 hover:text-purple-800 dark:text-purple-400">
+                        <Button size="sm" variant="ghost" onClick={() => window.open(getFlightTrackingUrl(flight.airline, flight.flightNumber), '_blank')} className="h-6 px-2 text-xs text-tertiary hover:text-purple-800 dark:text-tertiary">
                           <Radar className="w-3 h-3 mr-1" />
                           Track
                         </Button>
-                        <Button size="sm" variant="ghost" onClick={() => window.open(getAirlineWebsite(flight.airline), '_blank')} className="h-6 px-2 text-xs text-purple-600 hover:text-purple-800 dark:text-purple-400">
+                        <Button size="sm" variant="ghost" onClick={() => window.open(getAirlineWebsite(flight.airline), '_blank')} className="h-6 px-2 text-xs text-tertiary hover:text-purple-800 dark:text-tertiary">
                           <ExternalLink className="w-3 h-3 mr-1" />
                           Airline
                         </Button>
                       </div>
                     </div>
                     <div className="flex flex-col items-end gap-2 ml-3" onClick={e => e.stopPropagation()}>
-                      {flight.bookingUrl && <Button size="sm" variant="outline" onClick={() => window.open(flight.bookingUrl, '_blank')} className="text-xs text-purple-600 hover:text-purple-800 dark:text-purple-400 dark:hover:text-purple-200 border-purple-300 dark:border-purple-700">
+                      {flight.bookingUrl && <Button size="sm" variant="outline" onClick={() => window.open(flight.bookingUrl, '_blank')} className="text-xs text-tertiary hover:text-purple-800 dark:text-tertiary dark:hover:text-purple-200 border-tertiary/30 dark:border-purple-700">
                           Book Flight
                         </Button>}
-                      <Button size="sm" variant="ghost" onClick={() => onRemoveFlight(flight.id)} className="text-xs text-red-500 hover:text-red-700 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20">
+                      <Button size="sm" variant="ghost" onClick={() => onRemoveFlight(flight.id)} className="text-xs text-destructive hover:text-red-700 dark:hover:text-destructive/70 hover:bg-destructive/5 dark:hover:bg-red-900/20">
                         Remove
                       </Button>
                     </div>
                   </div>)}
-              </div> : <div className="text-center py-4 text-purple-600 dark:text-purple-400">
+              </div> : <div className="text-center py-4 text-tertiary dark:text-tertiary">
                 <Plane className="w-6 h-6 mx-auto mb-1 opacity-50" />
                 <p className="text-xs">No flights added</p>
               </div>}
@@ -1520,7 +1520,7 @@ export function HotelFlightSection({
         <DialogContent overlayClassName="bg-transparent" className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto fixed z-[100] bg-background border shadow-lg">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
-              <Hotel className="w-5 h-5 text-blue-600" />
+              <Hotel className="w-5 h-5 text-primary" />
               {selectedHotel?.hotel.name || 'Hotel Details'}
             </DialogTitle>
             <DialogDescription>
@@ -1548,7 +1548,7 @@ export function HotelFlightSection({
               </div>
 
               {/* Stay Dates */}
-              {(selectedHotel.checkIn || selectedHotel.checkOut) && <div className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
+              {(selectedHotel.checkIn || selectedHotel.checkOut) && <div className="p-4 bg-primary/5 dark:bg-blue-900/20 rounded-lg">
                   <h4 className="font-medium text-sm mb-2 text-blue-900 dark:text-blue-100">Stay Dates</h4>
                   <div className="space-y-1 text-sm">
                     {selectedHotel.checkIn && <div>Check-in: <span className="font-medium">{formatDate(selectedHotel.checkIn)}</span></div>}
@@ -1578,7 +1578,7 @@ export function HotelFlightSection({
               {/* TripAdvisor Photos */}
               {tripAdvisorPhotos.length > 0 && <div className="space-y-3">
                   <div className="flex items-center gap-2">
-                    <Camera className="w-4 h-4 text-blue-600" />
+                    <Camera className="w-4 h-4 text-primary" />
                     <h4 className="font-medium text-sm">Photos from TripAdvisor</h4>
                   </div>
                   <div className="grid grid-cols-3 gap-2 max-h-64 overflow-y-auto">
@@ -1597,7 +1597,7 @@ export function HotelFlightSection({
               {/* TripAdvisor Reviews */}
               {tripAdvisorReviews.length > 0 && <div className="space-y-3">
                   <div className="flex items-center gap-2">
-                    <Star className="w-4 h-4 text-yellow-500" />
+                    <Star className="w-4 h-4 text-secondary" />
                     <h4 className="font-medium text-sm">Reviews from TripAdvisor</h4>
                   </div>
                   <div className="space-y-2 max-h-48 overflow-y-auto">
@@ -1605,7 +1605,7 @@ export function HotelFlightSection({
                         <div className="flex items-center justify-between mb-1">
                           <div className="flex items-center gap-1">
                             <div className="flex items-center">
-                              {[...Array(5)].map((_, i) => <Star key={i} className={`w-3 h-3 ${i < review.rating ? 'text-yellow-500 fill-current' : 'text-gray-300'}`} />)}
+                              {[...Array(5)].map((_, i) => <Star key={i} className={`w-3 h-3 ${i < review.rating ? 'text-secondary fill-current' : 'text-outline-variant'}`} />)}
                             </div>
                             <span className="text-xs font-medium">{review.user?.username}</span>
                           </div>
@@ -1622,12 +1622,12 @@ export function HotelFlightSection({
               {/* Hotel Booking from TripAdvisor */}
               {tripAdvisorLocationId && <div className="space-y-3">
                   <div className="flex items-center gap-2">
-                    <Calendar className="w-4 h-4 text-green-600" />
+                    <Calendar className="w-4 h-4 text-secondary" />
                     <h4 className="font-medium text-sm">Book This Hotel</h4>
                   </div>
                   
                   {/* Booking Search Form */}
-                  <div className="p-4 bg-green-50 dark:bg-green-900/20 rounded-lg space-y-3">
+                  <div className="p-4 bg-secondary/5 dark:bg-green-900/20 rounded-lg space-y-3">
                     <div className="grid grid-cols-2 gap-3">
                       <div>
                         <Label htmlFor="checkin" className="text-xs">Check-in</Label>
@@ -1683,13 +1683,13 @@ export function HotelFlightSection({
                   
                   {/* Booking Offers */}
                   {bookingOffers.length > 0 && <div className="space-y-2">
-                      <h5 className="text-sm font-medium text-green-700 dark:text-green-300">Available Deals</h5>
+                      <h5 className="text-sm font-medium text-secondary dark:text-secondary/70">Available Deals</h5>
                       <div className="space-y-2 max-h-48 overflow-y-auto">
-                        {bookingOffers.slice(0, 5).map((offer, index) => <div key={index} className="p-3 bg-card rounded-lg border border-green-200 dark:border-green-800/50">
+                        {bookingOffers.slice(0, 5).map((offer, index) => <div key={index} className="p-3 bg-card rounded-lg border border-secondary/20 dark:border-secondary/40/50">
                             <div className="flex items-center justify-between">
                               <div>
                                 <div className="text-sm font-medium">{offer.partner_name || 'Booking Partner'}</div>
-                                {offer.price && <div className="text-lg font-bold text-green-600 dark:text-green-400">
+                                {offer.price && <div className="text-lg font-bold text-secondary dark:text-secondary">
                                     ${offer.price}
                                     <span className="text-xs text-muted-foreground ml-1">per night</span>
                                   </div>}
@@ -1697,7 +1697,7 @@ export function HotelFlightSection({
                                     Total: ${offer.total_price}
                                   </div>}
                               </div>
-                              <Button size="sm" onClick={() => window.open(offer.booking_url || `https://www.tripadvisor.com/Hotel_Review-d${tripAdvisorLocationId}`, '_blank')} className="bg-green-600 hover:bg-green-700">
+                              <Button size="sm" onClick={() => window.open(offer.booking_url || `https://www.tripadvisor.com/Hotel_Review-d${tripAdvisorLocationId}`, '_blank')} className="bg-secondary hover:bg-green-700">
                                 Book Now
                               </Button>
                             </div>
@@ -1767,7 +1767,7 @@ export function HotelFlightSection({
         <DialogContent className="w-[80vw] h-[80vh] max-w-none bg-card border-border overflow-hidden flex flex-col">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
-              <Plane className="w-5 h-5 text-purple-600" />
+              <Plane className="w-5 h-5 text-tertiary" />
               {selectedFlight?.airline} {selectedFlight?.flightNumber}
             </DialogTitle>
             <DialogDescription>
@@ -1777,7 +1777,7 @@ export function HotelFlightSection({
           <div className="flex-1 overflow-y-auto min-h-0">
             {selectedFlight && <div className="space-y-6 p-1">
                 {/* Flight Route */}
-                <div className="p-4 bg-purple-50 dark:bg-purple-900/20 rounded-lg">
+                <div className="p-4 bg-tertiary/5 dark:bg-purple-900/20 rounded-lg">
                   <div className="flex items-center justify-between">
                     <div className="text-center">
                       <div className="font-bold text-lg">{selectedFlight.departure?.time || 'N/A'}</div>
@@ -1785,7 +1785,7 @@ export function HotelFlightSection({
                       <div className="text-xs text-muted-foreground">{selectedFlight.departure?.date || 'N/A'}</div>
                     </div>
                     <div className="flex-1 flex flex-col items-center mx-4">
-                      <Plane className="w-6 h-6 text-purple-600 mb-1" />
+                      <Plane className="w-6 h-6 text-tertiary mb-1" />
                       <div className="w-full h-px bg-purple-300"></div>
                     </div>
                     <div className="text-center">
@@ -1816,9 +1816,9 @@ export function HotelFlightSection({
                 {flightStats && !isStatsLoading && (
                   <div className="space-y-4">
                     {/* On-Time Performance */}
-                    <div className="p-4 bg-gradient-to-r from-green-50 to-blue-50 dark:from-green-900/20 dark:to-blue-900/20 rounded-lg border border-green-200 dark:border-green-700">
+                    <div className="p-4 bg-gradient-to-r from-green-50 to-blue-50 dark:from-green-900/20 dark:to-blue-900/20 rounded-lg border border-secondary/20 dark:border-green-700">
                       <div className="flex items-center gap-2 mb-3">
-                        <TrendingUp className="w-5 h-5 text-green-600 dark:text-green-400" />
+                        <TrendingUp className="w-5 h-5 text-secondary dark:text-secondary" />
                         <h4 className="font-semibold text-green-900 dark:text-green-100">On-Time Performance</h4>
                       </div>
                       
@@ -1826,17 +1826,17 @@ export function HotelFlightSection({
                         <div className="text-center p-3 bg-card/50 rounded-lg">
                           <div className="flex items-center justify-center gap-1 mb-1">
                             {flightStats.onTimePerformance.onTimePercentage >= 80 ? (
-                              <CheckCircle className="w-4 h-4 text-green-600" />
+                              <CheckCircle className="w-4 h-4 text-secondary" />
                             ) : flightStats.onTimePerformance.onTimePercentage >= 70 ? (
-                              <AlertCircle className="w-4 h-4 text-yellow-600" />
+                              <AlertCircle className="w-4 h-4 text-secondary" />
                             ) : (
-                              <AlertCircle className="w-4 h-4 text-red-600" />
+                              <AlertCircle className="w-4 h-4 text-destructive" />
                             )}
                             <span className="text-xs text-muted-foreground">On Time</span>
                           </div>
                           <div className={`text-lg font-bold ${
                             flightStats.onTimePerformance.onTimePercentage >= 80 
-                              ? 'text-green-700 dark:text-green-300'
+                              ? 'text-secondary dark:text-secondary/70'
                               : flightStats.onTimePerformance.onTimePercentage >= 70
                               ? 'text-yellow-700 dark:text-yellow-300'
                               : 'text-red-700 dark:text-red-300'
@@ -1847,20 +1847,20 @@ export function HotelFlightSection({
                         
                         <div className="text-center p-3 bg-card/50 rounded-lg">
                           <div className="flex items-center justify-center gap-1 mb-1">
-                            <Info className="w-4 h-4 text-blue-600" />
+                            <Info className="w-4 h-4 text-primary" />
                             <span className="text-xs text-muted-foreground">Avg Delay</span>
                           </div>
-                          <div className="text-lg font-bold text-blue-700 dark:text-blue-300">
+                          <div className="text-lg font-bold text-blue-700 dark:text-primary/50">
                             {flightStats.onTimePerformance.averageDelayMinutes}m
                           </div>
                         </div>
                         
                         <div className="text-center p-3 bg-card/50 rounded-lg">
                           <div className="flex items-center justify-center gap-1 mb-1">
-                            <Star className="w-4 h-4 text-purple-600" />
+                            <Star className="w-4 h-4 text-tertiary" />
                             <span className="text-xs text-muted-foreground">Rating</span>
                           </div>
-                          <div className="text-sm font-bold text-purple-700 dark:text-purple-300">
+                          <div className="text-sm font-bold text-purple-700 dark:text-tertiary/70">
                             {flightStats.onTimePerformance.reliability}
                           </div>
                         </div>
@@ -1876,28 +1876,28 @@ export function HotelFlightSection({
 
                     {/* Flight Delay Prediction - Desktop */}
                     {flightStats.delayPrediction && (
-                      <div className="p-4 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-lg border border-blue-200 dark:border-blue-700">
+                      <div className="p-4 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-lg border border-primary/20 dark:border-blue-700">
                         <div className="flex items-center gap-2 mb-3">
-                          <Radar className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+                          <Radar className="w-5 h-5 text-primary dark:text-primary/70" />
                           <h4 className="font-semibold text-blue-900 dark:text-blue-100">Delay Prediction</h4>
                         </div>
                         
                         <div className="bg-card/50 rounded-lg p-4">
                           <div className="flex items-start gap-3">
                             {flightStats.delayPrediction.result?.prediction === 'LESS_THAN_30_MINUTES' && (
-                              <CheckCircle className="w-6 h-6 text-green-500 mt-0.5 flex-shrink-0" />
+                              <CheckCircle className="w-6 h-6 text-secondary mt-0.5 flex-shrink-0" />
                             )}
                             {flightStats.delayPrediction.result?.prediction === 'BETWEEN_30_AND_60_MINUTES' && (
-                              <AlertCircle className="w-6 h-6 text-yellow-500 mt-0.5 flex-shrink-0" />
+                              <AlertCircle className="w-6 h-6 text-secondary mt-0.5 flex-shrink-0" />
                             )}
                             {flightStats.delayPrediction.result?.prediction === 'BETWEEN_60_AND_120_MINUTES' && (
-                              <AlertCircle className="w-6 h-6 text-orange-500 mt-0.5 flex-shrink-0" />
+                              <AlertCircle className="w-6 h-6 text-secondary mt-0.5 flex-shrink-0" />
                             )}
                             {flightStats.delayPrediction.result?.prediction === 'OVER_120_MINUTES_OR_CANCELLED' && (
-                              <AlertCircle className="w-6 h-6 text-red-500 mt-0.5 flex-shrink-0" />
+                              <AlertCircle className="w-6 h-6 text-destructive mt-0.5 flex-shrink-0" />
                             )}
                             {!flightStats.delayPrediction.result?.prediction && (
-                              <Info className="w-6 h-6 text-blue-500 mt-0.5 flex-shrink-0" />
+                              <Info className="w-6 h-6 text-primary mt-0.5 flex-shrink-0" />
                             )}
                             <div className="flex-1 min-w-0">
                               <div className="font-semibold text-foreground mb-1">
@@ -2095,7 +2095,7 @@ export function HotelFlightSection({
                   setShowEditModal(false);
                   setEditingHotel(null);
                 }}
-                className="flex-1 bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600"
+                className="flex-1 bg-primary/50 text-white py-2 px-4 rounded-md hover:bg-primary"
               >
                 Save Changes
               </button>

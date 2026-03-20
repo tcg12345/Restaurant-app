@@ -1,10 +1,13 @@
-import { Check, X, Clock, Send, User } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { cn } from '@/lib/utils';
+
+const MIcon = ({ name, className = '', filled = false }: { name: string; className?: string; filled?: boolean }) => (
+  <span className={`material-symbols-outlined ${className}`} style={filled ? { fontVariationSettings: "'FILL' 1" } : undefined}>{name}</span>
+);
 
 interface FriendRequest {
   id: string;
@@ -34,7 +37,7 @@ export function FriendRequests({ pendingRequests, sentRequests, onRespondToReque
     const date = new Date(dateString);
     const now = new Date();
     const diffInHours = (now.getTime() - date.getTime()) / (1000 * 60 * 60);
-    
+
     if (diffInHours < 24) {
       return `${Math.floor(diffInHours)}h ago`;
     } else if (diffInHours < 168) { // 7 days
@@ -48,7 +51,7 @@ export function FriendRequests({ pendingRequests, sentRequests, onRespondToReque
     <Card className="border-0 shadow-lg bg-gradient-to-br from-background to-muted/20">
       <CardHeader className="pb-4">
         <CardTitle className="flex items-center gap-2 text-xl">
-          <User className="h-5 w-5 text-primary" />
+          <MIcon name="person" className="text-base text-primary" />
           Friend Requests
         </CardTitle>
       </CardHeader>
@@ -56,8 +59,8 @@ export function FriendRequests({ pendingRequests, sentRequests, onRespondToReque
         <Tabs defaultValue="received" className="w-full">
           <TabsList className="grid w-full grid-cols-2 mb-6">
             <TabsTrigger value="received" className="flex items-center gap-2">
-              <Clock className="h-4 w-4" />
-              Received 
+              <MIcon name="schedule" className="text-sm" />
+              Received
               {pendingRequests.length > 0 && (
                 <Badge variant="destructive" className="ml-1 px-2 py-0 text-xs">
                   {pendingRequests.length}
@@ -65,7 +68,7 @@ export function FriendRequests({ pendingRequests, sentRequests, onRespondToReque
               )}
             </TabsTrigger>
             <TabsTrigger value="sent" className="flex items-center gap-2">
-              <Send className="h-4 w-4" />
+              <MIcon name="send" className="text-sm" />
               Sent
               {sentRequests.length > 0 && (
                 <Badge variant="secondary" className="ml-1 px-2 py-0 text-xs">
@@ -78,7 +81,7 @@ export function FriendRequests({ pendingRequests, sentRequests, onRespondToReque
           <TabsContent value="received" className="space-y-4">
             {pendingRequests.length === 0 ? (
               <div className="text-center py-12">
-                <Clock className="h-16 w-16 text-muted-foreground mx-auto mb-4 opacity-50" />
+                <MIcon name="schedule" className="text-5xl text-muted-foreground mx-auto mb-4 opacity-50" />
                 <p className="text-lg font-medium text-muted-foreground mb-2">No pending requests</p>
                 <p className="text-sm text-muted-foreground">
                   Friend requests will appear here when someone wants to connect with you
@@ -87,8 +90,8 @@ export function FriendRequests({ pendingRequests, sentRequests, onRespondToReque
             ) : (
               <div className="space-y-3">
                 {pendingRequests.map((request) => (
-                  <div 
-                    key={request.id} 
+                  <div
+                    key={request.id}
                     className="flex items-center justify-between p-4 rounded-lg border bg-gradient-to-r from-primary/5 to-transparent hover:from-primary/10 transition-all duration-200 group"
                   >
                     <div className="flex items-center gap-4">
@@ -113,9 +116,9 @@ export function FriendRequests({ pendingRequests, sentRequests, onRespondToReque
                       <Button
                         size="sm"
                         onClick={() => onRespondToRequest(request.id, true)}
-                        className="bg-green-600 hover:bg-green-700 text-white"
+                        className="bg-secondary hover:bg-green-700 text-white"
                       >
-                        <Check className="h-4 w-4 mr-2" />
+                        <MIcon name="check" className="text-sm mr-2" />
                         Accept
                       </Button>
                       <Button
@@ -124,7 +127,7 @@ export function FriendRequests({ pendingRequests, sentRequests, onRespondToReque
                         onClick={() => onRespondToRequest(request.id, false)}
                         className="hover:bg-destructive hover:text-destructive-foreground"
                       >
-                        <X className="h-4 w-4 mr-2" />
+                        <MIcon name="close" className="text-sm mr-2" />
                         Decline
                       </Button>
                     </div>
@@ -137,7 +140,7 @@ export function FriendRequests({ pendingRequests, sentRequests, onRespondToReque
           <TabsContent value="sent" className="space-y-4">
             {sentRequests.length === 0 ? (
               <div className="text-center py-12">
-                <Send className="h-16 w-16 text-muted-foreground mx-auto mb-4 opacity-50" />
+                <MIcon name="send" className="text-5xl text-muted-foreground mx-auto mb-4 opacity-50" />
                 <p className="text-lg font-medium text-muted-foreground mb-2">No sent requests</p>
                 <p className="text-sm text-muted-foreground">
                   Friend requests you send will appear here
@@ -146,8 +149,8 @@ export function FriendRequests({ pendingRequests, sentRequests, onRespondToReque
             ) : (
               <div className="space-y-3">
                 {sentRequests.map((request) => (
-                  <div 
-                    key={request.id} 
+                  <div
+                    key={request.id}
                     className="flex items-center justify-between p-4 rounded-lg border bg-muted/30 hover:bg-muted/50 transition-colors"
                   >
                     <div className="flex items-center gap-4">
@@ -169,7 +172,7 @@ export function FriendRequests({ pendingRequests, sentRequests, onRespondToReque
                     </div>
 
                     <Badge variant="secondary" className="px-4 py-2">
-                      <Clock className="h-3 w-3 mr-2" />
+                      <MIcon name="schedule" className="text-xs mr-2" />
                       Pending
                     </Badge>
                   </div>

@@ -1055,7 +1055,7 @@ export function ItineraryBuilder({
               
               {/* Premium Icon Button */}
               <Button variant="ghost" size="sm" className="flex items-center gap-2 h-10 px-3 rounded-xl bg-muted border border-border hover:bg-muted/80 hover:border-blue-500/30 transition-all duration-200 shadow-lg backdrop-blur-sm" onClick={() => navigate('/saved-itineraries')}>
-                <BookOpen className="w-4 h-4 text-blue-400" />
+                <BookOpen className="w-4 h-4 text-primary/70" />
                 <span className="text-sm font-medium text-muted-foreground">Saved</span>
               </Button>
             </div>
@@ -1069,7 +1069,7 @@ export function ItineraryBuilder({
                 {/* Premium Search Input - conditionally rendered */}
                 {showSearchBox && <div className="relative">
                     <div className="absolute left-4 top-1/2 transform -translate-y-1/2 z-10">
-                      <MapPin className="w-5 h-5 text-blue-400" />
+                      <MapPin className="w-5 h-5 text-primary/70" />
                     </div>
                     <AmadeusCitySearch value={currentLocationSearch} onChange={setCurrentLocationSearch} onCitySelect={handleLocationSelect} placeholder="Where to?" className="w-full h-14 pl-12 pr-4 text-base rounded-xl border border-border bg-card backdrop-blur-sm shadow-inner text-foreground placeholder:text-muted-foreground focus:bg-card focus:border-blue-500/50 focus:ring-2 focus:ring-blue-500/20 transition-all duration-200 font-medium" />
                     <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-blue-500/5 to-transparent pointer-events-none"></div>
@@ -1569,7 +1569,7 @@ export function ItineraryBuilder({
                                 <div className="text-xl font-semibold text-foreground">
                                   {format(dateRange.start, 'MMM do')} – {format(dateRange.end, 'MMM do')}
                                 </div>
-                                <div className="inline-flex items-center px-3 py-1 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-full text-sm font-medium text-blue-700 dark:text-blue-300">
+                                <div className="inline-flex items-center px-3 py-1 bg-primary/5 dark:bg-blue-900/20 border border-primary/20 dark:border-blue-800 rounded-full text-sm font-medium text-blue-700 dark:text-primary/50">
                                   {tripDays} {tripDays === 1 ? 'day' : 'days'} total
                                 </div>
                               </>}
@@ -1585,7 +1585,7 @@ export function ItineraryBuilder({
                         <h3 className="text-lg font-semibold text-foreground">Destinations</h3>
                         <div className="flex flex-wrap gap-2">
                           {currentItinerary.locations.map(location => <div key={location.id} className="inline-flex items-center gap-2 px-3 py-1.5 bg-muted/50 border border-border rounded-full text-sm font-medium text-muted-foreground">
-                              <div className="w-1.5 h-1.5 bg-blue-500 rounded-full"></div>
+                              <div className="w-1.5 h-1.5 bg-primary/50 rounded-full"></div>
                               {location.name}
                               {location.iataCode && <span className="text-muted-foreground">({location.iataCode})</span>}
                             </div>)}
@@ -1600,7 +1600,7 @@ export function ItineraryBuilder({
                       <h3 className="text-lg font-semibold text-foreground">Quick Actions</h3>
                       
                       <div className="grid grid-cols-2 gap-3">
-                        <button onClick={() => setIsSaveDialogOpen(true)} className="flex items-center justify-center gap-2 px-4 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors duration-200">
+                        <button onClick={() => setIsSaveDialogOpen(true)} className="flex items-center justify-center gap-2 px-4 py-3 bg-primary hover:bg-blue-700 text-white rounded-lg font-medium transition-colors duration-200">
                           <Save className="w-4 h-4" />
                           {currentItinerary?.id ? 'Update' : 'Save'}
                         </button>
@@ -1642,7 +1642,7 @@ export function ItineraryBuilder({
                       {events.some(event => event.price && event.price.trim() !== '') && (
                         <button 
                           onClick={calculateTotalPrice} 
-                          className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-green-600 hover:bg-green-700 text-white rounded-lg font-medium transition-colors duration-200"
+                          className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-secondary hover:bg-green-700 text-white rounded-lg font-medium transition-colors duration-200"
                         >
                           <DollarSign className="w-4 h-4" />
                           Calculate Total Price
@@ -1650,11 +1650,11 @@ export function ItineraryBuilder({
                       )}
                       
                       {totalPrice && (
-                        <div className="text-center p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg">
-                          <div className="text-2xl font-bold text-green-700 dark:text-green-300">
+                        <div className="text-center p-4 bg-secondary/5 dark:bg-green-900/20 border border-secondary/20 dark:border-secondary/40 rounded-lg">
+                          <div className="text-2xl font-bold text-secondary dark:text-secondary/70">
                             ${totalPrice}
                           </div>
-                          <div className="text-sm text-green-600 dark:text-green-400 mt-1">
+                          <div className="text-sm text-secondary dark:text-secondary mt-1">
                             Total estimated cost
                           </div>
                         </div>

@@ -1,5 +1,4 @@
 import React from 'react';
-import { Crown } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 
 interface ExpertBadgeProps {
@@ -10,23 +9,23 @@ interface ExpertBadgeProps {
   className?: string;
 }
 
-export function ExpertBadge({ 
-  showIcon = true, 
-  showText = true, 
+export function ExpertBadge({
+  showIcon = true,
+  showText = true,
   size = 'md',
   variant = 'default',
-  className = '' 
+  className = ''
 }: ExpertBadgeProps) {
   const iconSizes = {
-    sm: 'h-3 w-3',
-    md: 'h-4 w-4', 
-    lg: 'h-5 w-5'
+    sm: 'text-[10px]',
+    md: 'text-xs',
+    lg: 'text-sm'
   };
 
   const textSizes = {
-    sm: 'text-xs',
-    md: 'text-xs',
-    lg: 'text-sm'
+    sm: 'text-[8px]',
+    md: 'text-[10px]',
+    lg: 'text-xs'
   };
 
   const paddings = {
@@ -37,12 +36,14 @@ export function ExpertBadge({
 
   if (variant === 'inline') {
     return (
-      <div className={`flex items-center gap-1.5 ${className}`}>
-        {showIcon && <Crown className={`${iconSizes[size]} text-primary fill-primary/20`} />}
+      <div className={`flex items-center gap-1 ${className}`}>
+        {showIcon && (
+          <span className={`material-symbols-outlined ${iconSizes[size]} text-secondary`} style={{ fontVariationSettings: "'FILL' 1" }}>verified</span>
+        )}
         {showText && (
-          <Badge 
-            variant="secondary" 
-            className={`${textSizes[size]} ${paddings[size]} bg-primary/10 text-primary border-primary/20`}
+          <Badge
+            variant="secondary"
+            className={`${textSizes[size]} ${paddings[size]} bg-secondary/10 text-secondary border-0`}
           >
             Expert
           </Badge>
@@ -52,11 +53,13 @@ export function ExpertBadge({
   }
 
   return (
-    <Badge 
-      variant="secondary" 
-      className={`${textSizes[size]} ${paddings[size]} bg-primary/10 text-primary border-primary/20 flex items-center gap-1 ${className}`}
+    <Badge
+      variant="secondary"
+      className={`${textSizes[size]} ${paddings[size]} bg-secondary/10 text-secondary border-0 flex items-center gap-1 ${className}`}
     >
-      {showIcon && <Crown className={`${iconSizes[size]} fill-primary/20`} />}
+      {showIcon && (
+        <span className={`material-symbols-outlined ${iconSizes[size]}`} style={{ fontVariationSettings: "'FILL' 1" }}>verified</span>
+      )}
       {showText && 'Expert'}
     </Badge>
   );

@@ -1,6 +1,9 @@
 import { useState, useEffect, useRef } from 'react';
-import { Search, Star, MapPin, Calendar, Camera, Plus, X, Upload, Images, Trash2, BookOpen } from 'lucide-react';
 import { Camera as CapacitorCamera, CameraResultType, CameraSource } from '@capacitor/camera';
+
+const MIcon = ({ name, className = '', filled = false }: { name: string; className?: string; filled?: boolean }) => (
+  <span className={`material-symbols-outlined ${className}`} style={filled ? { fontVariationSettings: "'FILL' 1" } : undefined}>{name}</span>
+);
 import { MichelinStarIcon } from '@/components/MichelinStarIcon';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
@@ -366,7 +369,7 @@ export function PlaceRatingDialog({
   const renderStarRating = (rating: number, onRate: (rating: number) => void) => {
     return <div className="flex items-center gap-1">
         {[1, 2, 3, 4, 5].map(star => <button key={star} type="button" onClick={() => onRate(star)} className="text-2xl hover:scale-110 transition-transform">
-            <Star className={`w-6 h-6 ${star <= rating ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300'}`} />
+            <MIcon name="grade" className={`text-lg ${star <= rating ? 'text-secondary' : 'text-outline-variant'}`} filled={star <= rating} />
           </button>)}
       </div>;
   };
@@ -512,7 +515,7 @@ export function PlaceRatingDialog({
       <DialogContent className="sm:max-w-[600px] w-[calc(100vw-2rem)] max-w-[calc(100vw-2rem)] max-h-[80vh] overflow-y-auto rounded-lg mx-auto">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
-            <MapPin className="w-5 h-5" />
+            <MIcon name="location_on" className="text-base" />
             {isEditMode ? 'Edit Place Rating' : 'Rate a Place'}
           </DialogTitle>
           <DialogDescription>
@@ -535,7 +538,7 @@ export function PlaceRatingDialog({
             <div className="relative">
               <div className="flex gap-2">
                 <div className="relative flex-1">
-                  <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                  <MIcon name="search" className="absolute left-3 top-3 text-sm text-muted-foreground" />
                   <Input id="search" value={searchQuery} onChange={e => handleSearchChange(e.target.value)} placeholder="Search restaurants, attractions, hotels, shops..." className="pl-10" onFocus={() => searchQuery.length > 2 && setShowSuggestions(true)} onBlur={() => setTimeout(() => setShowSuggestions(false), 200)} onKeyDown={e => {
                       if (e.key === 'Enter') {
                         e.preventDefault();
@@ -557,7 +560,7 @@ export function PlaceRatingDialog({
                           <p className="text-xs text-muted-foreground line-clamp-1">{place.formatted_address}</p>
                           <div className="flex items-center gap-2 mt-1">
                             {place.rating && <div className="flex items-center gap-1">
-                                <Star className="w-3 h-3 fill-yellow-400 text-yellow-400" />
+                                <MIcon name="grade" className="text-xs text-secondary" filled />
                                 <span className="text-xs">{place.rating}</span>
                               </div>}
                             <div className="flex gap-1">
@@ -586,7 +589,7 @@ export function PlaceRatingDialog({
                             <p className="text-xs text-muted-foreground">{restaurant.address}, {restaurant.city}</p>
                             <div className="flex items-center gap-2 mt-1 flex-wrap">
                               {restaurant.rating && <div className="flex items-center gap-1">
-                                  <Star className="w-3 h-3 fill-yellow-400 text-yellow-400" />
+                                  <MIcon name="grade" className="text-xs text-secondary" filled />
                                   <span className="text-xs">{restaurant.rating}</span>
                                 </div>}
                               <Badge variant="secondary" className="text-xs px-1 py-0">
@@ -618,14 +621,14 @@ export function PlaceRatingDialog({
             <TabsContent value="itinerary" className="space-y-4">
               <div className="space-y-2">
                 <Label className="flex items-center gap-2">
-                  <BookOpen className="w-4 h-4" />
+                  <MIcon name="menu_book" className="text-sm" />
                   Import from Saved Itineraries
                 </Label>
                 <p className="text-sm text-muted-foreground">
                   Select a saved itinerary to import its restaurants and attractions into this trip.
                 </p>
                 <Button type="button" onClick={() => setIsImportItineraryOpen(true)} className="w-full" variant="outline">
-                  <BookOpen className="w-4 h-4 mr-2" />
+                  <MIcon name="menu_book" className="text-sm mr-2" />
                   Browse Saved Itineraries
                 </Button>
               </div>
@@ -694,8 +697,8 @@ export function PlaceRatingDialog({
                 {customCategories.map(category => <div key={category} className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                       <span className="text-sm font-medium">{category}</span>
-                      <button type="button" onClick={() => removeCustomCategory(category)} className="text-red-500 hover:text-red-700 transition-colors">
-                        <X className="w-4 h-4" />
+                      <button type="button" onClick={() => removeCustomCategory(category)} className="text-destructive hover:text-red-700 transition-colors">
+                        <MIcon name="close" className="text-sm" />
                       </button>
                     </div>
                     {renderStarRating(categoryRatings[category] || 0, rating => setCategoryRatings(prev => ({
@@ -713,7 +716,7 @@ export function PlaceRatingDialog({
                 }
               }} />
                   <Button type="button" onClick={addCustomCategory} disabled={!newCustomCategory.trim()} size="sm" variant="outline">
-                    <Plus className="w-4 h-4" />
+                    <MIcon name="add" className="text-sm" />
                   </Button>
                 </div>
               </div>
@@ -729,7 +732,7 @@ export function PlaceRatingDialog({
                   e.stopPropagation();
                   setIsDatePickerOpen(!isDatePickerOpen);
                 }}>
-                      <Calendar className="mr-2 h-4 w-4" />
+                      <MIcon name="calendar_today" className="mr-2 text-sm" />
                       {dateVisited ? format(dateVisited, "PPP") : <span>Select a date</span>}
                     </Button>
                   </PopoverTrigger>
@@ -766,7 +769,7 @@ export function PlaceRatingDialog({
                 <div className={`relative border-2 border-dashed rounded-lg p-6 text-center transition-colors ${isDragOver ? 'border-primary bg-primary/5' : 'border-muted-foreground/25'}`} onDragOver={handleDragOver} onDragLeave={handleDragLeave} onDrop={handleDrop}>
                   <div className="flex flex-col items-center gap-3">
                     <div className="flex items-center gap-2">
-                      <Upload className="h-8 w-8 text-muted-foreground" />
+                      <MIcon name="upload" className="text-2xl text-muted-foreground" />
                       <span className="text-sm text-muted-foreground">
                         Drag & drop photos here, or click to select
                       </span>
@@ -774,17 +777,17 @@ export function PlaceRatingDialog({
                     
                     <div className="flex gap-2">
                       <Button type="button" variant="outline" size="sm" onClick={() => fileInputRef.current?.click()} disabled={isProcessingPhotos}>
-                        <Images className="h-4 w-4 mr-2" />
+                        <MIcon name="collections" className="text-sm mr-2" />
                         Choose Files
                       </Button>
                       
                       <Button type="button" variant="outline" size="sm" onClick={addPhotoFromGallery} disabled={isProcessingPhotos}>
-                        <Images className="h-4 w-4 mr-2" />
+                        <MIcon name="collections" className="text-sm mr-2" />
                         Gallery
                       </Button>
                       
                       <Button type="button" variant="outline" size="sm" onClick={takePhoto} disabled={isProcessingPhotos}>
-                        <Camera className="h-4 w-4 mr-2" />
+                        <MIcon name="photo_camera" className="text-sm mr-2" />
                         Camera
                       </Button>
                     </div>
@@ -806,8 +809,8 @@ export function PlaceRatingDialog({
                 {previewImages.length > 0 && <div className="grid grid-cols-3 gap-3">
                     {previewImages.map((src, index) => <div key={index} className="relative group">
                         <LazyImage src={src} alt={`Photo ${index + 1}`} className="w-full h-24 object-cover rounded-lg" />
-                        <button type="button" onClick={() => removePhoto(index)} className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                          <Trash2 className="h-3 w-3" />
+                        <button type="button" onClick={() => removePhoto(index)} className="absolute -top-2 -right-2 bg-destructive/50 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                          <MIcon name="delete" className="text-xs" />
                         </button>
                       </div>)}
                   </div>}

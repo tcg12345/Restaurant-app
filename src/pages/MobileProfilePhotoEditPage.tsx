@@ -1,6 +1,8 @@
 import { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Upload, Camera, Trash2, Loader2 } from 'lucide-react';
+const MIcon = ({ name, className = '', filled = false }: { name: string; className?: string; filled?: boolean }) => (
+  <span className={`material-symbols-outlined ${className}`} style={filled ? { fontVariationSettings: "'FILL' 1" } : undefined}>{name}</span>
+);
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { supabase } from '@/integrations/supabase/client';
@@ -143,7 +145,7 @@ export function MobileProfilePhotoEditPage() {
             onClick={() => navigate(-1)}
             className="h-10 w-10"
           >
-            <ArrowLeft className="h-5 w-5" />
+            <MIcon name="arrow_back" className="text-base" />
           </Button>
           
           <h1 className="text-lg font-semibold">Edit profile photo</h1>
@@ -184,7 +186,7 @@ export function MobileProfilePhotoEditPage() {
                 className="w-full h-12"
                 size="lg"
               >
-                <Upload className="h-5 w-5 mr-2" />
+                <MIcon name="upload" className="text-base mr-2" />
                 Choose Photo
               </Button>
 
@@ -198,12 +200,12 @@ export function MobileProfilePhotoEditPage() {
                 >
                   {isUploading ? (
                     <>
-                      <Loader2 className="h-5 w-5 mr-2 animate-spin" />
+                      <MIcon name="progress_activity" className="text-base mr-2 animate-spin" />
                       Removing...
                     </>
                   ) : (
                     <>
-                      <Trash2 className="h-5 w-5 mr-2" />
+                      <MIcon name="delete" className="text-base mr-2" />
                       Remove Photo
                     </>
                   )}
@@ -220,12 +222,12 @@ export function MobileProfilePhotoEditPage() {
               >
                 {isUploading ? (
                   <>
-                    <Loader2 className="h-5 w-5 mr-2 animate-spin" />
+                    <MIcon name="progress_activity" className="text-base mr-2 animate-spin" />
                     Uploading...
                   </>
                 ) : (
                   <>
-                    <Camera className="h-5 w-5 mr-2" />
+                    <MIcon name="photo_camera" className="text-base mr-2" />
                     Save Photo
                   </>
                 )}

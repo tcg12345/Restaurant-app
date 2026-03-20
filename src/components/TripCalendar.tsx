@@ -206,9 +206,9 @@ export function TripCalendar({
   const getEventColor = (type: string) => {
     switch (type) {
       case 'restaurant':
-        return 'bg-orange-100 border-orange-200 text-orange-800 dark:bg-orange-900/20 dark:border-orange-800 dark:text-orange-300';
+        return 'bg-secondary/10 border-secondary/20 text-orange-800 dark:bg-orange-900/20 dark:border-orange-800 dark:text-orange-300';
       case 'attraction':
-        return 'bg-green-100 border-green-200 text-green-800 dark:bg-green-900/20 dark:border-green-800 dark:text-green-300';
+        return 'bg-secondary/10 border-secondary/20 text-green-800 dark:bg-green-900/20 dark:border-secondary/40 dark:text-secondary/70';
       default:
         return 'bg-muted border-border text-foreground';
     }
@@ -337,7 +337,7 @@ export function TripCalendar({
                                 <span className="truncate">{getCityForDate(day)}</span>
                               </div>}
                             {dayHotel && <div 
-                                className="flex items-center gap-1 text-blue-600 font-medium text-sm bg-blue-50 dark:bg-blue-950/30 px-3 py-1.5 rounded-md border border-blue-200/50 cursor-pointer hover:bg-blue-100 dark:hover:bg-blue-900/40 transition-colors"
+                                className="flex items-center gap-1 text-primary font-medium text-sm bg-primary/5 dark:bg-blue-950/30 px-3 py-1.5 rounded-md border border-primary/20/50 cursor-pointer hover:bg-primary/10 dark:hover:bg-blue-900/40 transition-colors"
                                 onClick={(e) => {
                                   e.stopPropagation();
                                   if (dayHotel.hotel?.id) {
@@ -662,8 +662,8 @@ export function TripCalendar({
             {/* Price */}
             {selectedEvent.price && (
               <div className="flex items-center gap-2">
-                <DollarSign className="w-4 h-4 text-green-600" />
-                <span className="font-semibold text-green-600">{selectedEvent.price}</span>
+                <DollarSign className="w-4 h-4 text-secondary" />
+                <span className="font-semibold text-secondary">{selectedEvent.price}</span>
               </div>
             )}
             

@@ -1,6 +1,9 @@
 import { useState, useEffect } from 'react';
-import { Plus, Star, MapPin, Calendar } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+
+const MIcon = ({ name, className = '', filled = false }: { name: string; className?: string; filled?: boolean }) => (
+  <span className={`material-symbols-outlined ${className}`} style={filled ? { fontVariationSettings: "'FILL' 1" } : undefined}>{name}</span>
+);
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -120,7 +123,7 @@ export function AddRestaurantToTripDialog({ isOpen, onClose, tripId }: AddRestau
 
                           <div className="flex items-center gap-4 text-sm">
                             <div className="flex items-center gap-1">
-                              <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                              <Star className="w-4 h-4 fill-yellow-400 text-secondary" />
                               <span className="font-medium">{restaurant.rating}</span>
                             </div>
                             

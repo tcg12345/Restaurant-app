@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Plus, Search, Download, Trash2 } from 'lucide-react';
 import { useRestaurantLists, RestaurantList } from '@/hooks/useRestaurantLists';
 import { RestaurantListCard } from '@/components/RestaurantListCard';
 import { CreateListDialog } from '@/components/CreateListDialog';

@@ -5,8 +5,13 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Badge } from '@/components/ui/badge';
-import { Bot, User, Send, Mic, MicOff, Sparkles } from 'lucide-react';
+
+
 import { toast } from 'sonner';
+
+const MIcon = ({ name, className = '', filled = false }: { name: string; className?: string; filled?: boolean }) => (
+  <span className={`material-symbols-outlined ${className}`} style={filled ? { fontVariationSettings: "'FILL' 1" } : undefined}>{name}</span>
+);
 
 interface Message {
   id: string;
@@ -191,9 +196,9 @@ export function AISearchAssistant({ onSearchSuggestion, onClose }: AISearchAssis
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
           <CardTitle className="flex items-center gap-2">
-            <Bot className="h-5 w-5 text-primary" />
+            <MIcon name="smart_toy" className="text-base text-primary" />
             AI Restaurant Assistant
-            <Sparkles className="h-4 w-4 text-yellow-500" />
+            <MIcon name="auto_awesome" className="text-sm text-secondary" />
           </CardTitle>
           {onClose && (
             <Button variant="ghost" size="sm" onClick={onClose}>
@@ -212,7 +217,7 @@ export function AISearchAssistant({ onSearchSuggestion, onClose }: AISearchAssis
                   <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
                     message.type === 'user' ? 'bg-primary text-primary-foreground' : 'bg-muted'
                   }`}>
-                    {message.type === 'user' ? <User className="h-4 w-4" /> : <Bot className="h-4 w-4" />}
+                    {message.type === 'user' ? <MIcon name="person" className="text-sm" /> : <MIcon name="smart_toy" className="text-sm" />}
                   </div>
                   <div className="space-y-2">
                     <div className={`rounded-lg p-3 ${
@@ -247,7 +252,7 @@ export function AISearchAssistant({ onSearchSuggestion, onClose }: AISearchAssis
               <div className="flex gap-3 justify-start">
                 <div className="flex gap-2">
                   <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center">
-                    <Bot className="h-4 w-4" />
+                    <MIcon name="smart_toy" className="text-sm" />
                   </div>
                   <div className="rounded-lg p-3 bg-muted">
                     <div className="flex gap-1">
@@ -278,11 +283,11 @@ export function AISearchAssistant({ onSearchSuggestion, onClose }: AISearchAssis
                 variant="ghost"
                 size="sm"
                 className={`absolute right-1 top-1/2 -translate-y-1/2 h-8 w-8 p-0 ${
-                  isListening ? 'text-red-500' : 'text-muted-foreground'
+                  isListening ? 'text-destructive' : 'text-muted-foreground'
                 }`}
                 onClick={isListening ? stopListening : startListening}
               >
-                {isListening ? <MicOff className="h-4 w-4" /> : <Mic className="h-4 w-4" />}
+                {isListening ? <MIcon name="mic_off" className="text-sm" /> : <MIcon name="mic" className="text-sm" />}
               </Button>
             </div>
             <Button 
@@ -290,12 +295,12 @@ export function AISearchAssistant({ onSearchSuggestion, onClose }: AISearchAssis
               disabled={!inputMessage.trim() || isLoading}
               size="sm"
             >
-              <Send className="h-4 w-4" />
+              <MIcon name="send" className="text-sm" />
             </Button>
           </div>
           {isListening && (
             <p className="text-xs text-muted-foreground mt-2 flex items-center gap-1">
-              <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
+              <div className="w-2 h-2 bg-destructive/50 rounded-full animate-pulse"></div>
               Listening... Speak now
             </p>
           )}

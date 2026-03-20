@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Crown, Search, Star, MapPin, UserPlus, UserCheck, ChevronRight, Filter, TrendingUp } from 'lucide-react';
+const MIcon = ({ name, className = '', filled = false }: { name: string; className?: string; filled?: boolean }) => (
+  <span className={`material-symbols-outlined ${className}`} style={filled ? { fontVariationSettings: "'FILL' 1" } : undefined}>{name}</span>
+);
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -232,7 +234,7 @@ export default function ExpertsPage() {
               onClick={() => setSelectedExpert(null)}
               className="mb-4 -ml-2 text-muted-foreground"
             >
-              <ChevronRight className="h-4 w-4 rotate-180 mr-1" />
+              <MIcon name="chevron_right" className="text-sm rotate-180 mr-1" />
               All Experts
             </Button>
 
@@ -246,8 +248,8 @@ export default function ExpertsPage() {
               <div className="flex-1">
                 <div className="flex items-center gap-2 mb-1">
                   <h1 className="text-xl font-bold">{selectedExpert.name || selectedExpert.username}</h1>
-                  <Badge className="bg-amber-500/10 text-amber-600 border-amber-500/20 gap-1">
-                    <Crown className="h-3 w-3" />
+                  <Badge className="bg-secondary/50/10 text-secondary border-amber-500/20 gap-1">
+                    <MIcon name="verified" className="text-xs" filled />
                     Expert
                   </Badge>
                 </div>
@@ -257,7 +259,7 @@ export default function ExpertsPage() {
                 )}
                 {selectedExpert.home_city && (
                   <div className="flex items-center gap-1 mt-1 text-sm text-muted-foreground">
-                    <MapPin className="h-3.5 w-3.5" />
+                    <MIcon name="location_on" className="text-xs" />
                     {selectedExpert.home_city}
                   </div>
                 )}
@@ -274,12 +276,12 @@ export default function ExpertsPage() {
                 <div className="flex gap-2 mt-3">
                   {!followingIds.has(selectedExpert.id) ? (
                     <Button size="sm" onClick={() => handleFollow(selectedExpert.id)}>
-                      <UserPlus className="h-4 w-4 mr-1.5" />
+                      <MIcon name="person_add" className="text-sm mr-1.5" />
                       Follow
                     </Button>
                   ) : (
                     <Button size="sm" variant="outline" disabled>
-                      <UserCheck className="h-4 w-4 mr-1.5" />
+                      <MIcon name="person" className="text-sm mr-1.5" />
                       Following
                     </Button>
                   )}
@@ -337,7 +339,7 @@ export default function ExpertsPage() {
                     </div>
                   </div>
                   <div className="flex items-center gap-1 flex-shrink-0">
-                    <Star className="h-4 w-4 text-amber-500 fill-amber-500" />
+                    <MIcon name="grade" className="text-sm text-secondary" filled />
                     <span className="font-semibold text-sm">{restaurant.rating}</span>
                   </div>
                 </button>
@@ -355,8 +357,8 @@ export default function ExpertsPage() {
       <div className="border-b border-border/50 bg-background pt-safe-area-top">
         <div className="max-w-4xl mx-auto px-4 py-4">
           <div className="flex items-center gap-3 mb-1">
-            <div className="p-2 rounded-xl bg-amber-500/10">
-              <Crown className="h-5 w-5 text-amber-600" />
+            <div className="p-2 rounded-xl bg-secondary/50/10">
+              <MIcon name="verified" className="text-base text-secondary" filled />
             </div>
             <div>
               <h1 className="text-xl font-bold">Food Experts</h1>
@@ -371,7 +373,7 @@ export default function ExpertsPage() {
       <div className="max-w-4xl mx-auto px-4 py-4">
         {/* Search */}
         <div className="relative mb-6">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <MIcon name="search" className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground" />
           <Input
             placeholder="Search experts by name or cuisine..."
             value={searchQuery}
@@ -383,7 +385,7 @@ export default function ExpertsPage() {
         {/* Expert Cards */}
         {filteredExperts.length === 0 ? (
           <div className="text-center py-16">
-            <Crown className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+            <MIcon name="verified" className="text-5xl text-muted-foreground mx-auto mb-4" filled />
             <h3 className="text-lg font-semibold mb-2">No Experts Found</h3>
             <p className="text-muted-foreground text-sm">
               {searchQuery ? 'Try a different search term.' : 'No experts have been verified yet.'}
@@ -401,7 +403,7 @@ export default function ExpertsPage() {
                   <div className="flex items-center gap-3">
                     <Avatar className="h-14 w-14 border border-amber-500/20">
                       <AvatarImage src={expert.avatar_url || ''} />
-                      <AvatarFallback className="bg-amber-500/10 text-amber-600 font-bold">
+                      <AvatarFallback className="bg-secondary/50/10 text-secondary font-bold">
                         {(expert.name || expert.username).charAt(0).toUpperCase()}
                       </AvatarFallback>
                     </Avatar>
@@ -410,8 +412,8 @@ export default function ExpertsPage() {
                         <span className="font-semibold text-sm truncate">
                           {expert.name || expert.username}
                         </span>
-                        <Badge variant="outline" className="bg-amber-500/10 text-amber-600 border-amber-500/20 text-[10px] px-1.5 py-0 gap-0.5 flex-shrink-0">
-                          <Crown className="h-2.5 w-2.5" />
+                        <Badge variant="outline" className="bg-secondary/50/10 text-secondary border-amber-500/20 text-[10px] px-1.5 py-0 gap-0.5 flex-shrink-0">
+                          <MIcon name="verified" className="text-[10px]" filled />
                           Expert
                         </Badge>
                       </div>
@@ -425,13 +427,13 @@ export default function ExpertsPage() {
                         </span>
                         {expert.avgRating > 0 && (
                           <span className="text-xs text-muted-foreground flex items-center gap-0.5">
-                            <Star className="h-3 w-3 text-amber-500 fill-amber-500" />
+                            <MIcon name="grade" className="text-xs text-secondary" filled />
                             <strong className="text-foreground">{expert.avgRating}</strong> avg
                           </span>
                         )}
                         {expert.home_city && (
                           <span className="text-xs text-muted-foreground flex items-center gap-0.5">
-                            <MapPin className="h-3 w-3" />
+                            <MIcon name="location_on" className="text-xs" />
                             {expert.home_city}
                           </span>
                         )}
@@ -457,12 +459,12 @@ export default function ExpertsPage() {
                           }}
                           className="rounded-full text-xs h-8"
                         >
-                          <UserPlus className="h-3.5 w-3.5 mr-1" />
+                          <MIcon name="person_add" className="text-xs mr-1" />
                           Follow
                         </Button>
                       ) : (
                         <Badge variant="outline" className="text-xs text-muted-foreground">
-                          <UserCheck className="h-3 w-3 mr-1" />
+                          <MIcon name="person" className="text-xs mr-1" />
                           Following
                         </Badge>
                       )}

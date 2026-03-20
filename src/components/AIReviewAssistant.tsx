@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { Sparkles, Wand2, BarChart3, Loader2, Copy, Check, Globe, Clock, TrendingUp, Send, MessageSquare } from 'lucide-react';
+
+
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -8,6 +9,10 @@ import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
+
+const MIcon = ({ name, className = '', filled = false }: { name: string; className?: string; filled?: boolean }) => (
+  <span className={`material-symbols-outlined ${className}`} style={filled ? { fontVariationSettings: "'FILL' 1" } : undefined}>{name}</span>
+);
 
 interface AIReviewAssistantProps {
   restaurantName: string;
@@ -173,7 +178,7 @@ export function AIReviewAssistant({
     <Card className="w-full">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
-          <Sparkles className="h-5 w-5 text-primary" />
+          <MIcon name="auto_awesome" className="text-base text-primary" />
           AI Review Assistant
         </CardTitle>
         <CardDescription>
@@ -202,7 +207,7 @@ export function AIReviewAssistant({
                     variant="outline"
                     size="sm"
                   >
-                    <Globe className="h-4 w-4 mr-1" />
+                    <MIcon name="language" className="text-sm mr-1" />
                     General
                   </Button>
                   <Button
@@ -211,7 +216,7 @@ export function AIReviewAssistant({
                     variant="outline"
                     size="sm"
                   >
-                    <Clock className="h-4 w-4 mr-1" />
+                    <MIcon name="schedule" className="text-sm mr-1" />
                     Hours
                   </Button>
                   <Button
@@ -220,7 +225,7 @@ export function AIReviewAssistant({
                     variant="outline"
                     size="sm"
                   >
-                    <Sparkles className="h-4 w-4 mr-1" />
+                    <MIcon name="auto_awesome" className="text-sm mr-1" />
                     Reviews
                   </Button>
                   <Button
@@ -229,7 +234,7 @@ export function AIReviewAssistant({
                     variant="outline"
                     size="sm"
                   >
-                    <TrendingUp className="h-4 w-4 mr-1" />
+                    <MIcon name="trending_up" className="text-sm mr-1" />
                     Trending
                   </Button>
                 </div>
@@ -250,7 +255,7 @@ export function AIReviewAssistant({
                       disabled={isGettingInfo || !customQuery.trim()}
                       size="sm"
                     >
-                      <Send className="h-4 w-4" />
+                      <MIcon name="send" className="text-sm" />
                     </Button>
                   </div>
                   <div className="text-xs text-muted-foreground">
@@ -262,7 +267,7 @@ export function AIReviewAssistant({
 
             {isGettingInfo && (
               <div className="p-4 text-center">
-                <Loader2 className="h-6 w-6 animate-spin mx-auto mb-2" />
+                <MIcon name="progress_activity" className="text-lg animate-spin mx-auto mb-2" />
                 <p className="text-sm text-muted-foreground">Getting current information...</p>
               </div>
             )}
@@ -271,7 +276,7 @@ export function AIReviewAssistant({
               <Card className="border-primary/20 bg-primary/5">
                 <CardHeader className="pb-3">
                   <CardTitle className="text-sm flex items-center gap-2">
-                    <MessageSquare className="h-4 w-4" />
+                    <MIcon name="chat" className="text-sm" />
                     Current Restaurant Information
                   </CardTitle>
                 </CardHeader>
@@ -306,9 +311,9 @@ export function AIReviewAssistant({
             className="flex items-center gap-2"
           >
             {isLoading && activeAction === 'generate' ? (
-              <Loader2 className="h-4 w-4 animate-spin" />
+              <MIcon name="progress_activity" className="text-sm animate-spin" />
             ) : (
-              <Sparkles className="h-4 w-4" />
+              <MIcon name="auto_awesome" className="text-sm" />
             )}
             Generate Review
           </Button>
@@ -321,9 +326,9 @@ export function AIReviewAssistant({
             className="flex items-center gap-2"
           >
             {isLoading && activeAction === 'improve' ? (
-              <Loader2 className="h-4 w-4 animate-spin" />
+              <MIcon name="progress_activity" className="text-sm animate-spin" />
             ) : (
-              <Wand2 className="h-4 w-4" />
+              <MIcon name="auto_awesome" className="text-sm" />
             )}
             Improve Review
           </Button>
@@ -336,9 +341,9 @@ export function AIReviewAssistant({
             className="flex items-center gap-2"
           >
             {isLoading && activeAction === 'analyze' ? (
-              <Loader2 className="h-4 w-4 animate-spin" />
+              <MIcon name="progress_activity" className="text-sm animate-spin" />
             ) : (
-              <BarChart3 className="h-4 w-4" />
+              <MIcon name="bar_chart" className="text-sm" />
             )}
             Analyze Review
           </Button>
@@ -358,9 +363,9 @@ export function AIReviewAssistant({
                     className="h-8"
                   >
                     {copied ? (
-                      <Check className="h-3 w-3" />
+                      <MIcon name="check" className="text-xs" />
                     ) : (
-                      <Copy className="h-3 w-3" />
+                      <MIcon name="content_copy" className="text-xs" />
                     )}
                   </Button>
                   <Button
@@ -384,7 +389,7 @@ export function AIReviewAssistant({
 
         {/* Analysis Display */}
         {analysis && (
-          <Card className="border-blue-200 bg-blue-50 dark:border-blue-800 dark:bg-blue-950/20">
+          <Card className="border-primary/20 bg-primary/5 dark:border-blue-800 dark:bg-blue-950/20">
             <CardHeader className="pb-3">
               <CardTitle className="text-lg">Review Analysis</CardTitle>
             </CardHeader>
@@ -397,7 +402,7 @@ export function AIReviewAssistant({
         )}
 
         {/* Quick Tips */}
-        <Card className="border-amber-200 bg-amber-50 dark:border-amber-800 dark:bg-amber-950/20">
+        <Card className="border-secondary/20 bg-secondary/5 dark:border-secondary/40 dark:bg-amber-950/20">
           <CardContent className="pt-4">
             <h4 className="font-semibold text-sm mb-2">💡 Review Writing Tips:</h4>
             <ul className="text-xs space-y-1 text-muted-foreground">

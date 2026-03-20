@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, MapPin, Calendar, Star, Users, Globe } from 'lucide-react';
+const MIcon = ({ name, className = '', filled = false }: { name: string; className?: string; filled?: boolean }) => (
+  <span className={`material-symbols-outlined ${className}`} style={filled ? { fontVariationSettings: "'FILL' 1" } : undefined}>{name}</span>
+);
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -88,11 +90,11 @@ export function SharedTripPage() {
     const endDate = new Date(trip.end_date);
     
     if (isBefore(now, startDate)) {
-      return { status: 'upcoming', label: 'Upcoming', color: 'bg-blue-500' };
+      return { status: 'upcoming', label: 'Upcoming', color: 'bg-primary/50' };
     } else if (isWithinInterval(now, { start: startDate, end: endDate })) {
-      return { status: 'active', label: 'Active', color: 'bg-green-500' };
+      return { status: 'active', label: 'Active', color: 'bg-secondary/50' };
     } else if (isAfter(now, endDate)) {
-      return { status: 'completed', label: 'Completed', color: 'bg-gray-500' };
+      return { status: 'completed', label: 'Completed', color: 'bg-surface-container-low0' };
     }
     return null;
   };
@@ -223,7 +225,7 @@ export function SharedTripPage() {
               <CardContent className="p-4 text-center">
                 <div className="text-2xl font-bold text-primary flex items-center justify-center gap-1">
                   {avgRating > 0 ? avgRating.toFixed(1) : '—'}
-                  {avgRating > 0 && <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />}
+                  {avgRating > 0 && <Star className="w-4 h-4 fill-yellow-400 text-secondary" />}
                 </div>
                 <div className="text-sm text-muted-foreground">Avg Rating</div>
               </CardContent>
@@ -273,7 +275,7 @@ export function SharedTripPage() {
                       <div className="text-right">
                         {rating.overall_rating && (
                           <div className="flex items-center gap-1">
-                            <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                            <Star className="w-4 h-4 fill-yellow-400 text-secondary" />
                             <span className="font-semibold">{rating.overall_rating}/10</span>
                           </div>
                         )}

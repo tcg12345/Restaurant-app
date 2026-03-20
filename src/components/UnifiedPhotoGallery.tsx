@@ -1,5 +1,4 @@
 import React, { useState, useMemo } from 'react';
-import { Camera, ChevronRight, User, Users } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { CommunityStats } from '@/hooks/useRestaurantReviews';

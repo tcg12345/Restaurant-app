@@ -4,7 +4,9 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Calendar, MapPin, Clock, Star, Utensils, Camera, ExternalLink, Phone, Eye, ArrowLeft } from 'lucide-react';
+const MIcon = ({ name, className = '', filled = false }: { name: string; className?: string; filled?: boolean }) => (
+  <span className={`material-symbols-outlined ${className}`} style={filled ? { fontVariationSettings: "'FILL' 1" } : undefined}>{name}</span>
+);
 import { format } from 'date-fns';
 import { useIsMobile } from '@/hooks/useIsMobile';
 
@@ -111,11 +113,11 @@ export function SharedItineraryPage() {
                 onClick={() => navigate(-1)}
                 className="p-2 hover:bg-muted"
               >
-                <ArrowLeft className="w-6 h-6" />
+                <MIcon name="arrow_back" className="text-lg" />
               </Button>
               
               <div className="flex items-center gap-2">
-                <Calendar className="w-5 h-5 text-muted-foreground" />
+                <MIcon name="calendar_month" className="text-base text-muted-foreground" />
                 <span className="text-sm text-muted-foreground">Shared Itinerary</span>
               </div>
             </div>
@@ -132,13 +134,13 @@ export function SharedItineraryPage() {
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <Calendar className="w-5 h-5" />
+                <MIcon name="calendar_month" className="text-base" />
                 Trip Overview
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="flex items-center gap-2 text-sm">
-                <Clock className="w-4 h-4 text-muted-foreground" />
+                <MIcon name="schedule" className="text-sm text-muted-foreground" />
                 <span>
                   {format(new Date(itinerary.startDate), 'EEEE, MMMM do, yyyy')} - {format(new Date(itinerary.endDate), 'EEEE, MMMM do, yyyy')}
                 </span>
@@ -167,7 +169,7 @@ export function SharedItineraryPage() {
                   <Card key={date}>
                     <CardHeader className="pb-3">
                       <CardTitle className="text-lg flex items-center gap-2">
-                        <Calendar className="w-5 h-5" />
+                        <MIcon name="calendar_month" className="text-base" />
                         {format(new Date(date), 'EEEE, MMMM do')}
                       </CardTitle>
                     </CardHeader>
@@ -197,7 +199,7 @@ export function SharedItineraryPage() {
                                           {event.restaurantData.name}
                                         </h4>
                                         <div className="flex items-center gap-1 mt-1 text-sm text-muted-foreground">
-                                          <MapPin className="w-4 h-4 flex-shrink-0" />
+                                          <MIcon name="location_on" className="text-sm flex-shrink-0" />
                                           <span className="truncate">{event.restaurantData.address}</span>
                                         </div>
                                       </div>
@@ -211,7 +213,7 @@ export function SharedItineraryPage() {
                                           handleRestaurantClick(event.restaurantData);
                                         }}
                                       >
-                                        <Eye className="w-4 h-4" />
+                                        <MIcon name="visibility" className="text-sm" />
                                       </Button>
                                     </div>
 
@@ -221,13 +223,13 @@ export function SharedItineraryPage() {
                                       <div className="flex flex-wrap gap-2">
                                         {event.restaurantData.cuisine && (
                                           <Badge variant="secondary" className="text-xs">
-                                            <Utensils className="w-3 h-3 mr-1" />
+                                            <MIcon name="restaurant" className="text-xs mr-1" />
                                             {event.restaurantData.cuisine}
                                           </Badge>
                                         )}
                                         {event.restaurantData.rating && (
-                                          <Badge variant="outline" className="text-xs border-yellow-200 bg-yellow-50 text-yellow-700">
-                                            <Star className="w-3 h-3 mr-1 fill-yellow-400 text-yellow-400" />
+                                          <Badge variant="outline" className="text-xs border-secondary/20 bg-secondary/5 text-yellow-700">
+                                            <MIcon name="grade" className="text-xs mr-1 text-secondary" filled />
                                             {event.restaurantData.rating}/10
                                           </Badge>
                                         )}
@@ -237,7 +239,7 @@ export function SharedItineraryPage() {
                                           </Badge>
                                         )}
                                         {event.restaurantData.michelinStars && (
-                                          <Badge variant="outline" className="text-xs border-purple-200 bg-purple-50 text-purple-700">
+                                          <Badge variant="outline" className="text-xs border-tertiary/20 bg-tertiary/5 text-purple-700">
                                             {'⭐'.repeat(event.restaurantData.michelinStars)}
                                           </Badge>
                                         )}
@@ -269,7 +271,7 @@ export function SharedItineraryPage() {
                                             }}
                                             className="h-8 px-3 text-xs"
                                           >
-                                            <Phone className="w-3 h-3 mr-1" />
+                                            <MIcon name="phone" className="text-xs mr-1" />
                                             Call
                                           </Button>
                                         )}
@@ -300,7 +302,7 @@ export function SharedItineraryPage() {
                                   {event.attractionData && (
                                     <div className="mt-2 space-y-2">
                                       <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                                        <MapPin className="w-4 h-4" />
+                                        <MIcon name="location_on" className="text-sm" />
                                         <span>{event.attractionData.address}</span>
                                       </div>
                                       <div className="flex items-center gap-2">

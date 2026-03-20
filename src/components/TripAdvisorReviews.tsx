@@ -58,7 +58,7 @@ export function TripAdvisorReviews({
           <Star
             key={i}
             className={`w-3 h-3 ${
-              i < rating ? 'text-yellow-500 fill-current' : 'text-gray-300'
+              i < rating ? 'text-secondary fill-current' : 'text-outline-variant'
             }`}
           />
         ))}
@@ -91,7 +91,7 @@ export function TripAdvisorReviews({
       {showTitle && (
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <Star className="w-4 h-4 text-yellow-500" />
+            <Star className="w-4 h-4 text-secondary" />
             <h4 className="font-semibold">Reviews from TripAdvisor</h4>
           </div>
           {locationId && (

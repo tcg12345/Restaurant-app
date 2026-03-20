@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useIsMobile } from '@/hooks/useIsMobile';
 import { format } from 'date-fns';
-import { MapPin, Clock, Edit2, Trash2, Eye, Share2, Phone, Globe, Star } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
@@ -19,6 +18,10 @@ import { LazyImage } from '@/components/LazyImage';
 
 // Image URL resolution
 import { resolveImageUrl, getLqipUrl } from '@/utils/imageUtils';
+
+const MIcon = ({ name, className = '', filled = false }: { name: string; className?: string; filled?: boolean }) => (
+  <span className={`material-symbols-outlined ${className}`} style={filled ? { fontVariationSettings: "'FILL' 1" } : undefined}>{name}</span>
+);
 
 interface RestaurantCardListProps {
   restaurant: Restaurant;
@@ -103,7 +106,7 @@ export function RestaurantCardList({ restaurant, onEdit, onDelete }: RestaurantC
                 {/* Star Rating */}
                 {restaurant.rating !== undefined && (
                   <div className="flex items-center gap-1.5 flex-shrink-0">
-                    <div className="text-amber-400 text-sm">★</div>
+                    <div className="text-secondary text-sm">★</div>
                     <span className="text-sm font-bold text-foreground">
                       {restaurant.rating.toFixed(1)}
                     </span>
@@ -119,7 +122,7 @@ export function RestaurantCardList({ restaurant, onEdit, onDelete }: RestaurantC
                   {restaurant.priceRange && (
                     <>
                       <span className="text-muted-foreground">•</span>
-                      <span className="text-sm font-bold text-emerald-600 dark:text-emerald-400 tracking-tight">
+                      <span className="text-sm font-bold text-secondary dark:text-secondary tracking-tight">
                         {'$'.repeat(restaurant.priceRange)}
                       </span>
                     </>
@@ -135,7 +138,7 @@ export function RestaurantCardList({ restaurant, onEdit, onDelete }: RestaurantC
                 
                 {/* Wishlist indicator only (no date visited) */}
                 {restaurant.isWishlist && (
-                  <div className="inline-flex items-center rounded-full bg-amber-50 dark:bg-amber-950/30 px-2 py-0.5 text-xs font-medium text-amber-700 dark:text-amber-300 flex-shrink-0">
+                  <div className="inline-flex items-center rounded-full bg-secondary/5 dark:bg-secondary/15 px-2 py-0.5 text-xs font-medium text-secondary dark:text-secondary/70 flex-shrink-0">
                     Saved
                   </div>
                 )}
@@ -144,7 +147,7 @@ export function RestaurantCardList({ restaurant, onEdit, onDelete }: RestaurantC
                {/* City and Actions on same line */}
                <div className="flex justify-between items-center gap-2 mt-1">
                  <span className="flex items-center gap-1 text-sm text-muted-foreground truncate">
-                   <MapPin className="w-3 h-3 flex-shrink-0" />
+                   <MIcon name="location_on" className="text-xs flex-shrink-0" />
                    {restaurant.city}
                  </span>
                  <div className="flex items-center gap-1">
@@ -154,7 +157,7 @@ export function RestaurantCardList({ restaurant, onEdit, onDelete }: RestaurantC
                      className="h-6 w-6 rounded-full hover:bg-muted/30 transition-all duration-200 shadow-none opacity-60 hover:opacity-100"
                      onClick={(e) => handleButtonClick(e, () => setIsShareDialogOpen(true))}
                    >
-                     <Share2 className="h-3 w-3 text-muted-foreground" />
+                     <MIcon name="share" className="text-xs text-muted-foreground" />
                    </Button>
                    
                    {onDelete && (
@@ -164,7 +167,7 @@ export function RestaurantCardList({ restaurant, onEdit, onDelete }: RestaurantC
                        className="h-6 w-6 rounded-full hover:bg-destructive/10 text-muted-foreground hover:text-destructive transition-all duration-200 shadow-none opacity-60 hover:opacity-100"
                        onClick={(e) => handleButtonClick(e, () => onDelete(restaurant.id))}
                      >
-                       <Trash2 className="h-3 w-3" />
+                       <MIcon name="delete" className="text-xs" />
                      </Button>
                    )}
                  </div>
@@ -173,7 +176,7 @@ export function RestaurantCardList({ restaurant, onEdit, onDelete }: RestaurantC
                 {/* Opening Hours */}
                 {restaurant.openingHours && (
                   <div className="flex items-center gap-1 text-xs text-muted-foreground mt-1">
-                    <Clock className="w-3 h-3" />
+                    <MIcon name="schedule" className="text-xs" />
                     <OpeningHoursDisplay hours={restaurant.openingHours} />
                   </div>
                 )}

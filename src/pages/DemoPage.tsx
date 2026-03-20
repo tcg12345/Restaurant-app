@@ -120,29 +120,29 @@ export default function DemoPage() {
       title: 'Restaurants Rated',
       value: ratedRestaurants.length,
       icon: Utensils,
-      color: 'text-blue-600',
-      bgColor: 'bg-blue-50'
+      color: 'text-primary',
+      bgColor: 'bg-primary/5'
     },
     {
       title: 'Wishlist Items',
       value: wishlistRestaurants.length,
       icon: Heart,
-      color: 'text-red-600',
-      bgColor: 'bg-red-50'
+      color: 'text-destructive',
+      bgColor: 'bg-destructive/5'
     },
     {
       title: 'Michelin Stars',
       value: michelinRestaurants.reduce((sum, r) => sum + (r.michelinStars || 0), 0),
       icon: Award,
-      color: 'text-yellow-600',
-      bgColor: 'bg-yellow-50'
+      color: 'text-secondary',
+      bgColor: 'bg-secondary/5'
     },
     {
       title: 'Average Rating',
       value: averageRating.toFixed(1),
       icon: Star,
-      color: 'text-green-600',
-      bgColor: 'bg-green-50'
+      color: 'text-secondary',
+      bgColor: 'bg-secondary/5'
     }
   ];
 
@@ -244,10 +244,10 @@ export default function DemoPage() {
               <h2 className="text-2xl font-semibold">Quick Actions</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 {[
-                  { title: 'Add Restaurant', description: 'Rate a new dining experience', icon: Plus, color: 'bg-green-500' },
-                  { title: 'View Map', description: 'Explore your restaurants', icon: MapPin, color: 'bg-blue-500' },
-                  { title: 'Wishlist', description: 'Places you want to try', icon: Heart, color: 'bg-red-500' },
-                  { title: 'My Ratings', description: 'View all your reviews', icon: Star, color: 'bg-yellow-500' }
+                  { title: 'Add Restaurant', description: 'Rate a new dining experience', icon: Plus, color: 'bg-secondary/50' },
+                  { title: 'View Map', description: 'Explore your restaurants', icon: MapPin, color: 'bg-primary/50' },
+                  { title: 'Wishlist', description: 'Places you want to try', icon: Heart, color: 'bg-destructive/50' },
+                  { title: 'My Ratings', description: 'View all your reviews', icon: Star, color: 'bg-secondary/50' }
                 ].map((action, index) => (
                   <Card key={index} className="cursor-pointer hover:shadow-lg transition-all duration-200 group">
                     <CardContent className="p-6">
@@ -291,7 +291,7 @@ export default function DemoPage() {
                       <p className="text-sm text-muted-foreground">{restaurant.cuisine} • {restaurant.city}</p>
                     </div>
                     <div className="flex items-center space-x-1">
-                      <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+                      <Star className="h-4 w-4 fill-yellow-400 text-secondary" />
                       <span className="font-semibold">{restaurant.rating}</span>
                     </div>
                   </div>
@@ -373,7 +373,7 @@ export default function DemoPage() {
                           <Badge variant="outline" className="text-xs">
                             Interactive Demo
                           </Badge>
-                          <Heart className="h-5 w-5 text-red-500" />
+                          <Heart className="h-5 w-5 text-destructive" />
                         </div>
                       </div>
                       

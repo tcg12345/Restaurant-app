@@ -1,11 +1,14 @@
 import { useState, useEffect } from 'react';
-import { Search, UserPlus, Loader2 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { cn } from '@/lib/utils';
+
+const MIcon = ({ name, className = '', filled = false }: { name: string; className?: string; filled?: boolean }) => (
+  <span className={`material-symbols-outlined ${className}`} style={filled ? { fontVariationSettings: "'FILL' 1" } : undefined}>{name}</span>
+);
 
 interface SearchResult {
   id: string;
@@ -22,11 +25,11 @@ interface FriendSearchProps {
   hasPendingRequest: (userId: string) => boolean;
 }
 
-export function FriendSearch({ 
-  onSearchUsers, 
-  onSendFriendRequest, 
-  isAlreadyFriend, 
-  hasPendingRequest 
+export function FriendSearch({
+  onSearchUsers,
+  onSendFriendRequest,
+  isAlreadyFriend,
+  hasPendingRequest
 }: FriendSearchProps) {
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
@@ -74,13 +77,13 @@ export function FriendSearch({
     <Card className="border-2 border-dashed border-muted-foreground/20 hover:border-primary/50 transition-colors">
       <CardHeader className="pb-4">
         <CardTitle className="flex items-center gap-2 text-xl">
-          <Search className="h-5 w-5 text-primary" />
+          <MIcon name="search" className="text-base text-primary" />
           Find Friends
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="relative">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
+          <MIcon name="search" className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground text-sm" />
           <Input
             placeholder="Search by username..."
             value={searchQuery}
@@ -91,14 +94,14 @@ export function FriendSearch({
 
         {isSearching && (
           <div className="flex items-center justify-center py-8">
-            <Loader2 className="h-6 w-6 animate-spin text-primary" />
+            <MIcon name="progress_activity" className="text-lg animate-spin text-primary" />
             <span className="ml-2 text-muted-foreground">Searching...</span>
           </div>
         )}
 
         {searchQuery.length >= 2 && !isSearching && searchResults.length === 0 && (
           <div className="text-center py-8">
-            <Search className="h-12 w-12 text-muted-foreground mx-auto mb-3 opacity-50" />
+            <MIcon name="search" className="text-4xl text-muted-foreground mx-auto mb-3 opacity-50" />
             <p className="text-muted-foreground">No users found matching "{searchQuery}"</p>
           </div>
         )}
@@ -106,8 +109,8 @@ export function FriendSearch({
         {searchResults.length > 0 && (
           <div className="space-y-3 max-h-96 overflow-y-auto">
             {searchResults.map((result) => (
-              <div 
-                key={result.id} 
+              <div
+                key={result.id}
                 className="flex items-center justify-between p-4 rounded-lg border bg-muted/30 hover:bg-muted/50 transition-colors"
               >
                 <div className="flex items-center gap-3">
@@ -122,8 +125,8 @@ export function FriendSearch({
                     {result.name && (
                       <p className="text-sm text-muted-foreground">{result.name}</p>
                     )}
-                    <Badge 
-                      variant={result.is_public ? "default" : "secondary"} 
+                    <Badge
+                      variant={result.is_public ? "default" : "secondary"}
                       className="mt-1 text-xs"
                     >
                       {result.is_public ? 'Public' : 'Private'}
@@ -141,7 +144,7 @@ export function FriendSearch({
                     !isAlreadyFriend(result.id) && !hasPendingRequest(result.id) && "hover:scale-105 transition-transform"
                   )}
                 >
-                  <UserPlus className="h-4 w-4 mr-2" />
+                  <MIcon name="person_add" className="text-sm mr-2" />
                   {getButtonText(result.id)}
                 </Button>
               </div>

@@ -4,7 +4,9 @@ import { RecommendationCard } from '@/components/RecommendationCard';
 import { RecommendationFilters } from '@/components/RecommendationFilters';
 import { InfiniteScrollLoader } from '@/components/InfiniteScrollLoader';
 import { supabase } from '@/integrations/supabase/client';
-import { MapPin, Map, Sparkles } from 'lucide-react';
+const MIcon = ({ name, className = '', filled = false }: { name: string; className?: string; filled?: boolean }) => (
+  <span className={`material-symbols-outlined ${className}`} style={filled ? { fontVariationSettings: "'FILL' 1" } : undefined}>{name}</span>
+);
 import { useToast } from '@/hooks/use-toast';
 import { RecommendationsMap } from '@/components/RecommendationsMap';
 import { MobileRecommendationsMap } from '@/components/mobile/MobileRecommendationsMap';
@@ -544,7 +546,7 @@ export function RecommendationsPage({ restaurants, onAddRestaurant }: Recommenda
   // if (ratedRestaurants.length === 0) {
   //   return (
   //     <div className="flex flex-col items-center justify-center h-64 text-center px-4">
-  //       <MapPin className="h-12 w-12 text-muted-foreground mb-4" />
+  //       <MIcon name="location_on" className="text-5xl text-muted-foreground mb-4" />
   //       <h3 className="text-lg font-semibold mb-2">No Recommendations Yet</h3>
   //       <p className="text-muted-foreground text-sm max-w-md">
   //         Start rating some restaurants to get personalized recommendations based on your preferences and locations.
@@ -576,7 +578,7 @@ export function RecommendationsPage({ restaurants, onAddRestaurant }: Recommenda
         className="fixed bottom-24 right-6 z-40 shadow-lg px-3 py-2 md:px-4 md:py-2"
         size="sm"
       >
-        <Map className="h-4 w-4 mr-1 md:mr-2" />
+        <MIcon name="map" className="text-sm mr-1 md:mr-2" />
         <span className="text-sm font-medium">Map</span>
       </Button>
 
@@ -594,7 +596,7 @@ export function RecommendationsPage({ restaurants, onAddRestaurant }: Recommenda
               onClick={() => navigate('/taste-profile')}
               className="mt-3 flex items-center gap-2 px-4 py-2.5 rounded-xl bg-primary/5 border border-primary/20 text-primary text-sm font-medium hover:bg-primary/10 transition-colors"
             >
-              <Sparkles className="h-4 w-4" />
+              <MIcon name="auto_awesome" className="text-sm" />
               Take the Taste Quiz for better recommendations
             </button>
           )}
@@ -632,7 +634,7 @@ export function RecommendationsPage({ restaurants, onAddRestaurant }: Recommenda
 
         {recommendations.length === 0 && !isLoadingMore && (
           <div className="flex flex-col items-center justify-center h-64 text-center px-4">
-            <MapPin className="h-12 w-12 text-muted-foreground mb-4" />
+            <MIcon name="location_on" className="text-5xl text-muted-foreground mb-4" />
             <h3 className="text-lg font-semibold mb-2">No Recommendations Found</h3>
             <p className="text-muted-foreground text-sm max-w-md">
               We couldn't find restaurants matching your preferences right now. Try adding more rated restaurants or check back later.

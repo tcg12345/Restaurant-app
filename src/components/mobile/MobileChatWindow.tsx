@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Send, Phone, Video, MoreVertical, Image, Trash2, Edit2, Users, ArrowLeft } from 'lucide-react';
+const MIcon = ({ name, className = '', filled = false }: { name: string; className?: string; filled?: boolean }) => (
+  <span className={`material-symbols-outlined ${className}`} style={filled ? { fontVariationSettings: "'FILL' 1" } : undefined}>{name}</span>
+);
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';

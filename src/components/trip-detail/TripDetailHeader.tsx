@@ -1,4 +1,3 @@
-import { ArrowLeft, Plus, Star, MapPin, Calendar, Users, Share2, Settings, TrendingUp, BookOpen } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Trip } from '@/hooks/useTrips';
@@ -6,6 +5,10 @@ import { PlaceRating } from '@/hooks/useTrips';
 import { format } from 'date-fns';
 import { useState } from 'react';
 import { ShareTripDialog } from '@/components/ShareTripDialog';
+
+const MIcon = ({ name, className = '', filled = false }: { name: string; className?: string; filled?: boolean }) => (
+  <span className={`material-symbols-outlined ${className}`} style={filled ? { fontVariationSettings: "'FILL' 1" } : undefined}>{name}</span>
+);
 
 interface TripDetailHeaderProps {
   trip: Trip;
@@ -52,43 +55,43 @@ export function TripDetailHeader({
       label: 'Total Places',
       value: totalPlaces,
       subtext: `${ratedPlaces} rated`,
-      icon: MapPin,
-      color: 'text-blue-600 bg-blue-50'
+      icon: 'location_on',
+      color: 'text-primary bg-primary/5'
     },
     {
       label: 'Avg Rating',
       value: avgRating > 0 ? avgRating.toFixed(1) : '—',
       subtext: `${highRatedPlaces} excellent`,
-      icon: Star,
-      color: 'text-yellow-600 bg-yellow-50'
+      icon: 'grade',
+      color: 'text-secondary bg-secondary/5'
     },
     {
       label: 'Restaurants',
       value: restaurantCount,
       subtext: totalPlaces > 0 ? `${Math.round((restaurantCount / totalPlaces) * 100)}%` : '0%',
-      icon: Users,
-      color: 'text-green-600 bg-green-50'
+      icon: 'group',
+      color: 'text-secondary bg-secondary/5'
     },
     {
       label: 'Attractions',
       value: attractionCount,
       subtext: totalPlaces > 0 ? `${Math.round((attractionCount / totalPlaces) * 100)}%` : '0%',
-      icon: TrendingUp,
-      color: 'text-purple-600 bg-purple-50'
+      icon: 'trending_up',
+      color: 'text-tertiary bg-tertiary/5'
     },
     ...(tripDuration ? [{
       label: 'Duration',
       value: tripDuration,
       subtext: tripDuration === 1 ? 'day' : 'days',
-      icon: Calendar,
-      color: 'text-orange-600 bg-orange-50'
+      icon: 'calendar_month',
+      color: 'text-secondary bg-secondary/5'
     }] : []),
     ...(hotelCount > 0 ? [{
       label: 'Hotels',
       value: hotelCount,
       subtext: totalPlaces > 0 ? `${Math.round((hotelCount / totalPlaces) * 100)}%` : '0%',
-      icon: Settings,
-      color: 'text-indigo-600 bg-indigo-50'
+      icon: 'settings',
+      color: 'text-primary bg-primary/5'
     }] : [])
   ];
   return (
@@ -104,7 +107,7 @@ export function TripDetailHeader({
               onClick={onBack}
               className="flex items-center gap-1 p-2"
             >
-              <ArrowLeft size={32} />
+              <MIcon name="arrow_back" className="text-2xl" />
             </Button>
             
             <Button
@@ -113,7 +116,7 @@ export function TripDetailHeader({
               onClick={onAddPlace}
               className="flex items-center gap-1"
             >
-              <Plus className="w-3 h-3" />
+              <MIcon name="add" className="text-xs" />
               <span className="text-xs">Add Place</span>
             </Button>
           </div>
@@ -130,7 +133,7 @@ export function TripDetailHeader({
             
             <div className="flex items-center justify-center gap-3 text-xs text-muted-foreground">
               <div className="flex items-center gap-1">
-                <MapPin className="w-3 h-3" />
+                <MIcon name="location_on" className="text-xs" />
                 <span className="truncate max-w-[120px]">{trip.destination}</span>
               </div>
               <Badge variant="secondary" className="text-xs bg-primary/10 text-primary">
@@ -149,7 +152,7 @@ export function TripDetailHeader({
               onClick={onBack}
               className="p-2 hover:bg-muted"
             >
-              <ArrowLeft className="w-6 h-6" />
+              <MIcon name="arrow_back" className="text-lg" />
             </Button>
             
             <div className="space-y-1">
@@ -164,7 +167,7 @@ export function TripDetailHeader({
                 )}
                 {trip.is_public && (
                   <Badge variant="outline" className="border-primary/20">
-                    <Users className="w-3 h-3 mr-1" />
+                    <MIcon name="group" className="text-xs mr-1" />
                     Public
                   </Badge>
                 )}
@@ -172,7 +175,7 @@ export function TripDetailHeader({
               
               <div className="flex items-center gap-6 text-sm text-muted-foreground">
                 <div className="flex items-center gap-1">
-                  <Calendar className="w-4 h-4" />
+                  <MIcon name="calendar_month" className="text-sm" />
                   {trip.start_date && trip.end_date ? (
                     <span>
                       {format(new Date(trip.start_date), 'MMM d')} - {format(new Date(trip.end_date), 'MMM d, yyyy')}
@@ -182,7 +185,7 @@ export function TripDetailHeader({
                   )}
                 </div>
                 <div className="flex items-center gap-1">
-                  <MapPin className="w-4 h-4" />
+                  <MIcon name="location_on" className="text-sm" />
                   {trip.destination}
                 </div>
               </div>
@@ -201,20 +204,19 @@ export function TripDetailHeader({
               <div className="bg-background rounded-lg border border-border/50 p-3 w-full">
                 <div className="flex items-center justify-evenly gap-4">
                   {allStats.map((stat, index) => {
-                    const Icon = stat.icon;
                     let hideClass = '';
-                    
+
                     // Progressive show based on screen size
                     if (index >= 6) hideClass = 'hidden 2xl:flex';
                     else if (index >= 5) hideClass = 'hidden xl:flex';
                     else if (index >= 4) hideClass = 'hidden lg:flex';
                     else if (index >= 3) hideClass = 'hidden md:flex';
                     else if (index >= 2) hideClass = '';
-                    
+
                     return (
                       <div key={stat.label} className={`flex items-center gap-2 min-w-0 ${hideClass}`}>
                         <div className={`p-1.5 rounded ${stat.color} flex-shrink-0`}>
-                          <Icon className="w-3 h-3" />
+                          <MIcon name={stat.icon} className="text-xs" />
                         </div>
                         <div className="min-w-0 flex-1">
                           <div className="text-xs font-medium text-muted-foreground truncate">{stat.label}</div>
@@ -235,7 +237,7 @@ export function TripDetailHeader({
               onClick={onAddPlace}
               className="flex items-center gap-2 hover:border-primary/30"
             >
-              <Plus className="w-4 h-4" />
+              <MIcon name="add" className="text-sm" />
               Add Place
             </Button>
             <Button 
@@ -243,7 +245,7 @@ export function TripDetailHeader({
               onClick={() => setIsShareDialogOpen(true)}
               className="flex items-center gap-2 hover:border-primary/30"
             >
-              <Share2 className="w-4 h-4" />
+              <MIcon name="share" className="text-sm" />
               Share Trip
             </Button>
           </div>
